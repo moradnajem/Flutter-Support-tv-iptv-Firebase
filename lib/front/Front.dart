@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tv/front/test.dart';
 
 
-import '../../main.dart';
-import '1.dart';
 import '2.dart';
 import '3.dart';
-import 'home admin.dart';
-import 'fron1.dart';
 
 
 

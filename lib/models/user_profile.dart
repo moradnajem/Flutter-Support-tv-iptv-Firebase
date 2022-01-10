@@ -1,8 +1,8 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tv/manger/user-model.dart';
+import 'package:tv/models/user-model.dart';
 
-import 'language.dart';
+import '../manger/language.dart';
 
 
 class UserProfile {

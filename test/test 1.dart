@@ -1,4 +1,4 @@
-import 'package:chewie/chewie.dart';
+/*import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tv/core/models/CameraStream.dart';
@@ -128,3 +128,4 @@ class CameraStreamVLCCardState extends State<CameraStreamVLCCard> {
     allowScrubbing: true,
   );
 }
+*/

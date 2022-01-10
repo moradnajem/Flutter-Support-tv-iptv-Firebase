@@ -1,12 +1,13 @@
 
 import 'package:flutter/material.dart';
-import 'package:tv/front/home admin.dart';
 import 'package:tv/manger/user-type.dart';
 
 
 
 import '../main.dart';
-import '../front/fron1.dart';
+import 'add channel.dart';
+import 'add section.dart';
+import 'notifications.dart';
 
 
 class TabBarItem {
@@ -45,15 +46,15 @@ class _TabBarPageState extends State<TabBarPage> {
     switch (widget.userType) {
       case UserType.ADMIN:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  ClientsReport()));
-        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Services",  ClientsReport()));
-        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  ClientsReport()));
+        tabItems.add(TabBarItem(Icons.home, "Home",  addsection()));
+        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Services",  addchannel()));
+        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  Notifications()));
         break;
       case UserType.USER:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  uservendor()));
-        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "my ticket",  uservendor()));
-        tabItems.add(TabBarItem(Icons.person, "Profile",  uservendor()));
+        tabItems.add(TabBarItem(Icons.home, "Home",  Notifications()));
+        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "my ticket",  Notifications()));
+        tabItems.add(TabBarItem(Icons.person, "Profile",  Notifications()));
     }
   }
 

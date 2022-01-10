@@ -1,35 +1,57 @@
 
-
-//sectionDetails
+import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tv/core/models/model.dart';
-import 'package:tv/manger/language.dart';
-import 'package:tv/manger/user_profile.dart';
+import 'package:tv/models/channelModel.dart';
+import 'package:video_player/video_player.dart';
 
 class sectionDetails extends StatefulWidget {
-  final ServiceModel section;
+  final ChannelModel section;
 
   sectionDetails({required this.section});
 
   @override
   sectionDetailsState createState() => sectionDetailsState();
 }
-Language lang = Language.ENGLISH;
 
 class sectionDetailsState extends State<sectionDetails> {
-  get index => null;
+  late VideoPlayerController _controller;
 
-  get section => null;
+  late ChewieController _chewieController;
 
+
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    UserProfile.shared.getLanguage().then((value) {
-      setState(() {
-        lang = value!;
+    _controller = VideoPlayerController.network(
+      widget.section.streamURL,)
+      ..initialize().then((_) {
+        setState(() {});
       });
-    });
+    _chewieController = ChewieController(
+      videoPlayerController: _controller,
+      aspectRatio: 3 / 2,
+      autoPlay: false,
+      looping: true,
+      // Try playing around with some of these other options:
+
+      // showControls: false,
+      // materialProgressColors: ChewieProgressColors(
+      //   playedColor: Colors.red,
+      //   handleColor: Colors.blue,
+      //   backgroundColor: Colors.grey,
+      //   bufferedColor: Colors.lightGreen,
+      // ),
+      // placeholder: Container(
+      //   color: Colors.grey,
+      // ),
+      // autoInitialize: true,
+    );
+  }
+  @override
+  void dispose() {
+    _chewieController.dispose();
+    super.dispose();
   }
 
   @override
@@ -44,7 +66,6 @@ class sectionDetailsState extends State<sectionDetails> {
         .width * 1.9;
 
     return
-
       GestureDetector(
         onTap:
             () {},
@@ -57,6 +78,13 @@ class sectionDetailsState extends State<sectionDetails> {
               width: _width,
               child: Column(
                 children: <Widget>[
+                  Expanded(
+                    child: Center(
+                      child: Chewie(
+                        controller: _chewieController,
+                      ),
+                    ),
+                  ),
                   Expanded(child:
                   Hero(
                     tag: widget.section.uid,
@@ -71,17 +99,12 @@ class sectionDetailsState extends State<sectionDetails> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(lang == Language.ENGLISH
-                            ? section[index].titleEN
-                            : section[index].titleAR,
-                          style: TextStyle(
-                            color: Theme
-                                .of(context)
-                                .primaryColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight
-                                .w500,)
-                          ,)
+                        Text(widget.section.title ?? '',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 22,
+                              fontStyle: FontStyle.italic,
+                            )),
                       ],
                     ),
                   )
@@ -92,4 +115,9 @@ class sectionDetailsState extends State<sectionDetails> {
         ),
       );
   }
+
+  Widget buildIndicator() => VideoProgressIndicator(
+    _controller,
+    allowScrubbing: true,
+  );
 }

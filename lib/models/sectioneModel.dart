@@ -27,7 +27,12 @@ class ServiceModel {
     uid: json["uid"],
 
   );
-
+  Map<String, dynamic> toJson() => {
+    "title-en": titleEN,
+    "title-ar": titleAR,
+    "section": section.index,
+    "uid": uid,
+  };
 }
 
 

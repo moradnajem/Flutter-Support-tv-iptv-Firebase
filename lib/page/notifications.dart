@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
 import 'package:tv/manger/language.dart';
-import 'package:tv/manger/loader.dart';
-import 'package:tv/manger/notification-model.dart';
-import 'package:tv/manger/user_profile.dart';
+import 'package:tv/models/loader.dart';
+import 'package:tv/models/notification-model.dart';
+import 'package:tv/models/user_profile.dart';
 
 import '../main.dart';
 

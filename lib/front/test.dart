@@ -1,18 +1,12 @@
 //ClientsReport
-import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tv/core/models/CameraStream.dart';
-import 'package:tv/core/models/model.dart';
-import 'package:tv/core/viewmodels/CameraStreamsViewModel.dart';
-import 'package:tv/front/test%201.dart';
 import 'package:tv/manger/M.S.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/language.dart';
-import 'package:tv/manger/loader.dart';
-import 'package:tv/manger/user_profile.dart';
+import 'package:tv/models/loader.dart';
+import 'package:tv/models/user_profile.dart';
+import 'package:tv/models/sectioneModel.dart';
 
 class frontlive extends StatefulWidget {
 

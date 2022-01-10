@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tv/core/models/model.dart';
 import 'package:tv/manger/M.S.dart';
 
 import 'package:tv/manger/language.dart';
-import 'package:tv/manger/loader.dart';
+import 'package:tv/models/loader.dart';
 import 'package:tv/manger/Section.dart';
-import 'package:tv/manger/user_profile.dart';
+import 'package:tv/models/user_profile.dart';
+import 'package:tv/models/sectioneModel.dart';
 
 
 
@@ -45,7 +45,7 @@ class _allliveState extends State<alllive> {
               crossAxisSpacing: 5,
               children: List.generate(section.length, (index) {
                 return InkWell(
-                  onTap: () => Navigator.of(context).pushNamed("/section", arguments: section[index].uid),
+                  onTap: () {},
                   child: Column(
                     children: [
                       Expanded(

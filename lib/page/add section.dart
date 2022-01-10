@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
-import 'package:tv/manger/alert_sheet.dart';
-import 'package:tv/manger/assets.dart';
-import 'package:tv/manger/extensions.dart';
-import 'package:tv/manger/input_style.dart';
+import 'package:tv/models/alert_sheet.dart';
+import 'package:tv/models/assets.dart';
+import 'package:tv/models/extensions.dart';
+import 'package:tv/models/input_style.dart';
 import 'package:tv/manger/Section.dart';
-import 'package:tv/manger/user-type.dart';
 
 
 import '../main.dart';
@@ -76,7 +75,7 @@ class _addsectionState extends State<addsection> {
                                 Icons.person_outline,
                                 color: Theme.of(context).primaryColor,
                               ),
-                              ).copyWith(hintText: AppLocalization.of(context)!.trans("User name")),
+                              ).copyWith(hintText: "titleEN"),
                             ),
                             TextFormField(
                               onSaved: (value) => titleAR = value!.trim(),
@@ -90,13 +89,13 @@ class _addsectionState extends State<addsection> {
                                 Icons.person_outline,
                                 color: Theme.of(context).primaryColor,
                               ),
-                              ).copyWith(hintText: AppLocalization.of(context)!.trans("User name")),
+                              ).copyWith(hintText: "titleAR"),
                             ),
                             SizedBox(height: 10),
                             TextFormField(
                               controller: _userTypeController,
                               onTap: () {
-                                alertSheet(context, title: "User type", items: ["LIVE", "Movies"], onTap: (value) {
+                                alertSheet(context, title: " type", items: ["LIVE", "Movies"], onTap: (value) {
                                   _userTypeController.text = value;
                                   if (value == "LIVE") {
                                     section = Section.LIVE;
@@ -115,12 +114,12 @@ class _addsectionState extends State<addsection> {
                                 Icons.person_outline,
                                 color: Theme.of(context).primaryColor,
                               ),
-                              ).copyWith(hintText: "User type"),
+                              ).copyWith(hintText: " type"),
                             ),
                             SizedBox(height: 20,),
                             RaisedButton(
                                 color: Theme.of(context).primaryColor,
-                                child: Text(AppLocalization.of(context)!.trans("Sign Up"),
+                                child: Text("ADD",
                                     style: TextStyle(color: Theme.of(context).canvasColor,)),
                                 onPressed:  _section
                             ),

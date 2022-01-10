@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'M.S.dart';
-import 'notification-model.dart';
+import '../manger/M.S.dart';
+import '../models/notification-model.dart';
 
 
 

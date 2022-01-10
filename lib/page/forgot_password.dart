@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
-import 'package:tv/manger/assets.dart';
-import 'package:tv/manger/extensions.dart';
-import 'package:tv/manger/input_style.dart';
+import 'package:tv/models/assets.dart';
+import 'package:tv/models/extensions.dart';
+import 'package:tv/models/input_style.dart';
 
 
 import '../main.dart';

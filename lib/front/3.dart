@@ -1,25 +1,32 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:tv/core/models/model.dart';
+import 'package:tv/front/test%201.dart';
 import 'package:tv/manger/M.S.dart';
-
-import 'package:tv/manger/language.dart';
-import 'package:tv/manger/loader.dart';
-import 'package:tv/manger/Section.dart';
-
-
+import 'package:tv/models/loader.dart';
+import 'package:tv/models/channelModel.dart';
 
 class allSeries extends StatefulWidget {
   @override
-  _allSeriesState createState() => _allSeriesState();
+  allSeriesState createState() => allSeriesState();
 }
-class _allSeriesState extends State<allSeries> {
-  Language lang = Language.ENGLISH;
+
+class allSeriesState extends State<allSeries> {
+
+  Uint8List? image;
+  GlobalKey? imageKey;
+
 
   @override
+  void initState() {
+    imageKey = GlobalKey();
+    super.initState();
+  }
+
+
   Widget build(BuildContext context) {
-    return StreamBuilder<List<ServiceModel>>(
-        stream: FirebaseManager.shared.getServices(section: Section.Series),
+    return StreamBuilder<List<ChannelModel>>(
+        stream: FirebaseManager.shared.getAllOrders(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;
@@ -29,39 +36,10 @@ class _allSeriesState extends State<allSeries> {
                   .of(context)
                   .primaryColor, fontSize: 18),));
             }
-            return GridView.count(
-              padding: const EdgeInsets.all(10),
-              crossAxisCount: 4,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-              children: List.generate(section.length, (index) {
-                return InkWell(
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(
-                          "/Wrapper"),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(12))
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(lang == Language.ARABIC
-                          ? section[index].titleAR
-                          : section[index].titleEN,
-                        style: TextStyle(color: Theme
-                            .of(context)
-                            .primaryColor, fontSize: 18, fontWeight: FontWeight
-                            .w500,),)
-                    ],
-                  ),
-                );
-              }),
+            return ListView.builder(
+              itemCount: section.length,
+              itemBuilder: (buildContext, index) => sectionDetails(
+                  section: section[index]),
             );
           } else {
             return Center(child: loader(context));
@@ -70,3 +48,4 @@ class _allSeriesState extends State<allSeries> {
     );
   }
 }
+

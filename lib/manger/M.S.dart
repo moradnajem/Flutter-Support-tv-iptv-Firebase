@@ -4,18 +4,20 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tv/core/models/model.dart';
-import 'package:tv/manger/extensions.dart';
+
+import 'package:tv/models/extensions.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/status.dart';
-import 'package:tv/manger/user-model.dart';
+import 'package:tv/models/user-model.dart';
 import 'package:tv/manger/user-type.dart';
-import 'package:tv/manger/user_profile.dart';
+import 'package:tv/models/user_profile.dart';
+import 'package:tv/models/channelModel.dart';
+import 'package:tv/models/sectioneModel.dart';
 
 
 import '../main.dart';
-import 'loader.dart';
-import 'notification-model.dart';
+import '../models/loader.dart';
+import '../models/notification-model.dart';
 
 
 
@@ -28,6 +30,7 @@ class FirebaseManager {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final userRef = FirebaseFirestore.instance.collection('User');
   final sectionRef = FirebaseFirestore.instance.collection('section');
+  final channelRef = FirebaseFirestore.instance.collection('channel');
 
 
   // TODO:- Start User
@@ -476,39 +479,87 @@ class FirebaseManager {
       return ServiceModel.fromJson(QueryDocumentSnapshot.data());
     });
   }
+
+  // TODO:- Start Order
+
+  addOrEditChanne(
+      context, {
+        String uid = "",
+        required String sectionuid,
+        required String streamURL,
+        required String title,
+        required Section section,
+      }) async {
+    showLoaderDialog(context);
+
+
+
+    String tempUid = (uid == null || uid == "") ? channelRef.doc().id : uid;
+
+
+
+    channelRef.doc(tempUid).set({
+      "section-uid": sectionuid,
+      "title": title,
+      "streamURL": streamURL,
+      "section": section.index,
+      "uid": tempUid,
+    }).then((value) {
+      showLoaderDialog(context, isShowLoader: false);
+      Navigator.of(context).pop();
+    }).catchError((err) {
+      showLoaderDialog(context, isShowLoader: false);
+    });
+  }
+
+  Stream<List<ChannelModel>> getOrdersByStatus({required Section section}) {
+    return channelRef
+        .where("status", isEqualTo: section.index)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return ChannelModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
+  Stream<List<ChannelModel>> getAllOrders() {
+    return channelRef.snapshots().map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return ChannelModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
+  Stream<List<ChannelModel>> getMyOrdersTech() {
+    return channelRef
+        .where("owner-id", isEqualTo: auth.currentUser!.uid)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return ChannelModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
+  Stream<List<ChannelModel>> getMyOrders() {
+    return channelRef
+        .where("user-id", isEqualTo: auth.currentUser!.uid)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return ChannelModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
+  Stream<ChannelModel> getOrderById({required String id}) {
+    return channelRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
+      return ChannelModel.fromJson(QueryDocumentSnapshot.data());
+    });
+  }
+
+// TODO:- End Order
 }
 
 
-  class FireStoreApiService {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final String path;
-  late CollectionReference ref;
-
-  FireStoreApiService(this.path) {
-    ref = firestore.collection(path);
-  }
-
-  Future<QuerySnapshot> getAllCameraStreams() {
-    return ref.get();
-  }
-
-  Stream<QuerySnapshot> getStreamDataCollection() {
-    return ref.snapshots();
-  }
-
-  Future<DocumentSnapshot> getCameraStreamById(String id) {
-    return ref.doc(id).get();
-  }
-
-  Future<void> removeCameraStream(String? id) {
-    return ref.doc(id).delete();
-  }
-
-  Future<DocumentReference> addCameraStream(Map data) {
-    return ref.add(data);
-  }
-
-  Future<void> updateCameraStream(Map data, String? id) {
-    return ref.doc(id).update(data as Map<String, Object?>);
-  }
-}

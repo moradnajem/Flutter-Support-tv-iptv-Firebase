@@ -1,37 +1,29 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
-import 'package:tv/page/add.dart';
+import 'package:tv/page/add%20channel.dart';
+import 'package:tv/page/add section.dart';
 import 'package:tv/page/forgot_password.dart';
 import 'package:tv/page/notifications.dart';
-import 'package:tv/page/section.dart';
 import 'package:tv/page/select_language.dart';
 import 'package:tv/page/signin.dart';
 import 'package:tv/page/signup.dart';
 import 'package:tv/page/splash.dart';
 import 'package:tv/page/tabbar.dart';
 
-import '/init.dart'
-if (dart.library.html) 'web_init.dart'
-if (dart.library.io) 'io_init.dart';
-import 'core/viewmodels/CameraStreamsViewModel.dart';
+import 'manger/init.dart'
+if (dart.library.html) 'manger/web_init.dart'
+if (dart.library.io) 'manger/io_init.dart';
 import 'front/Front.dart';
-import 'front/Mobile.dart';
-import 'front/add link.dart';
-import 'front/test 1.dart';
+
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
-  setupLocator();
   runApp(const MyApp());
 }
 
@@ -113,13 +105,7 @@ class _MyAppState extends State<MyApp> {
 
 
     Widget build(BuildContext context) {
-      return MultiProvider(
-          providers: [
-          ChangeNotifierProvider(
-          create: (_) => GetIt.I<CameraStreamsViewModel>(),
-      )
-      ],
-      child: MaterialApp(
+      return  MaterialApp(
       debugShowCheckedModeBanner: false,
       locale:_locale,
 
@@ -156,14 +142,14 @@ class _MyAppState extends State<MyApp> {
         switch (settings.name) {
           case '/addsection':
             return MaterialPageRoute(builder: (_) =>   addsection());
+            case '/addchannel':
+            return MaterialPageRoute(builder: (_) =>   addchannel());
             case '/Splash':
             return MaterialPageRoute(builder: (_) =>  const Splash());
             case '/Front':
             return MaterialPageRoute(builder: (_) =>   Front());
             case '/SelectLanguage':
             return MaterialPageRoute(builder: (_) =>   SelectLanguage());
-            case '/AddCameraStreamCard':
-            return MaterialPageRoute(builder: (_) =>   AddCameraStreamCard());
           case '/SignIn':
             return MaterialPageRoute(builder: (_) =>  SignIn(message: arguments,));
           case '/SignUp':
@@ -174,8 +160,6 @@ class _MyAppState extends State<MyApp> {
             return MaterialPageRoute(builder: (_) => TabBarPage(userType: arguments,));
           case '/Notification':
             return MaterialPageRoute(builder: (_) =>  const Notifications());
-          case '/section':
-            return MaterialPageRoute(builder: (_) =>  section());
           default:
             return MaterialPageRoute(
                 builder: (_) => Scaffold(
@@ -185,6 +169,6 @@ class _MyAppState extends State<MyApp> {
                 ));
         }
       },
-    ));
+    );
   }
 }

@@ -1,23 +1,23 @@
 
 
+
 //CameraStreamDetails
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tv/core/models/CameraStream.dart';
-import 'package:tv/ui/views/CameraStreamDetails.dart';
+import 'package:tv/models/channelModel.dart';
 import 'package:video_player/video_player.dart';
 
-class CameraStreamDetails extends StatefulWidget {
-  final CameraStream cameraStream;
+class sectionDetailsstream extends StatefulWidget {
+  final ChannelModel cameraStream;
 
-  CameraStreamDetails({required this.cameraStream});
+  sectionDetailsstream({required this.cameraStream});
 
   @override
-  CameraStreamDetailsState createState() => CameraStreamDetailsState();
+  sectionDetailsstreamState createState() => sectionDetailsstreamState();
 }
 
-class CameraStreamDetailsState extends State<CameraStreamDetails> {
+class sectionDetailsstreamState extends State<sectionDetailsstream> {
   late VideoPlayerController _controller;
 
   late ChewieController _chewieController;
@@ -27,7 +27,7 @@ class CameraStreamDetailsState extends State<CameraStreamDetails> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(
-      widget.cameraStream.cameraStreamUrl!,)
+      widget.cameraStream.streamURL,)
       ..initialize().then((_) {
         setState(() {});
       });
@@ -90,7 +90,7 @@ class CameraStreamDetailsState extends State<CameraStreamDetails> {
                   ),
                   Expanded(child:
                   Hero(
-                    tag: widget.cameraStream.id!,
+                    tag: widget.cameraStream.uid,
                     child: SizedBox(
                       height: 360,
                       width: _width,
@@ -102,7 +102,7 @@ class CameraStreamDetailsState extends State<CameraStreamDetails> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(widget.cameraStream.cameraStreamTitle ?? '',
+                        Text(widget.cameraStream.title ?? '',
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 22,
@@ -124,3 +124,4 @@ class CameraStreamDetailsState extends State<CameraStreamDetails> {
     allowScrubbing: true,
   );
 }
+
