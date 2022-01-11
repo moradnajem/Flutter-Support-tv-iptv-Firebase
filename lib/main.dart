@@ -166,7 +166,8 @@ class _MyAppState extends State<MyApp> {
                   body: Center(
                     child: Text('No route defined for ${settings.name}'),
                   ),
-                ));
+                )
+            );
         }
       },
     );

@@ -1,6 +1,4 @@
 
-
-
 //CameraStreamDetails
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';

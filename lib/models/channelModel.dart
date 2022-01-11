@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:tv/manger/Section.dart';
 
 
-ChannelModel orderModelFromJson(String str) => ChannelModel.fromJson(json.decode(str));
+ChannelModel channelModelFromJson(String str) => ChannelModel.fromJson(json.decode(str));
 
 String channelModelToJson(ChannelModel data) => json.encode(data.toJson());
 

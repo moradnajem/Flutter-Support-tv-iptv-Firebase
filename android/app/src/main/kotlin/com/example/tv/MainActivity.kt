@@ -1,4 +1,4 @@
-package com.example.tv
+package com.ms.platform
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -24,14 +24,14 @@ class SelectLanguage extends StatelessWidget {
             SizedBox(height: MediaQuery.of(context).size.height * (60 / 812)),
             RaisedButton(
                 color: Theme.of(context).primaryColor,
-                child: Text(AppLocalization.of(context)!.trans("Sign In"),
+                child: Text("English",
                     style: TextStyle(color: Theme.of(context).canvasColor,)),
                 onPressed: () => _btnSelectLanguage(context, lang: Language.ENGLISH),),
          //   BtnMain(title: "English", onTap: () => _btnSelectLanguage(context, lang: Language.ENGLISH),),
             const SizedBox(height: 20),
             RaisedButton(
               color: Theme.of(context).primaryColor,
-              child: Text(AppLocalization.of(context)!.trans("Sign In"),
+              child: Text("عربي",
                   style: TextStyle(color: Theme.of(context).canvasColor,)),
               onPressed: () => _btnSelectLanguage(context, lang: Language.ARABIC),),
          //   BtnMain(title: "عربي", onTap: () => _btnSelectLanguage(context, lang: Language.ARABIC),),

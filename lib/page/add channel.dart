@@ -8,13 +8,13 @@ import 'package:tv/models/input_style.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/language.dart';
 import 'package:tv/models/user_profile.dart';
-import 'package:tv/models/sectioneModel.dart';
+import 'package:tv/models/SectionModel.dart';
 
 
 
 
 class addchannel extends StatefulWidget {
-  late final String uidActiveService;
+    String? uidActiveService;
 
   @override
   _addchannelState createState() => _addchannelState();
@@ -149,7 +149,7 @@ class _addchannelState extends State<addchannel> {
 
   _getServiceData() async {
 
-    List<ServiceModel> services = await FirebaseManager.shared.getServices(section: Section.LIVE).first;
+    List<SectionModel> services = await FirebaseManager.shared.getSection(section: Section.LIVE).first;
 
     setState(() {
       _dropdownMenuItem = services.map((item) => DropdownMenuItem(child: Text( lang == Language.ARABIC ? item.titleAR : item.titleEN ), value: item.uid.toString())).toList();
@@ -173,7 +173,7 @@ class _addchannelState extends State<addchannel> {
       return;
     }
 
-    await FirebaseManager.shared.getServiceById(id: _activeDropDownItem!).first;
+    await FirebaseManager.shared.getSectionById(id: _activeDropDownItem!).first;
 
     FirebaseManager.shared.addOrEditChanne(context,  sectionuid: _activeDropDownItem!,section: section, title: title, streamURL: streamURL!);
 

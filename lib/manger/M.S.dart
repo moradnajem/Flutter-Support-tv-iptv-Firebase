@@ -1,5 +1,4 @@
 
-import 'dart:js';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +11,7 @@ import 'package:tv/models/user-model.dart';
 import 'package:tv/manger/user-type.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/models/channelModel.dart';
-import 'package:tv/models/sectioneModel.dart';
+import 'package:tv/models/SectionModel.dart';
 
 
 import '../main.dart';
@@ -452,31 +451,31 @@ class FirebaseManager {
     });
   }
 
-  Stream<List<ServiceModel>> getServices({required Section section}) {
+  Stream<List<SectionModel>> getSection({required Section section}) {
     return sectionRef
         .where("section", isEqualTo: section.index)
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
-        return ServiceModel.fromJson(doc.data());
+        return SectionModel.fromJson(doc.data());
       }).toList();
     });
   }
 
-  Stream<List<ServiceModel>> getMyServices() {
+  Stream<List<SectionModel>> getMySection() {
     return sectionRef
         .where("uid-owner", isEqualTo: auth.currentUser!.uid)
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
-        return ServiceModel.fromJson(doc.data());
+        return SectionModel.fromJson(doc.data());
       }).toList();
     });
   }
 
-  Stream<ServiceModel> getServiceById({required String id}) {
+  Stream<SectionModel> getSectionById({required String id}) {
     return sectionRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
-      return ServiceModel.fromJson(QueryDocumentSnapshot.data());
+      return SectionModel.fromJson(QueryDocumentSnapshot.data());
     });
   }
 
@@ -512,7 +511,7 @@ class FirebaseManager {
     });
   }
 
-  Stream<List<ChannelModel>> getOrdersByStatus({required Section section}) {
+  Stream<List<ChannelModel>> getchannelByStatus({required Section section}) {
     return channelRef
         .where("status", isEqualTo: section.index)
         .snapshots()
@@ -523,7 +522,7 @@ class FirebaseManager {
     });
   }
 
-  Stream<List<ChannelModel>> getAllOrders() {
+  Stream<List<ChannelModel>> getAllchannel() {
     return channelRef.snapshots().map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
         return ChannelModel.fromJson(doc.data());
@@ -531,7 +530,7 @@ class FirebaseManager {
     });
   }
 
-  Stream<List<ChannelModel>> getMyOrdersTech() {
+  Stream<List<ChannelModel>> getMychannelTech() {
     return channelRef
         .where("owner-id", isEqualTo: auth.currentUser!.uid)
         .snapshots()
@@ -542,7 +541,7 @@ class FirebaseManager {
     });
   }
 
-  Stream<List<ChannelModel>> getMyOrders() {
+  Stream<List<ChannelModel>> getMychannel() {
     return channelRef
         .where("user-id", isEqualTo: auth.currentUser!.uid)
         .snapshots()
@@ -553,7 +552,7 @@ class FirebaseManager {
     });
   }
 
-  Stream<ChannelModel> getOrderById({required String id}) {
+  Stream<ChannelModel> getchannelById({required String id}) {
     return channelRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
       return ChannelModel.fromJson(QueryDocumentSnapshot.data());
     });

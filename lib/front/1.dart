@@ -6,7 +6,7 @@ import 'package:tv/manger/language.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/models/user_profile.dart';
-import 'package:tv/models/sectioneModel.dart';
+import 'package:tv/models/SectionModel.dart';
 
 
 
@@ -27,8 +27,8 @@ class _allliveState extends State<alllive> {
   }
 
   Widget build(BuildContext context) {
-    return StreamBuilder<List<ServiceModel>>(
-        stream: FirebaseManager.shared.getServices(section: Section.LIVE),
+    return StreamBuilder<List<SectionModel>>(
+        stream: FirebaseManager.shared.getSection(section: Section.LIVE),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;

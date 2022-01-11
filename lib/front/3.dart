@@ -1,3 +1,4 @@
+
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class allSeriesState extends State<allSeries> {
 
   Widget build(BuildContext context) {
     return StreamBuilder<List<ChannelModel>>(
-        stream: FirebaseManager.shared.getAllOrders(),
+        stream: FirebaseManager.shared.getAllchannel(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;
@@ -38,4 +39,3 @@ class allSeriesState extends State<allSeries> {
     );
   }
 }
-
