@@ -13,16 +13,6 @@ class allSeries extends StatefulWidget {
 
 class allSeriesState extends State<allSeries> {
 
-  Uint8List? image;
-  GlobalKey? imageKey;
-
-
-  @override
-  void initState() {
-    imageKey = GlobalKey();
-    super.initState();
-  }
-
 
   Widget build(BuildContext context) {
     return StreamBuilder<List<ChannelModel>>(

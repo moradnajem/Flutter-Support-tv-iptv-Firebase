@@ -1,6 +1,4 @@
-
 import 'package:chewie/chewie.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tv/models/channelModel.dart';
 import 'package:video_player/video_player.dart';
@@ -8,7 +6,7 @@ import 'package:video_player/video_player.dart';
 class sectionDetails extends StatefulWidget {
   final ChannelModel section;
 
-  sectionDetails({required this.section});
+   sectionDetails({required this.section});
 
   @override
   sectionDetailsState createState() => sectionDetailsState();
@@ -99,7 +97,7 @@ class sectionDetailsState extends State<sectionDetails> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(widget.section.title ?? '',
+                        Text(widget.section.title,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 22,

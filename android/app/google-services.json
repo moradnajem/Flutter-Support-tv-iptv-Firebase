@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "534485265386",
+    "project_id": "msplatform-6c94d",
+    "storage_bucket": "msplatform-6c94d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534485265386:android:96e8fe96d3398745d8e093",
+        "android_client_info": {
+          "package_name": "com.ms.platform"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534485265386-eo9ov2bh2jpplh7b8lrdb6jnnmmc7c15.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8d4sljXgrqE1cZjTjKmmElMOpx6i_eTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534485265386-eo9ov2bh2jpplh7b8lrdb6jnnmmc7c15.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534485265386-1jq4e4mautm6hcbnct6qhpulfbds653o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ms.platform"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

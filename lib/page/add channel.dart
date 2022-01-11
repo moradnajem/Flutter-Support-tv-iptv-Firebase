@@ -11,7 +11,6 @@ import 'package:tv/models/user_profile.dart';
 import 'package:tv/models/sectioneModel.dart';
 
 
-import '../main.dart';
 
 
 class addchannel extends StatefulWidget {
@@ -23,9 +22,9 @@ class addchannel extends StatefulWidget {
 
 class _addchannelState extends State<addchannel> {
 
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  GlobalKey<FormState> _formKey = GlobalKey();
-  TextEditingController _userTypeController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final TextEditingController _userTypeController = TextEditingController();
   late Section section;
 
    late String title;
@@ -99,12 +98,12 @@ class _addchannelState extends State<addchannel> {
                               ),
                               ).copyWith(hintText: " type"),
                             ),
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                             TextFormField(
                               onChanged: (value) => title = value.trim(),
                               maxLines: null,
                               textInputAction: TextInputAction.done,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 labelText: "title",
                               ),
                             ),
@@ -112,7 +111,7 @@ class _addchannelState extends State<addchannel> {
                               onChanged: (value) => streamURL = value.trim(),
                               maxLines: null,
                               textInputAction: TextInputAction.done,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 labelText: "streamURL",
                               ),
                             ),
@@ -122,18 +121,18 @@ class _addchannelState extends State<addchannel> {
                                 setState(() => _activeDropDownItem = newValue as String?);
                               },
                               value: _activeDropDownItem,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 labelText: "list",
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             RaisedButton(
                                 color: Theme.of(context).primaryColor,
                                 child: Text("ADD",
                                     style: TextStyle(color: Theme.of(context).canvasColor,)),
                                 onPressed:   _submitData
                             ),
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                           ],
                         ),
                       ),
@@ -176,7 +175,7 @@ class _addchannelState extends State<addchannel> {
 
     await FirebaseManager.shared.getServiceById(id: _activeDropDownItem!).first;
 
-    FirebaseManager.shared.addOrEditChanne(context,  sectionuid: _activeDropDownItem!,section: section, title: title!, streamURL: streamURL!);
+    FirebaseManager.shared.addOrEditChanne(context,  sectionuid: _activeDropDownItem!,section: section, title: title, streamURL: streamURL!);
 
   }
 
