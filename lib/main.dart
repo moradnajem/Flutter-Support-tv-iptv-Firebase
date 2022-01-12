@@ -14,7 +14,6 @@ import 'package:tv/page/signup.dart';
 import 'package:tv/page/splash.dart';
 import 'package:tv/page/tabbar.dart';
 
-import 'front/SectionDetelis.dart';
 import 'manger/init.dart'
 if (dart.library.html) 'manger/web_init.dart'
 if (dart.library.io) 'manger/io_init.dart';

@@ -37,7 +37,7 @@ class ChannelModel {
   Map<String, dynamic> toJson() => {
     "section-uid": sectionuid,
     "url-image": streamURL,
-    "details": title,
+    "title": title,
     "section": section.index,
     "uid": uid,
   };

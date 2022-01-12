@@ -490,7 +490,7 @@ class FirebaseManager {
 
   Stream<List<ChannelModel>> getchannelByStatus({required Section section}) {
     return channelRef
-        .where("status", isEqualTo: section.index)
+        .where("section", isEqualTo: section.index)
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tv/front/test%201.dart';
 import 'package:tv/manger/M.S.dart';
+import 'package:tv/manger/Section.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/channelModel.dart';
+
+import 'frontlive.dart';
+
 
 class allSeries extends StatefulWidget {
   const allSeries({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class allSeriesState extends State<allSeries> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<ChannelModel>>(
-        stream: FirebaseManager.shared.getAllchannel(),
+        stream: FirebaseManager.shared.getchannelByStatus(section: Section.LIVE),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;

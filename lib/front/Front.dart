@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tv/front/test.dart';
-import '2.dart';
+
 import '3.dart';
+
 
 
 
@@ -56,9 +57,9 @@ class _FrontState extends State<Front> {
         body: PageView(
           controller: _pageController,
           children: [
-            frontlive(),
-            allmoive(),
             allSeries(),
+            frontlive(),
+        //    sectionDetail(),
           ],
           onPageChanged: (index) {
             setState(() {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tv/front/test.dart';
 import 'package:tv/manger/M.S.dart';
 import 'package:tv/models/alert_sheet.dart';
 import 'package:tv/models/assets.dart';
@@ -31,6 +30,7 @@ class _addchannelState extends State<addchannel> {
    String? streamURL;
    String? _activeDropDownItem;
   List<DropdownMenuItem<String>>? _dropdownMenuItem = [];
+  Language lang = Language.ENGLISH;
 
   @override
   void initState() {

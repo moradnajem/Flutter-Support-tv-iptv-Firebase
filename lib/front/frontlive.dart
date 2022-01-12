@@ -1,37 +1,58 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:tv/front/test%20appbar.dart';
-import 'package:tv/manger/language.dart';
-import 'package:tv/models/SectionModel.dart';
 import 'package:tv/models/channelModel.dart';
-import 'package:tv/models/user_profile.dart';
+import 'package:video_player/video_player.dart';
 
 import 'SectionDetelis.dart';
 
+class sectionDetails extends StatefulWidget {
 
-class sectionDetail extends StatefulWidget {
+  final ChannelModel section;
 
-  final SectionModel section;
-  
-  sectionDetail({required this.section});
+   sectionDetails({required this.section});
 
   @override
-  sectionDetailState createState() => sectionDetailState();
+  sectionDetailsState createState() => sectionDetailsState();
 }
 
-class sectionDetailState extends State<sectionDetail> {
+class sectionDetailsState extends State<sectionDetails> {
+  late VideoPlayerController _controller;
 
-  Language lang = Language.ENGLISH;
+  late ChewieController _chewieController;
 
 
-
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    UserProfile.shared.getLanguage().then((value) {
-      setState(() {
-        lang = value!;
+    _controller = VideoPlayerController.network(
+      widget.section.streamURL,)
+      ..initialize().then((_) {
+        setState(() {});
       });
-    });
+    _chewieController = ChewieController(
+      videoPlayerController: _controller,
+      aspectRatio: 3 / 2,
+      autoPlay: false,
+      looping: true,
+      // Try playing around with some of these other options:
+
+      // showControls: false,
+      // materialProgressColors: ChewieProgressColors(
+      //   playedColor: Colors.red,
+      //   handleColor: Colors.blue,
+      //   backgroundColor: Colors.grey,
+      //   bufferedColor: Colors.lightGreen,
+      // ),
+      // placeholder: Container(
+      //   color: Colors.grey,
+      // ),
+      // autoInitialize: true,
+    );
+  }
+  @override
+  void dispose() {
+    _chewieController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,10 +72,11 @@ class sectionDetailState extends State<sectionDetail> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => CameraStreamDetail(
+                  builder: (_) => CameraStreamDetails(
                     section: widget.section,
                   )));
-        },        child: Padding(
+        },
+        child: Padding(
           padding: const EdgeInsets.all(8),
           child: Card(
             elevation: 5,
@@ -63,9 +85,16 @@ class sectionDetailState extends State<sectionDetail> {
               width: _width,
               child: Column(
                 children: <Widget>[
+                  Expanded(
+                    child: Center(
+                      child: Chewie(
+                        controller: _chewieController,
+                      ),
+                    ),
+                  ),
                   Expanded(child:
                   Hero(
-                    tag: widget.section.uid,
+                    tag: widget.section.sectionuid,
                     child: SizedBox(
                       height: 360,
                       width: _width,
@@ -77,7 +106,7 @@ class sectionDetailState extends State<sectionDetail> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(widget.section.titleEN,
+                        Text(widget.section.title,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 22,
@@ -93,4 +122,9 @@ class sectionDetailState extends State<sectionDetail> {
         ),
       );
   }
+
+  Widget buildIndicator() => VideoProgressIndicator(
+    _controller,
+    allowScrubbing: true,
+  );
 }
