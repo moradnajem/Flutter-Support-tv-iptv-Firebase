@@ -40,8 +40,7 @@ class frontliveState extends State<frontlive> {
             return ListView.builder(
               itemCount: section.length,
               itemBuilder: (buildContext, index) => GestureDetector(
-                onTap: () {
-                },
+                onTap: () => Navigator.of(context).pushNamed("/sectionDetailsstream", arguments: section[index].uid),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(

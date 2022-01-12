@@ -1,29 +1,21 @@
-
 import 'package:flutter/material.dart';
 import 'package:tv/manger/user-type.dart';
-
-
-
 import '../main.dart';
 import 'add channel.dart';
 import 'add section.dart';
+import 'admin page.dart';
 import 'notifications.dart';
 
 
 class TabBarItem {
-
   final IconData icon;
   final String label;
   final Widget page;
-
   TabBarItem(this.icon, this.label, this.page);
-
 }
 
 class TabBarPage extends StatefulWidget {
-
   final Object?  userType;
-
   const TabBarPage({Key? key, this.userType}) : super(key: key);
 
   @override
@@ -31,11 +23,8 @@ class TabBarPage extends StatefulWidget {
 }
 
 class _TabBarPageState extends State<TabBarPage> {
-
   final PageController _pageController = PageController();
-
   int indexTap = 0;
-
   List<TabBarItem> tabItems = [
   ];
 
@@ -46,15 +35,15 @@ class _TabBarPageState extends State<TabBarPage> {
     switch (widget.userType) {
       case UserType.ADMIN:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  addsection()));
-        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Services",  addchannel()));
-        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  Notifications()));
+        tabItems.add(TabBarItem(Icons.home, "Home",  adminpage()));
+        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Home",  adminpage()));
+        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Home",  adminpage()));
         break;
       case UserType.USER:
         tabItems = [];
         tabItems.add(TabBarItem(Icons.home, "Home",  Notifications()));
-        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "my ticket",  Notifications()));
-        tabItems.add(TabBarItem(Icons.person, "Profile",  Notifications()));
+        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Home",  Notifications()));
+        tabItems.add(TabBarItem(Icons.person, "Home",  Notifications()));
     }
   }
 
@@ -101,27 +90,19 @@ class _TabBarPageState extends State<TabBarPage> {
   }
 
   List<Widget> _getChildrenTabBar() {
-
     List<Widget> items = [];
-
     for (var item in tabItems) {
       items.add(item.page);
     }
-
     return items;
   }
 
   List<BottomNavigationBarItem> _renderTaps() {
-
     List<BottomNavigationBarItem> items = [];
-
     for (var i = 0; i < tabItems.length; i++) {
       BottomNavigationBarItem obj = BottomNavigationBarItem(icon: Icon(tabItems[i].icon, color: indexTap == i ? Theme.of(context).primaryColor : Colors.black26,), label: AppLocalization.of(context)!.trans(tabItems[i].label));
       items.add(obj);
     }
-
     return items;
-
   }
-
 }

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
 import 'package:tv/models/assets.dart';
-import 'package:tv/manger/language.dart';
 import 'package:tv/manger/status.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
-
-import '../main.dart';
 
 
 class Splash extends StatefulWidget {

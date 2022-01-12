@@ -57,11 +57,11 @@ class sectionDetailsState extends State<sectionDetails> {
     var _height = MediaQuery
         .of(context)
         .size
-        .height * 1.33;
+        .height * 0.33;
     var _width = MediaQuery
         .of(context)
         .size
-        .width * 1.9;
+        .width * 0.9;
 
     return
       GestureDetector(

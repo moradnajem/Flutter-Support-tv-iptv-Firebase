@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
-
 import 'package:tv/manger/language.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/manger/Section.dart';
@@ -10,6 +8,8 @@ import 'package:tv/models/SectionModel.dart';
 
 
 class allmoive extends StatefulWidget {
+  const allmoive({Key? key}) : super(key: key);
+
   @override
   _allmoiveState createState() => _allmoiveState();
 }

@@ -1,9 +1,7 @@
-
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:tv/models/extensions.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/status.dart';
@@ -12,8 +10,6 @@ import 'package:tv/manger/user-type.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/models/channelModel.dart';
 import 'package:tv/models/SectionModel.dart';
-
-
 import '../main.dart';
 import '../models/loader.dart';
 import '../models/notification-model.dart';
@@ -22,14 +18,12 @@ import '../models/notification-model.dart';
 
 
 class FirebaseManager {
-
   static final FirebaseManager shared = FirebaseManager();
-  final notificationRef = FirebaseFirestore.instance.collection('Notification');
-
   final FirebaseAuth auth = FirebaseAuth.instance;
   final userRef = FirebaseFirestore.instance.collection('User');
   final sectionRef = FirebaseFirestore.instance.collection('section');
   final channelRef = FirebaseFirestore.instance.collection('channel');
+  final notificationRef = FirebaseFirestore.instance.collection('Notification');
 
 
   // TODO:- Start User
@@ -55,13 +49,11 @@ class FirebaseManager {
 
   Future<UserModel> getUserByUid({ required String uid }) async {
     UserModel userTemp;
-
     var user = await userRef
         .doc(uid)
         .snapshots()
         .first;
     userTemp = UserModel.fromJson(user.data());
-
     return userTemp;
   }
 
@@ -81,7 +73,6 @@ class FirebaseManager {
     required UserType userType,
   }) async {
     showLoaderDialog(scaffoldKey.currentContext);
-
     if (!email.isValidEmail()) {
       scaffoldKey.showTosta(
           message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
@@ -92,10 +83,7 @@ class FirebaseManager {
 
     var userId = await _createAccountInFirebase(
         scaffoldKey: scaffoldKey, email: email, password: password);
-
     String imgUrl = "";
-
-
     if (userId != null) {
       userRef.doc(userId).set({
         "id": "${Random().nextInt(99999)}",
@@ -150,7 +138,6 @@ class FirebaseManager {
     required Status status,
   }) {
     showLoaderDialog(scaffoldKey.currentContext);
-
     userRef.doc(userId).update({
       "status-account": status.index,
     })
@@ -218,7 +205,6 @@ class FirebaseManager {
     required String confirmPassword,
   }) async {
     showLoaderDialog(scaffoldKey.currentContext);
-
     auth.currentUser!.updatePassword(newPassword).then((value) {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
       Navigator.of(scaffoldKey.currentContext!).pop();
@@ -311,7 +297,6 @@ class FirebaseManager {
             auth.signOut();
         }
       });
-
       return;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -332,7 +317,6 @@ class FirebaseManager {
                 "Something went wrong"), isError: true);
       }
     }
-
     showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
     return;
   }
@@ -341,7 +325,6 @@ class FirebaseManager {
   signOut(context) async {
     try {
       showLoaderDialog(context);
-
       await FirebaseAuth.instance.signOut();
       await UserProfile.shared.setUser(user: null);
       showLoaderDialog(context, isShowLoader: false);
@@ -384,7 +367,6 @@ class FirebaseManager {
     String uid = notificationRef
         .doc()
         .id;
-
     notificationRef
         .doc(uid)
         .set({
@@ -435,7 +417,6 @@ class FirebaseManager {
       }) async {
     showLoaderDialog(context);
     String tempUid = (uid == null || uid == "") ? sectionRef.doc().id : uid;
-
     sectionRef.doc(tempUid).set({
       "title-en": titleEN,
       "title-ar": titleAR,
@@ -491,11 +472,7 @@ class FirebaseManager {
       }) async {
     showLoaderDialog(context);
 
-
-
     String tempUid = (uid == null || uid == "") ? channelRef.doc().id : uid;
-
-
 
     channelRef.doc(tempUid).set({
       "section-uid": sectionuid,

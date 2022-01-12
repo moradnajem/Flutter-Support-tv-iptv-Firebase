@@ -1,6 +1,3 @@
-
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:tv/front/test%201.dart';
 import 'package:tv/manger/M.S.dart';
@@ -8,6 +5,8 @@ import 'package:tv/models/loader.dart';
 import 'package:tv/models/channelModel.dart';
 
 class allSeries extends StatefulWidget {
+  const allSeries({Key? key}) : super(key: key);
+
   @override
   allSeriesState createState() => allSeriesState();
 }
@@ -15,6 +14,7 @@ class allSeries extends StatefulWidget {
 class allSeriesState extends State<allSeries> {
 
 
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<ChannelModel>>(
         stream: FirebaseManager.shared.getAllchannel(),

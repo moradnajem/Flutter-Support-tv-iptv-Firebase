@@ -5,8 +5,6 @@ import 'package:tv/models/assets.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 import 'package:tv/manger/user-type.dart';
-
-
 import '../main.dart';
 
 
@@ -16,7 +14,6 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   GlobalKey<FormState> _formKey = GlobalKey();
   TextEditingController _userTypeController = TextEditingController();
@@ -203,23 +200,17 @@ class _SignupState extends State<Signup> {
   bool validation() {
     return !(username.isEmpty || email.isEmpty || password.isEmpty || city.isEmpty || phoneNumber.isEmpty || userType == null);
   }
-
   _btnSignup() {
 
     _formKey.currentState!.save();
-
     if (!validation()) {
       _scaffoldKey.showTosta(message: AppLocalization.of(context)!.trans("Please fill in all fields"), isError: true);
       return;
     }
-
     if (!agreeToPrivacy) {
       _scaffoldKey.showTosta(message: AppLocalization.of(context)!.trans("Please agree to the privacy terms"), isError: true);
       return;
     }
-
     FirebaseManager.shared.createAccountUser(scaffoldKey: _scaffoldKey, name: username, phone: phoneNumber, email: email, city: city, password: password, imagePath: '', userType: userType);
-
   }
-
 }

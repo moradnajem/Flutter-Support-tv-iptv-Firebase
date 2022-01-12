@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:tv/front/test.dart';
-
-
 import '2.dart';
 import '3.dart';
 
 
 
 class Front extends StatefulWidget {
+  const Front({Key? key}) : super(key: key);
+
   @override
   _FrontState createState() => _FrontState();
 }
 
 class _FrontState extends State<Front> {
 
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   int indexTap = 0;
 
@@ -81,8 +81,8 @@ class _FrontState extends State<Front> {
           type: BottomNavigationBarType.fixed,
           currentIndex: 0,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home, color: indexTap == 0 ? Theme.of(context).primaryColor : Colors.black26,), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 1 ? Theme.of(context).primaryColor : Colors.black26,), label: "Services"),
+            BottomNavigationBarItem(icon: Icon(Icons.home, color: indexTap == 0 ? Theme.of(context).primaryColor : Colors.black26,), label: "Live"),
+            BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 1 ? Theme.of(context).primaryColor : Colors.black26,), label: "Movies"),
             BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 2 ? Theme.of(context).primaryColor : Colors.black26,), label: "Services"),
           ],
         ),

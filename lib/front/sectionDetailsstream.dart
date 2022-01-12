@@ -88,7 +88,7 @@ class sectionDetailsstreamState extends State<sectionDetailsstream> {
                   ),
                   Expanded(child:
                   Hero(
-                    tag: widget.cameraStream.uid,
+                    tag: widget.cameraStream.sectionuid,
                     child: SizedBox(
                       height: 360,
                       width: _width,
