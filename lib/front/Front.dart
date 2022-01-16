@@ -33,7 +33,7 @@ class _FrontState extends State<Front> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Ms"),
+          title: const Text("IPTV"),
           centerTitle: true,
           leading:  IconButton(
           icon: Icon(
@@ -83,7 +83,7 @@ class _FrontState extends State<Front> {
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home, color: indexTap == 0 ? Theme.of(context).primaryColor : Colors.black26,), label: "Live"),
             BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 1 ? Theme.of(context).primaryColor : Colors.black26,), label: "Movies"),
-            BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 2 ? Theme.of(context).primaryColor : Colors.black26,), label: "Services"),
+            BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 2 ? Theme.of(context).primaryColor : Colors.black26,), label: "Series"),
           ],
         ),
       ),
