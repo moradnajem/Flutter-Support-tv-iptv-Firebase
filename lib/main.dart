@@ -105,8 +105,12 @@ class _MyAppState extends State<MyApp> {
 
 
     Widget build(BuildContext context) {
-      return  MaterialApp(
-      debugShowCheckedModeBanner: false,
+    return Shortcuts(
+        shortcuts: <LogicalKeySet, Intent>{
+        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+        },
+        child: MaterialApp(
+        debugShowCheckedModeBanner: false,
       locale:_locale,
 
       supportedLocales: const [
@@ -170,6 +174,6 @@ class _MyAppState extends State<MyApp> {
             );
         }
       },
-    );
+    ));
   }
 }

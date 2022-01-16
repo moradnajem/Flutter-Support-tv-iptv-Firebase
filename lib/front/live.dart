@@ -4,17 +4,17 @@ import 'package:tv/manger/Section.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/channelModel.dart';
 
-import 'frontlive.dart';
+import 'sectionDetails.dart';
 
 
-class allSeries extends StatefulWidget {
-  const allSeries({Key? key}) : super(key: key);
+class live extends StatefulWidget {
+  const live({Key? key}) : super(key: key);
 
   @override
-  allSeriesState createState() => allSeriesState();
+  liveState createState() => liveState();
 }
 
-class allSeriesState extends State<allSeries> {
+class liveState extends State<live> {
 
 
   @override

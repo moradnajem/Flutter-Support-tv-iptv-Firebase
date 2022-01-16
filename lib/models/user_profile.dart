@@ -32,6 +32,7 @@ class UserProfile {
 
   Future<UserModel?> getUser() async {
     try {
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       return prefs.get('user') == "" ? null : userModelFromJson(('user'));
     } catch(e) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tv/front/test.dart';
+import 'package:tv/front/frontlive.dart';
+import 'package:tv/front/frontlive.dart';
 
-import '3.dart';
+import 'live.dart';
 
 
 
@@ -57,9 +58,7 @@ class _FrontState extends State<Front> {
         body: PageView(
           controller: _pageController,
           children: [
-            allSeries(),
             frontlive(),
-        //    sectionDetail(),
           ],
           onPageChanged: (index) {
             setState(() {
@@ -75,7 +74,7 @@ class _FrontState extends State<Front> {
               indexTap = index;
             });
             _pageController.animateToPage(indexTap,
-                duration: Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 200),
                 curve: Curves.easeIn
             );
           },

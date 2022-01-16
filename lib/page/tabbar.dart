@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tv/manger/user-type.dart';
 import '../main.dart';
+import 'User.dart';
 import 'add channel.dart';
 import 'add section.dart';
 import 'admin page.dart';
@@ -37,7 +38,7 @@ class _TabBarPageState extends State<TabBarPage> {
         tabItems = [];
         tabItems.add(TabBarItem(Icons.home, "Home",  adminpage()));
         tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Home",  adminpage()));
-        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Home",  adminpage()));
+        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  const Users()));
         break;
       case UserType.USER:
         tabItems = [];

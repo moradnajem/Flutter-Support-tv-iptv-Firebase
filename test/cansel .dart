@@ -12,18 +12,6 @@ class CameraStreamDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('section'),
-        actions: <Widget>[
-          IconButton(
-            iconSize: 35,
-            icon: const Icon(Icons.delete_forever),
-            onPressed: ()  {  },
-          ),
-          IconButton(
-            iconSize: 35,
-            icon: const Icon(Icons.edit),
-            onPressed: () {},
-          )
-        ],
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,
