@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tv/front/frontlive.dart';
 import 'package:tv/front/frontlive.dart';
+import 'package:tv/manger/Section.dart';
 
 import 'live.dart';
-
-
-
 
 class Front extends StatefulWidget {
   const Front({Key? key}) : super(key: key);
@@ -15,7 +13,6 @@ class Front extends StatefulWidget {
 }
 
 class _FrontState extends State<Front> {
-
   final PageController _pageController = PageController();
 
   int indexTap = 0;
@@ -27,38 +24,35 @@ class _FrontState extends State<Front> {
     super.dispose();
   }
 
+  Section section = Section.LIVE;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("IPTV"),
-          centerTitle: true,
-          leading:  IconButton(
-          icon: Icon(
-          Icons.language,
-            color: Theme.of(context).canvasColor
-          ),
-            onPressed: () => Navigator.pushNamed(context, '/SelectLanguage'),
-          ),
-          actions: <Widget>[
-          Padding(
-          padding: EdgeInsets.only(right: 10.0),
-          //ProfileScreen
-          // ignore: deprecated_member_use
-          child:  FlatButton(
-          onPressed: () => Navigator.pushNamed(context, '/SignIn'),
-
-          child: Icon(
-          Icons.person_rounded,
-              color: Theme.of(context).canvasColor
-
-          ),),),]),
+            title: const Text("IPTV"),
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.language, color: Theme.of(context).canvasColor),
+              onPressed: () => Navigator.pushNamed(context, '/SelectLanguage'),
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                //ProfileScreen
+                // ignore: deprecated_member_use
+                child: FlatButton(
+                  onPressed: () => Navigator.pushNamed(context, '/SignIn'),
+                  child: Icon(Icons.person_rounded,
+                      color: Theme.of(context).canvasColor),
+                ),
+              ),
+            ]),
         body: PageView(
           controller: _pageController,
           children: [
-            frontlive(),
+            frontlive(section),
           ],
           onPageChanged: (index) {
             setState(() {
@@ -72,22 +66,42 @@ class _FrontState extends State<Front> {
           onTap: (index) {
             setState(() {
               indexTap = index;
+              section = Section.values[index];
             });
             _pageController.animateToPage(indexTap,
                 duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn
-            );
+                curve: Curves.easeIn);
           },
           type: BottomNavigationBarType.fixed,
           currentIndex: 0,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home, color: indexTap == 0 ? Theme.of(context).primaryColor : Colors.black26,), label: "Live"),
-            BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 1 ? Theme.of(context).primaryColor : Colors.black26,), label: "Movies"),
-            BottomNavigationBarItem(icon: Icon(Icons.home_repair_service_rounded, color: indexTap == 2 ? Theme.of(context).primaryColor : Colors.black26,), label: "Series"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home,
+                  color: indexTap == 0
+                      ? Theme.of(context).primaryColor
+                      : Colors.black26,
+                ),
+                label: "Live"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home_repair_service_rounded,
+                  color: indexTap == 1
+                      ? Theme.of(context).primaryColor
+                      : Colors.black26,
+                ),
+                label: "Movies"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home_repair_service_rounded,
+                  color: indexTap == 2
+                      ? Theme.of(context).primaryColor
+                      : Colors.black26,
+                ),
+                label: "Series"),
           ],
         ),
       ),
     );
   }
-
 }

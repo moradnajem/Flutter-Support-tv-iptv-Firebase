@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
 import 'package:tv/manger/Section.dart';
@@ -9,10 +8,10 @@ import 'package:tv/models/user_profile.dart';
 
 import 'live.dart';
 
-
 class frontlive extends StatefulWidget {
-
+  final Section section;
   frontliveState createState() => frontliveState();
+  frontlive(this.section);
 }
 
 class frontliveState extends State<frontlive> {
@@ -27,18 +26,21 @@ class frontliveState extends State<frontlive> {
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: Section.LIVE),
+        stream: FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;
             if (section!.isEmpty) {
-              return Center(child: Text(
-                "No  added", style: TextStyle(color: Theme
-                  .of(context)
-                  .primaryColor, fontSize: 18),));
+              return Center(
+                  child: Text(
+                "No  added",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18),
+              ));
             }
             return ListView.builder(
               itemCount: section.length,
@@ -47,21 +49,15 @@ class frontliveState extends State<frontlive> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const live(
-                          )));
-                },                 child: Padding(
+                          builder: (_) => live(section[index].uid)));
+                },
+                child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(
                     elevation: 5,
                     child: SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.1,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.height * 0.1,
                       child: Column(
                         children: <Widget>[
                           Padding(
@@ -69,14 +65,16 @@ class frontliveState extends State<frontlive> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text (lang == Language.ENGLISH
-                                    ? section[index].titleEN
-                                    : section[index].titleAR,
-                                  style: TextStyle(color: Theme
-                                      .of(context)
-                                      .primaryColor, fontSize: 18, fontWeight: FontWeight
-                                      .w500,)
-                                  ,)
+                                Text(
+                                  lang == Language.ENGLISH
+                                      ? section[index].titleEN
+                                      : section[index].titleAR,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                )
                               ],
                             ),
                           )
@@ -90,8 +88,6 @@ class frontliveState extends State<frontlive> {
           } else {
             return Center(child: loader(context));
           }
-        }
-    );
+        });
   }
 }
-

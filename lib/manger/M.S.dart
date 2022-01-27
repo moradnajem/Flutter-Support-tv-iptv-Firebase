@@ -488,9 +488,9 @@ class FirebaseManager {
     });
   }
 
-  Stream<List<ChannelModel>> getchannelByStatus({required Section section}) {
+  Stream<List<ChannelModel>> getchannelByStatus({required String section}) {
     return channelRef
-        .where("section", isEqualTo: section.index)
+        .where("section-uid", isEqualTo: section)
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
