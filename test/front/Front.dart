@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tv/front/frontlive.dart';
-import 'package:tv/front/frontlive.dart';
+
 import 'package:tv/manger/Section.dart';
 
 import 'live.dart';
@@ -52,7 +51,7 @@ class _FrontState extends State<Front> {
         body: PageView(
           controller: _pageController,
           children: [
-            frontlive(section),
+         //   frontlive(section),
           ],
           onPageChanged: (index) {
             setState(() {

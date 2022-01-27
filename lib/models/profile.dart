@@ -1,0 +1,6 @@
+enum ProfileList {
+  CHANGE_LANGUAGE,
+  EDIT_PROFILE,
+  EDIT_PASSWORD,
+  LOGOUT,
+}

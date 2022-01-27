@@ -7,16 +7,16 @@ import 'package:tv/models/SectionModel.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/page/notification.dart';
 
-import '../main.dart';
-import 'channel/channel.dart';
+import '../lib/main.dart';
+import '../lib/section/channel/channel.dart';
 
 
 
-class Live extends StatefulWidget {
-  LiveState createState() => LiveState();
+class Movies extends StatefulWidget {
+  MoviesState createState() => MoviesState();
 }
 
-class LiveState extends State<Live> {
+class MoviesState extends State<Movies> {
   Language lang = Language.ENGLISH;
 
   void initState() {
@@ -31,7 +31,7 @@ class LiveState extends State<Live> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: Section.LIVE),
+        stream: FirebaseManager.shared.getSection(section: Section.Movies),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;
@@ -42,23 +42,23 @@ class LiveState extends State<Live> {
                   .primaryColor, fontSize: 18),));
             }
             return Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Theme.of(context).canvasColor,
-                  elevation: 0,
-                  iconTheme: IconThemeData(
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  leading: IconButton(
-                    icon: Icon(Icons.language, color: Theme.of(context).primaryColor),
-                    onPressed: () => Navigator.pushNamed(context, '/SelectLanguage'),
-                  ),
-                  title: Text(AppLocalization.of(context)!.trans('Live'), style: TextStyle(color: Theme.of(context).primaryColor),),
-                    centerTitle: true,
-                    actions: const [
-                      NotificationsWidget(),
-             ],
-            ),
-             body: ListView.builder(
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).canvasColor,
+                elevation: 0,
+                iconTheme: IconThemeData(
+                  color: Theme.of(context).primaryColor,
+                ),
+                leading: IconButton(
+                  icon: Icon(Icons.language, color: Theme.of(context).primaryColor),
+                  onPressed: () => Navigator.pushNamed(context, '/SelectLanguage'),
+                ),
+                title: Text(AppLocalization.of(context)!.trans('Movies'), style: TextStyle(color: Theme.of(context).primaryColor),),
+                centerTitle: true,
+                actions: const [
+                  NotificationsWidget(),
+                ],
+              ),
+              body: ListView.builder(
               itemCount: section.length,
               itemBuilder: (buildContext, index) => GestureDetector(
                 onTap: () {
@@ -66,7 +66,7 @@ class LiveState extends State<Live> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => channel(section[index].uid)));
-                },                child: Padding(
+                },                     child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(
                     elevation: 5,
@@ -97,7 +97,7 @@ class LiveState extends State<Live> {
                   ),
                 ),
               ),
-          ));
+              ) );
           } else {
             return Center(child: loader(context));
           }

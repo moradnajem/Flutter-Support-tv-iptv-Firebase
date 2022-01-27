@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tv/front/sectionDetails.dart';
 import 'package:tv/manger/M.S.dart';
-import 'package:tv/manger/Section.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/channelModel.dart';
 
@@ -22,7 +20,11 @@ class channelState extends State<channel> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<ChannelModel>>(
+    return Scaffold(
+        appBar: AppBar(
+
+    ),
+    body: StreamBuilder<List<ChannelModel>>(
         stream: FirebaseManager.shared.getchannelByStatus(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -42,6 +44,6 @@ class channelState extends State<channel> {
             return Center(child: loader(context));
           }
         }
-    );
+    ));
   }
 }

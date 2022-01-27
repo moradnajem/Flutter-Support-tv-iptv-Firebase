@@ -8,7 +8,7 @@ class sectionDetails extends StatefulWidget {
 
   final ChannelModel section;
 
-   sectionDetails({required this.section});
+   sectionDetails({required this.section });
 
   @override
   sectionDetailsState createState() => sectionDetailsState();

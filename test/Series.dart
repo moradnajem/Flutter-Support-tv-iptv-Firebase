@@ -7,8 +7,8 @@ import 'package:tv/models/SectionModel.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/page/notification.dart';
 
-import '../main.dart';
-import 'channel/channel.dart';
+import '../lib/main.dart';
+import '../lib/section/channel/channel.dart';
 
 
 

@@ -14,30 +14,28 @@ String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
   UserModel({
-    required this.id,
-    required this.image,
-    required this.name,
-    required this.phone,
-    required this.email,
-    required this.city,
-    required this.uid,
-    required this.accountStatus,
-    required this.userType,
-    required this.balance,
-    required this.dateCreated,
+     this.id,
+     required this.image,
+     required this.name,
+     this.phone,
+     this.email,
+     this.city,
+     this.uid,
+     this.accountStatus,
+     this.userType,
+     this.dateCreated,
   });
 
-  String id;
+  String? id;
   String image;
   String name;
-  String phone;
-  String email;
-  String city;
-  String uid;
-  Status accountStatus;
-  UserType userType;
-  double balance;
-  String dateCreated;
+  String? phone;
+  String? email;
+  String? city;
+  String? uid;
+  Status? accountStatus;
+  UserType? userType;
+  String? dateCreated;
 
   factory UserModel.fromJson(Map<String, dynamic>? json) => UserModel(
     id: json!["id"],
@@ -47,7 +45,6 @@ class UserModel {
     email: json["email"],
     city: json["city"],
     uid: json["uid"],
-    balance: (json["balance"] ?? 0) * 1.0,
     accountStatus: Status.values[json["status-account"]],
     userType: UserType.values[json["type-user"]],
     dateCreated: json["date-created"] ?? DateTime.now().toString(),
@@ -61,9 +58,8 @@ class UserModel {
     "email": email,
     "city": city,
     "uid": uid,
-    "balance": balance,
-    "status-account": accountStatus.index,
-    "type-user": userType.index,
+    "status-account": accountStatus!.index,
+    "type-user": userType!.index,
     "date-created": dateCreated,
   };
 }

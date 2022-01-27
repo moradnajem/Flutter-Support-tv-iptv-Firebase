@@ -53,7 +53,7 @@ class FirebaseManager {
         .doc(uid)
         .snapshots()
         .first;
-    userTemp = UserModel.fromJson(user.data());
+    userTemp = UserModel.fromJson(user.data()!);
     return userTemp;
   }
 
@@ -108,7 +108,7 @@ class FirebaseManager {
         await getAllUsers().first.then((users) {
           for (var user in users) {
             if (user.userType == UserType.ADMIN) {
-              addNotifications(uidUser: user.uid,
+              addNotifications(uidUser: user.uid!,
                   titleEN: "New User",
                   titleAR: "مستخدم جديد",
                   detailsEN: "$name new created a new account",

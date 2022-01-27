@@ -45,6 +45,7 @@ dependencies:
   firebase_auth_desktop:
   flutter_svg:
   shared_preferences:
+  image_picker:
 dev_dependencies:
   flutter_test:
     sdk: flutter

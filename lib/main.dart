@@ -6,9 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tv/page/add%20channel.dart';
 import 'package:tv/page/add section.dart';
+import 'package:tv/page/edit-password.dart';
+import 'package:tv/page/edit-profile.dart';
 import 'package:tv/page/forgot_password.dart';
 import 'package:tv/page/notifications.dart';
-import 'package:tv/page/select_language.dart';
+import 'package:tv/page/profile.dart';
 import 'package:tv/page/signin.dart';
 import 'package:tv/page/signup.dart';
 import 'package:tv/page/splash.dart';
@@ -17,7 +19,6 @@ import 'package:tv/page/tabbar.dart';
 import 'manger/init.dart'
 if (dart.library.html) 'manger/web_init.dart'
 if (dart.library.io) 'manger/io_init.dart';
-import 'front/Front.dart';
 
 
 
@@ -139,21 +140,13 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.white,
         platform: TargetPlatform.android,
         fontFamily: 'NeoSansArabic', colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.black,),
-      ),
+        ),
       initialRoute: "/Splash",
       onGenerateRoute: (settings) {
         final arguments = settings.arguments;
         switch (settings.name) {
-          case '/addsection':
-            return MaterialPageRoute(builder: (_) =>   addsection());
-            case '/addchannel':
-            return MaterialPageRoute(builder: (_) =>   addchannel());
             case '/Splash':
-            return MaterialPageRoute(builder: (_) =>  const Splash());
-            case '/Front':
-            return MaterialPageRoute(builder: (_) =>   Front());
-            case '/SelectLanguage':
-            return MaterialPageRoute(builder: (_) =>   SelectLanguage());
+            return MaterialPageRoute(builder: (_) =>   Splash());
           case '/SignIn':
             return MaterialPageRoute(builder: (_) =>  SignIn(message: arguments,));
           case '/SignUp':
@@ -162,8 +155,18 @@ class _MyAppState extends State<MyApp> {
             return MaterialPageRoute(builder: (_) => ForgotPassword());
           case '/TabBarPage':
             return MaterialPageRoute(builder: (_) => TabBarPage(userType: arguments,));
+          case '/addsection':
+            return MaterialPageRoute(builder: (_) =>   addsection());
+          case '/addchannel':
+            return MaterialPageRoute(builder: (_) =>   addchannel());
           case '/Notification':
             return MaterialPageRoute(builder: (_) =>  const Notifications());
+            case '/Profile':
+            return MaterialPageRoute(builder: (_) =>   Profile());
+            case '/EditPassword':
+            return MaterialPageRoute(builder: (_) =>   EditPassword());
+            case '/EditProfile':
+            return MaterialPageRoute(builder: (_) =>   EditProfile());
           default:
             return MaterialPageRoute(
                 builder: (_) => Scaffold(

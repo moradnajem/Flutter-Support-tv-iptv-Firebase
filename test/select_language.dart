@@ -4,7 +4,7 @@ import 'package:tv/manger/language.dart';
 
 import 'package:tv/models/user_profile.dart';
 
-import '../main.dart';
+import '../lib/main.dart';
 
 
 class SelectLanguage extends StatelessWidget {

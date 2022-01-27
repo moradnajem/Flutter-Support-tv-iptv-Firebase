@@ -7,16 +7,16 @@ import 'package:tv/models/SectionModel.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/page/notification.dart';
 
-import '../main.dart';
-import 'channel/channel.dart';
+import '../lib/main.dart';
+import '../lib/section/channel/channel.dart';
 
 
 
-class Movies extends StatefulWidget {
-  MoviesState createState() => MoviesState();
+class Live extends StatefulWidget {
+  LiveState createState() => LiveState();
 }
 
-class MoviesState extends State<Movies> {
+class LiveState extends State<Live> {
   Language lang = Language.ENGLISH;
 
   void initState() {
@@ -28,10 +28,16 @@ class MoviesState extends State<Movies> {
       });
     });
   }
+
+  Widget appBarTitle = const Text(
+    "Live",
+    style: TextStyle(color: Colors.black),
+  );
+  Icon actionIcon = const Icon(Icons.search);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: Section.Movies),
+        stream: FirebaseManager.shared.getSection(section: Section.LIVE),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;
@@ -42,23 +48,44 @@ class MoviesState extends State<Movies> {
                   .primaryColor, fontSize: 18),));
             }
             return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).canvasColor,
-                elevation: 0,
-                iconTheme: IconThemeData(
-                  color: Theme.of(context).primaryColor,
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).canvasColor,
+                  elevation: 0,
+                  iconTheme: IconThemeData(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  leading: IconButton(
+                    icon: Icon(Icons.language, color: Theme.of(context).primaryColor),
+                    onPressed: () => Navigator.pushNamed(context, '/SelectLanguage'),
+                  ),
+                  title: appBarTitle,
+                    centerTitle: true,
+                    actions: <Widget>[
+                      IconButton(icon: actionIcon,onPressed:(){
+                        setState(() {
+                          if ( actionIcon.icon == Icons.search){
+                            actionIcon = const Icon(Icons.close);
+                            appBarTitle = const TextField(
+                              style: TextStyle(
+                                color: Colors.blue,
+
+                              ),
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.search,color: Colors.blue),
+                                  hintText: "Search...",
+                                  hintStyle: TextStyle(color: Colors.blue)
+                              ),
+                            );}
+                          else {
+                            actionIcon = const Icon(Icons.search);
+                            appBarTitle =  Text(AppLocalization.of(context)!.trans('Live'), style: TextStyle(color: Theme.of(context).primaryColor),);
+                          }
+                        });
+                      } ,),
+                      NotificationsWidget(),
+                    ]
                 ),
-                leading: IconButton(
-                  icon: Icon(Icons.language, color: Theme.of(context).primaryColor),
-                  onPressed: () => Navigator.pushNamed(context, '/SelectLanguage'),
-                ),
-                title: Text(AppLocalization.of(context)!.trans('Movies'), style: TextStyle(color: Theme.of(context).primaryColor),),
-                centerTitle: true,
-                actions: const [
-                  NotificationsWidget(),
-                ],
-              ),
-              body: ListView.builder(
+             body: ListView.builder(
               itemCount: section.length,
               itemBuilder: (buildContext, index) => GestureDetector(
                 onTap: () {
@@ -66,7 +93,8 @@ class MoviesState extends State<Movies> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => channel(section[index].uid)));
-                },                     child: Padding(
+                },
+                child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(
                     elevation: 5,
@@ -97,7 +125,7 @@ class MoviesState extends State<Movies> {
                   ),
                 ),
               ),
-              ) );
+          ));
           } else {
             return Center(child: loader(context));
           }

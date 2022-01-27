@@ -9,7 +9,6 @@ import 'package:tv/models/user_profile.dart';
 import '../../main.dart';
 import 'notification.dart';
 
-
 class Users extends StatefulWidget {
   const Users({Key? key}) : super(key: key);
 
@@ -18,7 +17,6 @@ class Users extends StatefulWidget {
 }
 
 class _UsersState extends State<Users> {
-
   Status status = Status.PENDING;
   UserType userType = UserType.USER;
 
@@ -34,13 +32,16 @@ class _UsersState extends State<Users> {
         iconTheme: IconThemeData(
           color: Theme.of(context).primaryColor,
         ),
-        leading:  IconButton(
+        leading: IconButton(
           icon: const Icon(
             Icons.person,
           ),
           onPressed: () => Navigator.pushNamed(context, '/Profile'),
         ),
-        title: Text(AppLocalization.of(context)!.trans('Users'), style: TextStyle(color: Theme.of(context).primaryColor),),
+        title: Text(
+          AppLocalization.of(context)!.trans('Users'),
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        ),
         centerTitle: true,
         actions: const [
           NotificationsWidget(),
@@ -57,30 +58,45 @@ class _UsersState extends State<Users> {
                     if (snapshot.hasData) {
                       List<UserModel> items = [];
                       for (var user in snapshot.data!) {
-                        if (user.uid != currentUser!.uid && user.accountStatus == status && user.userType == userType) {
+                        if (user.uid != currentUser!.uid &&
+                            user.accountStatus == status &&
+                            user.userType == userType) {
                           items.add(user);
                         }
                       }
-                      items.sort((a,b) {
-                        return DateTime.parse(b.dateCreated).compareTo(DateTime.parse(a.dateCreated));
+                      items.sort((a, b) {
+                        return DateTime.parse(b.dateCreated!)
+                            .compareTo(DateTime.parse(a.dateCreated!));
                       });
                       return ListView.builder(
                         padding: const EdgeInsets.all(20),
-                        itemCount: items.isEmpty ? items.length + 2 : items.length + 1,
+                        itemCount:
+                        items.isEmpty ? items.length + 2 : items.length + 1,
                         itemBuilder: (context, index) {
-                          return index == 0 ? _header() : (items.isEmpty ? Center(child: Text(AppLocalization.of(context)!.trans("There are no members"), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),) : _item(user: items[index - 1]));
+                          return index == 0
+                              ? _header()
+                              : (items.isEmpty
+                              ? Center(
+                            child: Text(
+                              AppLocalization.of(context)!
+                                  .trans("There are no members"),
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color:
+                                  Theme.of(context).primaryColor),
+                            ),
+                          )
+                              : _item(user: items[index - 1]));
                         },
                       );
                     } else {
                       return Center(child: loader(context));
                     }
-                  }
-              );
+                  });
             } else {
               return const SizedBox();
             }
-          }
-      ),
+          }),
     );
   }
 
@@ -88,7 +104,10 @@ class _UsersState extends State<Users> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalization.of(context)!.trans("Status Account:-"), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
+        Text(
+          AppLocalization.of(context)!.trans("Status Account:-"),
+          style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),
+        ),
         const SizedBox(height: 10),
         Row(
           children: [
@@ -122,7 +141,6 @@ class _UsersState extends State<Users> {
                 Text(AppLocalization.of(context)!.trans("pending")),
               ],
             ),
-
             Row(
               children: [
                 Radio(
@@ -142,13 +160,16 @@ class _UsersState extends State<Users> {
         ),
         const SizedBox(height: 10),
         const SizedBox(height: 20),
-        Container(height: 1, color: Theme.of(context).primaryColor,),
+        Container(
+          height: 1,
+          color: Theme.of(context).primaryColor,
+        ),
         const SizedBox(height: 20),
       ],
     );
   }
 
-  Widget _item({ required UserModel user }) {
+  Widget _item({required UserModel user}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(20),
@@ -161,41 +182,77 @@ class _UsersState extends State<Users> {
           const SizedBox(height: 20),
           Row(
             children: [
-              Text(AppLocalization.of(context)!.trans("User ID: "), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
+              Text(
+                AppLocalization.of(context)!.trans("User ID: "),
+                style: TextStyle(
+                    fontSize: 18, color: Theme.of(context).primaryColor),
+              ),
               const SizedBox(width: 10),
-              Flexible(child: Text(user.id, style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.secondary))),
+              Flexible(
+                  child: Text(user.id!,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.secondary))),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Text(AppLocalization.of(context)!.trans("User name: "), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
+              Text(
+                AppLocalization.of(context)!.trans("User name: "),
+                style: TextStyle(
+                    fontSize: 18, color: Theme.of(context).primaryColor),
+              ),
               const SizedBox(width: 10),
-              Flexible(child: Text(user.name, style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.secondary))),
+              Flexible(
+                  child: Text(user.name,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.secondary))),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Text(AppLocalization.of(context)!.trans("Email: "), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
+              Text(
+                AppLocalization.of(context)!.trans("Email: "),
+                style: TextStyle(
+                    fontSize: 18, color: Theme.of(context).primaryColor),
+              ),
               const SizedBox(width: 10),
-              Flexible(child: Text(user.email, style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.secondary))),
+              Flexible(
+                  child: Text(user.email!,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.secondary))),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Text(AppLocalization.of(context)!.trans("Phone: "), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
+              Text(
+                AppLocalization.of(context)!.trans("Phone: "),
+                style: TextStyle(
+                    fontSize: 18, color: Theme.of(context).primaryColor),
+              ),
               const SizedBox(width: 10),
-              Flexible(child: Text(user.phone, style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.secondary))),
+              Flexible(
+                  child: Text(user.phone!,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.secondary))),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Text(AppLocalization.of(context)!.trans("Date created: "), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
+              Text(
+                AppLocalization.of(context)!.trans("Date created: "),
+                style: TextStyle(
+                    fontSize: 18, color: Theme.of(context).primaryColor),
+              ),
               const SizedBox(width: 10),
-            //  Flexible(child: Text(user.dateCreated.changeDateFormat(), style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.secondary))),
+              //  Flexible(child: Text(user.dateCreated.changeDateFormat(), style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.secondary))),
             ],
           ),
           const SizedBox(height: 20),
@@ -208,7 +265,10 @@ class _UsersState extends State<Users> {
                   children: [
                     InkWell(
                       onTap: () {
-                        FirebaseManager.shared.changeStatusAccount(scaffoldKey: _scaffoldKey, userId: user.uid, status: Status.ACTIVE);
+                        FirebaseManager.shared.changeStatusAccount(
+                            scaffoldKey: _scaffoldKey,
+                            userId: user.uid!,
+                            status: Status.ACTIVE);
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.3,
@@ -220,20 +280,27 @@ class _UsersState extends State<Users> {
                         child: Center(
                             child: Text(
                               AppLocalization.of(context)!.trans("accept"),
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
                             )),
                       ),
                     ),
-                    const SizedBox(width: 20,),
+                    const SizedBox(
+                      width: 20,
+                    ),
                   ],
                 ),
-              ),              Visibility(
+              ),
+              Visibility(
                 visible: status == Status.PENDING,
                 child: Row(
                   children: [
                     InkWell(
                       onTap: () {
-                        FirebaseManager.shared.changeStatusAccount(scaffoldKey: _scaffoldKey, userId: user.uid, status: Status.Rejected);
+                        FirebaseManager.shared.changeStatusAccount(
+                            scaffoldKey: _scaffoldKey,
+                            userId: user.uid!,
+                            status: Status.Rejected);
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.3,
@@ -245,11 +312,14 @@ class _UsersState extends State<Users> {
                         child: Center(
                             child: Text(
                               AppLocalization.of(context)!.trans("Rejected"),
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
                             )),
                       ),
                     ),
-                    const SizedBox(width: 20,),
+                    const SizedBox(
+                      width: 20,
+                    ),
                   ],
                 ),
               ),
@@ -259,7 +329,10 @@ class _UsersState extends State<Users> {
                   children: [
                     InkWell(
                       onTap: () {
-                        FirebaseManager.shared.changeStatusAccount(scaffoldKey: _scaffoldKey, userId: user.uid, status: Status.ACTIVE);
+                        FirebaseManager.shared.changeStatusAccount(
+                            scaffoldKey: _scaffoldKey,
+                            userId: user.uid!,
+                            status: Status.ACTIVE);
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.3,
@@ -271,11 +344,14 @@ class _UsersState extends State<Users> {
                         child: Center(
                             child: Text(
                               AppLocalization.of(context)!.trans("activation"),
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
                             )),
                       ),
                     ),
-                    const SizedBox(width: 20,),
+                    const SizedBox(
+                      width: 20,
+                    ),
                   ],
                 ),
               ),
@@ -284,7 +360,8 @@ class _UsersState extends State<Users> {
                 child: Row(
                   children: [
                     InkWell(
-                      onTap: () {/*
+                      onTap: () {
+                        /*
                         showAlertDialog(context, title: AppLocalization.of(context)!.trans("Disable Account"), message: AppLocalization.of(context)!.trans("Are you sure disable account?"), titleBtnOne: "disabled", titleBtnTwo: "Close", actionBtnOne: () {
                           Navigator.of(context).pop();
                           FirebaseManager.shared.changeStatusAccount(scaffoldKey: _scaffoldKey, userId: user.uid, status: Status.Disable);
@@ -302,11 +379,14 @@ class _UsersState extends State<Users> {
                         child: Center(
                             child: Text(
                               AppLocalization.of(context)!.trans("disabled"),
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
                             )),
                       ),
                     ),
-                    const SizedBox(width: 20,),
+                    const SizedBox(
+                      width: 20,
+                    ),
                   ],
                 ),
               ),
@@ -315,7 +395,8 @@ class _UsersState extends State<Users> {
                 child: Row(
                   children: [
                     InkWell(
-                      onTap: () {/*
+                      onTap: () {
+                        /*
                         showAlertDialog(context, title: AppLocalization.of(context)!.trans("Delete Account"), message: AppLocalization.of(context)!.trans("Are you sure delete account?"), titleBtnOne: "Delete", titleBtnTwo: "Close", actionBtnOne: () {
                           Navigator.of(context).pop();
                           FirebaseManager.shared.changeStatusAccount(scaffoldKey: _scaffoldKey, userId: user.uid, status: Status.Deleted);
@@ -333,7 +414,8 @@ class _UsersState extends State<Users> {
                         child: Center(
                             child: Text(
                               AppLocalization.of(context)!.trans("Delete"),
-                              style: const TextStyle(color: Colors.white, fontSize: 18),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
                             )),
                       ),
                     ),
@@ -346,5 +428,4 @@ class _UsersState extends State<Users> {
       ),
     );
   }
-
 }
