@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/user-type.dart';
-import 'package:tv/section/Live.dart';
+import 'package:tv/section/section_screen.dart';
 import 'package:tv/section/Movies.dart';
 import 'package:tv/section/Series.dart';
 import '../main.dart';
@@ -8,7 +9,6 @@ import 'User.dart';
 
 import 'admin page.dart';
 import 'notifications.dart';
-
 
 class TabBarItem {
   final IconData icon;
@@ -18,7 +18,7 @@ class TabBarItem {
 }
 
 class TabBarPage extends StatefulWidget {
-  final Object?  userType;
+  final Object? userType;
   const TabBarPage({Key? key, this.userType}) : super(key: key);
 
   @override
@@ -28,8 +28,7 @@ class TabBarPage extends StatefulWidget {
 class _TabBarPageState extends State<TabBarPage> {
   final PageController _pageController = PageController();
   int indexTap = 0;
-  List<TabBarItem> tabItems = [
-  ];
+  List<TabBarItem> tabItems = [];
 
   @override
   void initState() {
@@ -38,15 +37,20 @@ class _TabBarPageState extends State<TabBarPage> {
     switch (widget.userType) {
       case UserType.ADMIN:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  adminpage()));
-        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Home",  adminpage()));
-        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  const Users()));
+        tabItems.add(TabBarItem(Icons.home, "Home", adminpage()));
+        tabItems
+            .add(TabBarItem(Icons.sticky_note_2_sharp, "Home", adminpage()));
+        tabItems.add(TabBarItem(
+            Icons.supervised_user_circle_sharp, "Users", const Users()));
         break;
       case UserType.USER:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.live_tv, "Live",  Live()));
-        tabItems.add(TabBarItem(Icons.slow_motion_video_rounded, "Movies",  Movies()));
-        tabItems.add(TabBarItem(Icons.video_call_sharp, "Series",  Series()));
+        tabItems
+            .add(TabBarItem(Icons.live_tv, "Live", SectionScreen(Section.LIVE, "Live")));
+        tabItems.add(TabBarItem(Icons.slow_motion_video_rounded, "Movies",
+            SectionScreen(Section.Movies, "Movies")));
+        tabItems.add(TabBarItem(
+            Icons.video_call_sharp, "Series", SectionScreen(Section.Series, "Series")));
     }
   }
 
@@ -81,8 +85,7 @@ class _TabBarPageState extends State<TabBarPage> {
             });
             _pageController.animateToPage(indexTap,
                 duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn
-            );
+                curve: Curves.easeIn);
           },
           type: BottomNavigationBarType.fixed,
           currentIndex: indexTap,
@@ -103,7 +106,13 @@ class _TabBarPageState extends State<TabBarPage> {
   List<BottomNavigationBarItem> _renderTaps() {
     List<BottomNavigationBarItem> items = [];
     for (var i = 0; i < tabItems.length; i++) {
-      BottomNavigationBarItem obj = BottomNavigationBarItem(icon: Icon(tabItems[i].icon, color: indexTap == i ? Theme.of(context).primaryColor : Colors.black26,), label: AppLocalization.of(context)!.trans(tabItems[i].label));
+      BottomNavigationBarItem obj = BottomNavigationBarItem(
+          icon: Icon(
+            tabItems[i].icon,
+            color:
+                indexTap == i ? Theme.of(context).primaryColor : Colors.black26,
+          ),
+          label: AppLocalization.of(context)!.trans(tabItems[i].label));
       items.add(obj);
     }
     return items;
