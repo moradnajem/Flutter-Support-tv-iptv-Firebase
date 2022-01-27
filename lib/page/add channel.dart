@@ -101,30 +101,48 @@ class _addchannelState extends State<addchannel> {
                             const SizedBox(height: 20,),
                             TextFormField(
                               onChanged: (value) => title = value.trim(),
-                              maxLines: null,
-                              textInputAction: TextInputAction.done,
-                              decoration: const InputDecoration(
-                                labelText: "title",
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
+                              decoration: customInputForm.copyWith(prefixIcon: Icon(
+                                Icons.person_outline,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              ).copyWith(hintText: "title"),
                             ),
+                            const SizedBox(height: 20,),
                             TextFormField(
                               onChanged: (value) => streamURL = value.trim(),
-                              maxLines: null,
-                              textInputAction: TextInputAction.done,
-                              decoration: const InputDecoration(
-                                labelText: "streamURL",
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
+                              decoration: customInputForm.copyWith(prefixIcon: Icon(
+                                Icons.person_outline,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              ).copyWith(hintText: "streamURL"),
                             ),
+                            const SizedBox(height: 20,),
                             DropdownButtonFormField(
                               items: _dropdownMenuItem,
                               onChanged: (newValue) {
                                 setState(() => _activeDropDownItem = newValue as String?);
                               },
                               value: _activeDropDownItem,
-                              decoration: const InputDecoration(
-                                labelText: "list",
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              decoration: customInputForm.copyWith(prefixIcon: Icon(
+                                Icons.person_outline,
+                                color: Theme.of(context).primaryColor,
                               ),
-                            ),
+                              ).copyWith(hintText: " list "),
+
+                              ),
                             const SizedBox(height: 20),
                             RaisedButton(
                                 color: Theme.of(context).primaryColor,

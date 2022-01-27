@@ -1,28 +1,27 @@
 
-  import 'package:flutter/cupertino.dart';
-  import 'package:flutter/material.dart';
-  import 'package:flutter/widgets.dart';
-  import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:tv/manger/user-type.dart';
 
-import '../main.dart';
-import 'notification.dart';
 
 
 
-  class adminpage extends StatefulWidget {
+
+class adminpage extends StatefulWidget {
   @override
   _adminpageState createState()
   {
-  return _adminpageState();
+    return _adminpageState();
   }
-  }
+}
 
-  class _adminpageState extends State<adminpage> {
+class _adminpageState extends State<adminpage> {
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
+    return Scaffold(
       appBar: AppBar(
           title: Text("Ms"),
           centerTitle: true,
@@ -37,8 +36,21 @@ import 'notification.dart';
                 showActionsheet();
               }
           ),
-          actions: const [
-            NotificationsWidget(),
+          actions: [
+      //      Visibility( child: IconButton(icon: Icon(Icons.add, color: Colors.white,), tooltip: AppLocalization.of(context)!.trans("Add Service"), onPressed: () => Navigator.of(context).pushNamed("/ServiceForm"))),
+      //      NotificationsWidget(),
+            Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              //ProfileScreen
+              // ignore: deprecated_member_use
+              child: FlatButton(
+                onPressed: () => Navigator.pushNamed(context, '/addchannel'),
+                child: Icon(
+                    Icons.add,
+                    color: Theme
+                        .of(context)
+                        .canvasColor
+                ),),),
           ]),
       backgroundColor: Colors.blueAccent,
       body: Container(child: Center(child: Text("ClientsReport"),),),

@@ -48,6 +48,10 @@ class MoviesState extends State<Movies> {
                 iconTheme: IconThemeData(
                   color: Theme.of(context).primaryColor,
                 ),
+                leading: IconButton(
+                  icon: Icon(Icons.language, color: Theme.of(context).primaryColor),
+                  onPressed: () => Navigator.pushNamed(context, '/SelectLanguage'),
+                ),
                 title: Text(AppLocalization.of(context)!.trans('Movies'), style: TextStyle(color: Theme.of(context).primaryColor),),
                 centerTitle: true,
                 actions: const [
