@@ -49,12 +49,12 @@ class _SplashState extends State<Splash> {
         if (user.accountStatus == Status.ACTIVE) {
           Navigator.of(context).pushNamedAndRemoveUntil("/TabBarPage", (route) => false, arguments: user.userType);
         } else {
-          Navigator.of(context).pushNamedAndRemoveUntil("/Front", (route) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil("/SignIn", (route) => false);
         }
       });
 
     } else {
-      Navigator.of(context).pushNamedAndRemoveUntil("/Front", (route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil("/SignIn", (route) => false);
     }
 
   }

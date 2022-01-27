@@ -44,7 +44,7 @@ class SelectLanguage extends StatelessWidget {
   _btnSelectLanguage(context, { required Language lang }) {
     MyApp.setLocale(context, Locale(lang == Language.ARABIC ? "ar" : "en"));
     UserProfile.shared.setLanguage(language: lang);
-    Navigator.of(context).pushReplacementNamed("/Front");
+    Navigator.of(context).pop();
   }
 
 }

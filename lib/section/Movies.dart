@@ -5,16 +5,18 @@ import 'package:tv/manger/language.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/SectionModel.dart';
 import 'package:tv/models/user_profile.dart';
+import 'package:tv/page/notification.dart';
 
-import 'live.dart';
+import '../main.dart';
+import 'channel/channel.dart';
 
-class frontlive extends StatefulWidget {
-  final Section section;
-  frontliveState createState() => frontliveState();
-  frontlive(this.section);
+
+
+class Movies extends StatefulWidget {
+  MoviesState createState() => MoviesState();
 }
 
-class frontliveState extends State<frontlive> {
+class MoviesState extends State<Movies> {
   Language lang = Language.ENGLISH;
 
   void initState() {
@@ -26,32 +28,41 @@ class frontliveState extends State<frontlive> {
       });
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: widget.section),
+        stream: FirebaseManager.shared.getSection(section: Section.Movies),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? section = snapshot.data;
             if (section!.isEmpty) {
-              return Center(
-                  child: Text(
-                    "No  added",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 18),
-                  ));
+              return Center(child: Text(
+                "No  added", style: TextStyle(color: Theme
+                  .of(context)
+                  .primaryColor, fontSize: 18),));
             }
-            return ListView.builder(
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).canvasColor,
+                elevation: 0,
+                iconTheme: IconThemeData(
+                  color: Theme.of(context).primaryColor,
+                ),
+                title: Text(AppLocalization.of(context)!.trans('Movies'), style: TextStyle(color: Theme.of(context).primaryColor),),
+                centerTitle: true,
+                actions: const [
+                  NotificationsWidget(),
+                ],
+              ),
+              body: ListView.builder(
               itemCount: section.length,
               itemBuilder: (buildContext, index) => GestureDetector(
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => live(section[index].uid)));
-                },
-                child: Padding(
+                          builder: (_) => channel(section[index].uid)));
+                },                     child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(
                     elevation: 5,
@@ -61,19 +72,17 @@ class frontliveState extends State<frontlive> {
                       child: Column(
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(16),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                  lang == Language.ENGLISH
-                                      ? section[index].titleEN
-                                      : section[index].titleAR,
-                                  style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                Text (lang == Language.ENGLISH
+                                    ? section[index].titleEN
+                                    : section[index].titleAR,
+                                    style: TextStyle(color: Theme
+                                        .of(context)
+                                        .primaryColor, fontSize: 18, fontWeight: FontWeight
+                                        .w500)
                                 )
                               ],
                             ),
@@ -84,10 +93,12 @@ class frontliveState extends State<frontlive> {
                   ),
                 ),
               ),
-            );
+              ) );
           } else {
             return Center(child: loader(context));
           }
-        });
+        }
+    );
   }
 }
+

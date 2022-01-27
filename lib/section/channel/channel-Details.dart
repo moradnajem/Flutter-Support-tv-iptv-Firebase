@@ -4,17 +4,17 @@ import 'package:tv/models/channelModel.dart';
 import 'package:video_player/video_player.dart';
 
 
-class sectionDetails extends StatefulWidget {
+class channelDetails extends StatefulWidget {
 
   final ChannelModel section;
 
-   sectionDetails({required this.section});
+  channelDetails({required this.section});
 
   @override
-  sectionDetailsState createState() => sectionDetailsState();
+  channelDetailsState createState() => channelDetailsState();
 }
 
-class sectionDetailsState extends State<sectionDetails> {
+class channelDetailsState extends State<channelDetails> {
   late VideoPlayerController _controller;
 
   late ChewieController _chewieController;
