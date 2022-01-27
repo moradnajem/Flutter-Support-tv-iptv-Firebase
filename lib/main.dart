@@ -149,7 +149,7 @@ class _MyAppState extends State<MyApp> {
             case '/addchannel':
             return MaterialPageRoute(builder: (_) =>   addchannel());
             case '/Splash':
-            return MaterialPageRoute(builder: (_) =>  const Splash());
+            return MaterialPageRoute(builder: (_) =>   Splash());
             case '/Front':
             return MaterialPageRoute(builder: (_) =>   Front());
             case '/SelectLanguage':
