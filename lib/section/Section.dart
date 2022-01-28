@@ -54,7 +54,7 @@ class _SectionScreenState extends State<SectionScreen> {
                 ),
                 leading: IconButton(
                   icon: const Icon(
-                    Icons.person,
+                    Icons.favorite,
                   ),
                   onPressed: () => Navigator.pushNamed(context, '/Profile'),
                 ),
@@ -67,17 +67,17 @@ class _SectionScreenState extends State<SectionScreen> {
                 actions: [
                   const NotificationsWidget(),
                   Visibility(visible: user!.userType == UserType.ADMIN,
-                      child: IconButton(
-                          icon: Icon(
-                              Icons.add,
-                              color: Theme
-                                  .of(context)
-                                  .primaryColor
-                          ),
-                          onPressed: () {
-                            showActionsheet();
-                          }
-                      ),),
+                    child: IconButton(
+                        icon: Icon(
+                            Icons.add,
+                            color: Theme
+                                .of(context)
+                                .primaryColor
+                        ),
+                        onPressed: () {
+                          showActionsheet();
+                        }
+                    ),),
                 ],
               ),
               body: user.userType == UserType.ADMIN
@@ -212,7 +212,24 @@ class _SectionScreenState extends State<SectionScreen> {
                                           fontSize: 18,
                                           fontWeight: FontWeight
                                               .w500)
-                                  )
+                                  ),
+                                  IconButton(
+                                    iconSize: 35,
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () =>
+                                        Navigator.of(context).pushNamed(
+                                            "/addsection",
+                                            arguments: widget.section),
+                                    //  onPressed: ()  { },
+                                  ),
+                                  IconButton(
+                                    iconSize: 35,
+                                    icon: const Icon(Icons.delete_forever),
+                                    onPressed: () {
+                                      _deleteSection(
+                                          context, section[index].uid);
+                                    },
+                                  ),
                                 ],
                               ),
                             )
@@ -224,11 +241,19 @@ class _SectionScreenState extends State<SectionScreen> {
                   ),
             );
           } else {
-            return Center(child: loader(context));
+            return Center(
+              child: loader(context),
+            );
           }
+
         }
     );
   }
+
+  _deleteSection(context, String uidSection) {
+    FirebaseManager.shared.deleteSection(context, uidSection: uidSection);
+  }
+
   showActionsheet() {
     {
       showCupertinoModalPopup(
@@ -239,12 +264,14 @@ class _SectionScreenState extends State<SectionScreen> {
                 actions: <Widget>[
                   CupertinoActionSheetAction(
                     child: const Text('addsection'),
-                    onPressed: () => Navigator.pushNamed(context, '/addsection'),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/addsection'),
                   ),
                   CupertinoActionSheetAction(
                     child: const Text('addchannel'),
                     isDestructiveAction: false,
-                    onPressed: () => Navigator.pushNamed(context, '/addchannel'),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/addchannel'),
                   )
                 ],
                 cancelButton: CupertinoActionSheetAction(
@@ -256,4 +283,5 @@ class _SectionScreenState extends State<SectionScreen> {
             ),
       );
     }
-  }}
+  }
+}

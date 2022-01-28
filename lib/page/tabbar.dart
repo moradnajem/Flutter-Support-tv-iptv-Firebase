@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/user-type.dart';
+import 'package:tv/page/profile.dart';
 import 'package:tv/section/Section.dart';
 import '../main.dart';
 import 'User.dart';
 
-import 'admin page.dart';
+import 'favorite.dart';
 
 
 class TabBarItem {
@@ -36,17 +37,17 @@ class _TabBarPageState extends State<TabBarPage> {
     switch (widget.userType) {
       case UserType.ADMIN:
         tabItems = [];
+        tabItems.add(TabBarItem(Icons.person, "Profile",  Profile()));
         tabItems.add(TabBarItem(Icons.live_tv, "Live",  SectionScreen(Section.LIVE, "Live")));
         tabItems.add(TabBarItem(Icons.slow_motion_video_rounded, "Movies",  SectionScreen(Section.Movies, "Movies")));
         tabItems.add(TabBarItem(Icons.video_call_sharp, "Series",  SectionScreen(Section.Series, "Series")));
-        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  const Users()));
         break;
       case UserType.USER:
         tabItems = [];
         tabItems.add(TabBarItem(Icons.live_tv, "Live",  SectionScreen(Section.LIVE, "Live")));
         tabItems.add(TabBarItem(Icons.slow_motion_video_rounded, "Movies",  SectionScreen(Section.Movies, "Movies")));
         tabItems.add(TabBarItem(Icons.video_call_sharp, "Series",  SectionScreen(Section.Series, "Series")));
-        tabItems.add(TabBarItem(Icons.favorite_outline, "Series",  adminpage()));
+        tabItems.add(TabBarItem(Icons.person, "Profile",  Profile()));
     }
   }
 

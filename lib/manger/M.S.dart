@@ -431,6 +431,13 @@ class FirebaseManager {
       showLoaderDialog(context, isShowLoader: false);
     });
   }
+  deleteSection(context, {required String uidSection}) async {
+    showLoaderDialog(context);
+
+    await sectionRef.doc(uidSection).delete().then((_) => {}).catchError((e) {});
+
+    showLoaderDialog(context, isShowLoader: false);
+  }
 
   Stream<List<SectionModel>> getSection({required Section section}) {
     return sectionRef
@@ -453,7 +460,13 @@ class FirebaseManager {
       }).toList();
     });
   }
-
+  Stream<List<SectionModel>> getAllSection() {
+    return sectionRef.snapshots().map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return SectionModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
   Stream<SectionModel> getSectionById({required String id}) {
     return sectionRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
       return SectionModel.fromJson(QueryDocumentSnapshot.data());

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tv/page/User.dart';
 import 'package:tv/page/add%20channel.dart';
 import 'package:tv/page/add section.dart';
 import 'package:tv/page/edit-password.dart';
@@ -161,8 +162,8 @@ class _MyAppState extends State<MyApp> {
             return MaterialPageRoute(builder: (_) =>   addchannel());
           case '/Notification':
             return MaterialPageRoute(builder: (_) =>  const Notifications());
-            case '/Profile':
-            return MaterialPageRoute(builder: (_) =>   Profile());
+            case '/Users':
+            return MaterialPageRoute(builder: (_) =>   const Users());
             case '/EditPassword':
             return MaterialPageRoute(builder: (_) =>   EditPassword());
             case '/EditProfile':

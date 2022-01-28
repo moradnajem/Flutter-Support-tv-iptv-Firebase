@@ -19,19 +19,39 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  List<ProfileList> items = [ ProfileList.CHANGE_LANGUAGE, ProfileList.EDIT_PROFILE, ProfileList.EDIT_PASSWORD, ProfileList.LOGOUT];
+  List<ProfileList> items = [ ProfileList.CHANGE_LANGUAGE, ProfileList.EDIT_PROFILE, ProfileList.EDIT_PASSWORD, ProfileList.USERS, ProfileList.LOGOUT];
 
   Future<UserModel?> user = UserProfile.shared.getUser();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    user.then((value) {
+      if (value!.userType != UserType.ADMIN) {
+        items.remove(ProfileList.USERS);
+      }
+      if (value.userType != UserType.ADMIN) {
+        items.remove(ProfileList.USERS);
+      }
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalization.of(context)!.trans("Profile")),
+        backgroundColor: Theme.of(context).canvasColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
+        ),
+        title: Text(AppLocalization.of(context)!.trans("Profile"),
+        style: TextStyle(color: Theme.of(context).primaryColor),
+    ),
         centerTitle: true,
-        actions: [
+        actions: const [
           NotificationsWidget(),
         ],
       ),
@@ -98,7 +118,7 @@ class _ProfileState extends State<Profile> {
 
   Widget _item(context, { required ProfileList item, bool isLast = false }) {
 
-    String title;
+    String? title;
     String? screen;
 
     switch (item) {
@@ -112,6 +132,10 @@ class _ProfileState extends State<Profile> {
       case ProfileList.EDIT_PASSWORD:
         title = "Edit Password";
         screen = "/EditPassword";
+        break;
+        case ProfileList.USERS:
+        title = "Users";
+        screen = "/Users";
         break;
       case ProfileList.LOGOUT:
         title = "Logout";

@@ -32,12 +32,7 @@ class _UsersState extends State<Users> {
         iconTheme: IconThemeData(
           color: Theme.of(context).primaryColor,
         ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.person,
-          ),
-          onPressed: () => Navigator.pushNamed(context, '/Profile'),
-        ),
+
         title: Text(
           AppLocalization.of(context)!.trans('Users'),
           style: TextStyle(color: Theme.of(context).primaryColor),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 
 alertSheet(context, { String title = "", required List<String> items, required onTap(value) }) {
 
