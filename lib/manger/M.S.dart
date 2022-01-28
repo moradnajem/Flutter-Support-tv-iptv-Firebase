@@ -355,6 +355,19 @@ class FirebaseManager {
     }
   }
 
+  deleteAccount(context, { required String iduser }) async {
+
+    showLoaderDialog(context);
+
+    await userRef.doc(iduser).delete().then((_) => {
+
+    }).catchError((e) {
+
+    });
+
+    showLoaderDialog(context, isShowLoader: false);
+
+  }
 // TODO:- Start Notifications
 
   addNotifications({
