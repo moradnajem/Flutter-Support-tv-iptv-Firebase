@@ -129,12 +129,14 @@ class _addsectionState extends State<addsection> {
                               onTap: () {
                                 alertSheet(context,
                                     title: " type",
-                                    items: ["LIVE", "Movies"], onTap: (value) {
+                                    items: ["LIVE", "Movies" , "Series"], onTap: (value) {
                                       _userTypeController.text = value;
                                       if (value == "LIVE") {
                                         section = Section.LIVE;
-                                      } else {
+                                      } else if (value == "Movies"){
                                         section = Section.Movies;
+                                      }else{
+                                        section = Section.Series;
                                       }
                                       return;
                                     });

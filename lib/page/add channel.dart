@@ -36,7 +36,6 @@ class _addchannelState extends State<addchannel> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getServiceData();
     UserProfile.shared.getLanguage().then((value) {
       setState(() {
         lang = value!;
@@ -77,15 +76,19 @@ class _addchannelState extends State<addchannel> {
                             TextFormField(
                               controller: _userTypeController,
                               onTap: () {
-                                alertSheet(context, title: " type", items: ["LIVE", "Movies"], onTap: (value) {
+                                alertSheet(context, title: " type", items: ["LIVE", "Movies" , "Series"], onTap: (value) {
+                                  
                                   _userTypeController.text = value;
                                   if (value == "LIVE") {
-                                    section = Section.LIVE;
-                                  } else {
-                                    section = Section.Movies;
-                                  }
-                                  return;
-                                });
+                                        section = Section.LIVE;
+                                      } else if (value == "Movies"){
+                                        section = Section.Movies;
+                                      }else{
+                                        section = Section.Series;
+                                      }
+                                      _getServiceData(section);
+                                      return;
+                                    });
                               },
                               readOnly: true,
                               style: TextStyle(
@@ -165,9 +168,9 @@ class _addchannelState extends State<addchannel> {
     );
   }
 
-  _getServiceData() async {
+  _getServiceData(section) async {
 
-    List<SectionModel> services = await FirebaseManager.shared.getSection(section: Section.LIVE).first;
+    List<SectionModel> services = await FirebaseManager.shared.getSection(section: section).first;
 
     setState(() {
       _dropdownMenuItem = services.map((item) => DropdownMenuItem(child: Text( lang == Language.ARABIC ? item.titleAR : item.titleEN ), value: item.uid.toString())).toList();
