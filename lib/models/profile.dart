@@ -3,5 +3,7 @@ enum ProfileList {
   EDIT_PROFILE,
   EDIT_PASSWORD,
   USERS,
+  Subscriptions,
+  Orders,
   LOGOUT,
 }

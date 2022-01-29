@@ -11,12 +11,14 @@ import 'package:tv/page/edit-password.dart';
 import 'package:tv/page/edit-profile.dart';
 import 'package:tv/page/forgot_password.dart';
 import 'package:tv/page/notifications.dart';
-import 'package:tv/page/profile.dart';
 import 'package:tv/page/signin.dart';
 import 'package:tv/page/signup.dart';
 import 'package:tv/page/splash.dart';
 import 'package:tv/page/tabbar.dart';
 
+import 'Subscriptions/Subscriptions.dart';
+import 'Subscriptions/addSubscriptions.dart';
+import 'Subscriptions/Subscriptionsorders.dart';
 import 'manger/init.dart'
 if (dart.library.html) 'manger/web_init.dart'
 if (dart.library.io) 'manger/io_init.dart';
@@ -148,20 +150,26 @@ class _MyAppState extends State<MyApp> {
         switch (settings.name) {
             case '/Splash':
             return MaterialPageRoute(builder: (_) =>   Splash());
-          case '/SignIn':
+            case '/SignIn':
             return MaterialPageRoute(builder: (_) =>  SignIn(message: arguments,));
-          case '/SignUp':
+            case '/SignUp':
             return MaterialPageRoute(builder: (_) =>  Signup());
-          case '/ForgotPassword':
+            case '/ForgotPassword':
             return MaterialPageRoute(builder: (_) => ForgotPassword());
-          case '/TabBarPage':
+            case '/TabBarPage':
             return MaterialPageRoute(builder: (_) => TabBarPage(userType: arguments,));
-          case '/addsection':
+            case '/addsection':
             return MaterialPageRoute(builder: (_) =>   addsection());
-          case '/addchannel':
+            case '/addchannel':
             return MaterialPageRoute(builder: (_) =>   addchannel());
-          case '/Notification':
+            case '/add':
+            return MaterialPageRoute(builder: (_) =>   add());
+            case '/Notification':
             return MaterialPageRoute(builder: (_) =>  const Notifications());
+            case '/Subscriptions':
+            return MaterialPageRoute(builder: (_) =>   Subscriptions());
+            case '/Orders':
+            return MaterialPageRoute(builder: (_) =>   Orders());
             case '/Users':
             return MaterialPageRoute(builder: (_) =>   const Users());
             case '/EditPassword':

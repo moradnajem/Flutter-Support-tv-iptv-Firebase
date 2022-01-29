@@ -1,49 +1,61 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
 import 'package:tv/models/SectionModel.dart';
 import 'package:tv/models/alert_sheet.dart';
 import 'package:tv/models/assets.dart';
+import 'package:tv/models/channelModel.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 import 'package:tv/manger/Section.dart';
+import 'package:tv/models/loader.dart';
+//SubscriptionEN
+//SubscriptionAR
+//  bool validation() {
+//     return !(SubscriptionEN == "" || SubscriptionAR == "");
+//   }
+//
+//   _section({String uid = ""}) {
+//     _formKey.currentState!.save();
+//
+//     if (!validation()) {
+//       _scaffoldKey.showTosta(message: AppLocalization.of(context)!.trans(
+//           "Please fill in all fields"), isError: true);
+//       return;
+//     }
+//
+//     FirebaseManager.shared.Subscription(context, uid: uid,
+//       scaffoldKey: _scaffoldKey,
+//       titleEN: SubscriptionEN,
+//       titleAR: SubscriptionAR,);
+//   }
 
 import '../main.dart';
+import 'SubscriptionsModel.dart';
 
-class addsection extends StatefulWidget {
-  SectionModel? updateSection;
-  addsection({this.updateSection});
+
+class add extends StatefulWidget {
+  SubscriptionsModel? updateSubscription;
+  add({this.updateSubscription});
   @override
-  _addsectionState createState() => _addsectionState();
+  _addState createState() => _addState();
 }
 
-class _addsectionState extends State<addsection> {
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  GlobalKey<FormState> _formKey = GlobalKey();
-  TextEditingController _userTypeController = TextEditingController();
+class _addState extends State<add> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
-  late Section section;
-  late String titleEN = "";
-  late String titleAR = "";
+  late String SubscriptionEN = "";
+  late String SubscriptionAR = "";
   String buttonMode = "ADD";
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _userTypeController.dispose();
-    super.dispose();
-  }
+
 
   @override
   void initState() {
     super.initState();
-    if (widget.updateSection != null) {
-      _userTypeController =
-          TextEditingController(text: widget.updateSection!.section.name);
-      titleEN = widget.updateSection!.titleEN;
-      titleAR = widget.updateSection!.titleAR;
-      section = widget.updateSection!.section;
+    if (widget.updateSubscription != null) {
+      SubscriptionEN = widget.updateSubscription!.SubscriptionEN;
+      SubscriptionAR = widget.updateSubscription!.SubscriptionAR;
       buttonMode = "UPDATE";
     }
   }
@@ -88,9 +100,9 @@ class _addsectionState extends State<addsection> {
                         child: Column(
                           children: [
                             TextFormField(
-                              initialValue: titleEN,
-                              onSaved: (value) => titleEN = value!.trim(),
-                              keyboardType: TextInputType.emailAddress,
+                              initialValue: SubscriptionEN,
+                              onSaved: (value) => SubscriptionEN = value!.trim(),
+                              keyboardType: TextInputType.name,
                               textInputAction: TextInputAction.next,
                               style: TextStyle(
                                 fontSize: 18,
@@ -106,8 +118,8 @@ class _addsectionState extends State<addsection> {
                                   .copyWith(hintText: "titleEN"),
                             ),
                             TextFormField(
-                              initialValue: titleAR,
-                              onSaved: (value) => titleAR = value!.trim(),
+                              initialValue: SubscriptionAR,
+                              onSaved: (value) => SubscriptionAR = value!.trim(),
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               style: TextStyle(
@@ -124,46 +136,15 @@ class _addsectionState extends State<addsection> {
                                   .copyWith(hintText: "titleAR"),
                             ),
                             SizedBox(height: 10),
-                            TextFormField(
-                              controller: _userTypeController,
-                              onTap: () {
-                                alertSheet(context,
-                                    title: " type",
-                                    items: ["LIVE", "Movies"], onTap: (value) {
-                                      _userTypeController.text = value;
-                                      if (value == "LIVE") {
-                                        section = Section.LIVE;
-                                      } else {
-                                        section = Section.Movies;
-                                      }
-                                      return;
-                                    });
-                              },
-                              readOnly: true,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              decoration: customInputForm
-                                  .copyWith(
-                                prefixIcon: Icon(
-                                  Icons.person_outline,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              )
-                                  .copyWith(hintText: " type"),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
+
                             RaisedButton(
                                 color: Theme.of(context).primaryColor,
                                 child: Text(buttonMode,
                                     style: TextStyle(
                                       color: Theme.of(context).canvasColor,
                                     )),
-                                onPressed: () => widget.updateSection != null
-                                    ? _section(uid: widget.updateSection!.uid)
+                                onPressed: () => widget.updateSubscription != null
+                                    ? _section(uid: widget.updateSubscription!.uid)
                                     : _section()),
                             const SizedBox(
                               height: 20,
@@ -183,7 +164,7 @@ class _addsectionState extends State<addsection> {
   }
 
   bool validation() {
-    return !(titleEN == "" || titleAR == "");
+    return !(SubscriptionEN == "" || SubscriptionAR == "");
   }
 
   _section({String uid = ""}) {
@@ -197,13 +178,9 @@ class _addsectionState extends State<addsection> {
       return;
     }
 
-    FirebaseManager.shared.section(
-      context,
-      uid: uid,
-      scaffoldKey: _scaffoldKey,
-      section: section,
-      titleEN: titleEN,
-      titleAR: titleAR,
+    FirebaseManager.shared.Subscription(context, uid: uid,scaffoldKey: _scaffoldKey,
+      SubscriptionEN: SubscriptionEN,
+      SubscriptionAR: SubscriptionAR,
     );
   }
 }

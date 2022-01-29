@@ -159,13 +159,32 @@ class _UsersState extends State<Users> {
                 Text(AppLocalization.of(context)!.trans("pending")),
               ],
             ),
-
+          ],
+        ),
+        SizedBox(height: 20),
+        Text(AppLocalization.of(context)!.trans("User Type:-"), style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
+        SizedBox(height: 10),
+        Row(
+          children: [
             Row(
               children: [
                 Radio(
-                  activeColor: Theme
-                      .of(context)
-                      .primaryColor,
+                  activeColor: Theme.of(context).primaryColor,
+                  value: UserType.ADMIN,
+                  groupValue: userType,
+                  onChanged: (UserType? value) {
+                    setState(() {
+                      userType = value!;
+                    });
+                  },
+                ),
+                Text(AppLocalization.of(context)!.trans("admins")),
+              ],
+            ),
+            Row(
+              children: [
+                Radio(
+                  activeColor: Theme.of(context).primaryColor,
                   value: UserType.USER,
                   groupValue: userType,
                   onChanged: (UserType? value) {
@@ -179,12 +198,9 @@ class _UsersState extends State<Users> {
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        const SizedBox(height: 20),
-        Container(height: 1, color: Theme
-            .of(context)
-            .primaryColor,),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
+        Container(height: 1, color: Theme.of(context).primaryColor,),
+        SizedBox(height: 20),
       ],
     );
   }
@@ -339,7 +355,8 @@ class _UsersState extends State<Users> {
                     const SizedBox(width: 20,),
                   ],
                 ),
-              ), Visibility(
+              ),
+              Visibility(
                 visible: status == Status.PENDING,
                 child: Row(
                   children: [
@@ -348,7 +365,7 @@ class _UsersState extends State<Users> {
                         FirebaseManager.shared.changeStatusAccount(
                             scaffoldKey: _scaffoldKey,
                             userId: user.uid!,
-                            status: Status.Rejected);
+                            status: Status.Disable);
                       },
                       child: Container(
                         width: MediaQuery
@@ -365,7 +382,7 @@ class _UsersState extends State<Users> {
                         ),
                         child: Center(
                             child: Text(
-                              AppLocalization.of(context)!.trans("Rejected"),
+                              AppLocalization.of(context)!.trans("disabled"),
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 18),
                             )),

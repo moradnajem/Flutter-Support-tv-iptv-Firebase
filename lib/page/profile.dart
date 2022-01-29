@@ -13,13 +13,15 @@ import 'notification.dart';
 
 
 class Profile extends StatefulWidget {
+  final String screenTitle;
 
   @override
   _ProfileState createState() => _ProfileState();
+  Profile( this.screenTitle);
 }
 
 class _ProfileState extends State<Profile> {
-  List<ProfileList> items = [ ProfileList.CHANGE_LANGUAGE, ProfileList.EDIT_PROFILE, ProfileList.EDIT_PASSWORD, ProfileList.USERS, ProfileList.LOGOUT];
+  List<ProfileList> items = [ ProfileList.CHANGE_LANGUAGE, ProfileList.EDIT_PROFILE, ProfileList.EDIT_PASSWORD, ProfileList.USERS, ProfileList.Subscriptions, ProfileList.Orders, ProfileList.LOGOUT];
 
   Future<UserModel?> user = UserProfile.shared.getUser();
 
@@ -32,7 +34,7 @@ class _ProfileState extends State<Profile> {
         items.remove(ProfileList.USERS);
       }
       if (value.userType != UserType.ADMIN) {
-        items.remove(ProfileList.USERS);
+        items.remove(ProfileList.Orders);
       }
     });
   }
@@ -47,9 +49,11 @@ class _ProfileState extends State<Profile> {
         iconTheme: IconThemeData(
           color: Theme.of(context).primaryColor,
         ),
-        title: Text(AppLocalization.of(context)!.trans("Profile"),
-        style: TextStyle(color: Theme.of(context).primaryColor),
-    ),
+        title: Text(
+          AppLocalization.of(context)!.trans(widget.screenTitle),
+          style: TextStyle(color: Theme
+              .of(context)
+              .primaryColor),),
         centerTitle: true,
         actions: const [
           NotificationsWidget(),
@@ -136,6 +140,14 @@ class _ProfileState extends State<Profile> {
         case ProfileList.USERS:
         title = "Users";
         screen = "/Users";
+        break;
+        case ProfileList.Subscriptions:
+        title = "Subscriptions";
+        screen = "/Subscriptions";
+        break;
+        case ProfileList.Orders:
+        title = "Orders";
+        screen = "/Orders";
         break;
       case ProfileList.LOGOUT:
         title = "Logout";

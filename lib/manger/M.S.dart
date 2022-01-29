@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tv/Subscriptions/SubscriptionOrdermodel.dart';
+import 'package:tv/Subscriptions/SubscriptionsModel.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/status.dart';
@@ -23,6 +25,8 @@ class FirebaseManager {
   final userRef = FirebaseFirestore.instance.collection('User');
   final sectionRef = FirebaseFirestore.instance.collection('section');
   final channelRef = FirebaseFirestore.instance.collection('channel');
+  final SubscriptionRef = FirebaseFirestore.instance.collection('Subscription');
+  final SubscriptionOrderRef = FirebaseFirestore.instance.collection('SubscriptionOrder');
   final notificationRef = FirebaseFirestore.instance.collection('Notification');
 
 
@@ -368,6 +372,8 @@ class FirebaseManager {
     showLoaderDialog(context, isShowLoader: false);
 
   }
+
+// TODO:- END auth
 // TODO:- Start Notifications
 
   addNotifications({
@@ -419,6 +425,7 @@ class FirebaseManager {
   }
 
 // TODO:- End Notifications
+// TODO:- Start section
 
   section(context,
       {
@@ -486,7 +493,10 @@ class FirebaseManager {
     });
   }
 
-  // TODO:- Start Order
+
+  //  TODO:- End Section
+
+  // TODO:- Start channel
 
   addOrEditChanne(
       context, {
@@ -561,7 +571,180 @@ class FirebaseManager {
     });
   }
 
-// TODO:- End Order
+  // TODO:- ENd channel
+  // TODO:- Start Subscription/
+
+  Subscription(context,
+      {
+        String uid = "",
+        required GlobalKey<ScaffoldState> scaffoldKey,
+        required String SubscriptionEN,
+        required String SubscriptionAR,
+      }) async {
+    showLoaderDialog(context);
+    String tempUid = (uid == null || uid == "") ? SubscriptionRef.doc().id : uid;
+    SubscriptionRef.doc(tempUid).set({
+      "Subscription-en": SubscriptionEN,
+      "Subscription-ar": SubscriptionAR,
+      "uid": tempUid,
+    })
+        .then((value) {
+      showLoaderDialog(context, isShowLoader: false);
+      Navigator.of(context).pop();
+    })
+        .catchError((err) {
+      showLoaderDialog(context, isShowLoader: false);
+    });
+  }
+
+  deleteSubscription(context, {required String uidSubscription}) async {
+    showLoaderDialog(context);
+
+    await SubscriptionRef.doc(uidSubscription).delete().then((_) => {}).catchError((e) {});
+
+    showLoaderDialog(context, isShowLoader: false);
+  }
+
+  Stream<List<SubscriptionsModel>> getSubscription({required Section section}) {
+    return SubscriptionRef
+        .where("Subscription", isEqualTo: section.index)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return SubscriptionsModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
+  Stream<List<SubscriptionsModel>> getMySubscription() {
+    return SubscriptionRef
+        .where("uid-owner", isEqualTo: auth.currentUser!.uid)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return SubscriptionsModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+  Stream<List<SubscriptionsModel>> getAllSubscription() {
+    return SubscriptionRef.snapshots().map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return SubscriptionsModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+  Stream<SubscriptionsModel> getSubscriptionById({required String id}) {
+    return SubscriptionRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
+      return SubscriptionsModel.fromJson(QueryDocumentSnapshot.data());
+    });
+  }
+
+  // TODO:- ENd Subscription
+
+  // TODO:- Start SubscriptionOrder
+    SubscriptionOrder(
+        context, {
+          String uid = "",
+          required String ownerId,
+        }) async {
+      showLoaderDialog(context);
+
+
+      String tempUid = (uid == null || uid == "") ? SubscriptionOrderRef.doc().id : uid;
+
+      addNotifications(
+          uidUser: ownerId,
+          titleEN: "Service Request",
+          titleAR: "طلب خدمة",
+          detailsEN: "A new service has been requested",
+          detailsAR: "تم طلب خدمة جديدة");
+
+      SubscriptionOrderRef.doc(tempUid).set({
+        "user-id": auth.currentUser!.uid,
+        "Subscription-id": ownerId,
+        "createdDate": DateTime.now().toString(),
+        "status": Status.PENDING.index,
+        "message-en": "",
+        "message-ar": "",
+        "uid": tempUid,
+      }).then((value) {
+        showLoaderDialog(context, isShowLoader: false);
+        Navigator.of(context).pop();
+      }).catchError((err) {
+        showLoaderDialog(context, isShowLoader: false);
+      });
+    }
+
+  changeOrderStatus(
+      context, {
+        required String uid,
+        required Status status,
+        String messageEN = "",
+        String messageAR = "",
+      }) async {
+    showLoaderDialog(context);
+
+    SubscriptionOrderRef.doc(uid).update({
+      "status": status.index,
+      "message-en": messageEN,
+      "message-ar": messageAR,
+    }).then((value) {
+      showLoaderDialog(context, isShowLoader: false);
+    }).catchError((err) {
+      showLoaderDialog(context, isShowLoader: false);
+    });
+  }
+
+
+
+  Stream<List<SubscriptionOrderModel>> getOrdersByStatus({required Status status}) {
+      return SubscriptionOrderRef
+          .where("status", isEqualTo: status.index)
+          .snapshots()
+          .map((QueryDocumentSnapshot) {
+        return QueryDocumentSnapshot.docs.map((doc) {
+          return SubscriptionOrderModel.fromJson(doc.data());
+        }).toList();
+      });
+    }
+
+    Stream<List<SubscriptionOrderModel>> getAllSubscriptionOrder() {
+      return SubscriptionOrderRef.snapshots().map((QueryDocumentSnapshot) {
+        return QueryDocumentSnapshot.docs.map((doc) {
+          return SubscriptionOrderModel.fromJson(doc.data());
+        }).toList();
+      });
+    }
+
+    Stream<List<SubscriptionOrderModel>> getMySubscriptionOrderTech() {
+      return SubscriptionOrderRef
+          .where("owner-id", isEqualTo: auth.currentUser!.uid)
+          .snapshots()
+          .map((QueryDocumentSnapshot) {
+        return QueryDocumentSnapshot.docs.map((doc) {
+          return SubscriptionOrderModel.fromJson(doc.data());
+        }).toList();
+      });
+    }
+
+    Stream<List<SubscriptionOrderModel>> getMySubscriptionOrder() {
+      return SubscriptionOrderRef
+          .where("user-id", isEqualTo: auth.currentUser!.uid)
+          .snapshots()
+          .map((QueryDocumentSnapshot) {
+        return QueryDocumentSnapshot.docs.map((doc) {
+          return SubscriptionOrderModel.fromJson(doc.data());
+        }).toList();
+      });
+    }
+
+    Stream<SubscriptionOrderModel> getOrderById({required String id}) {
+      return SubscriptionOrderRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
+        return SubscriptionOrderModel.fromJson(QueryDocumentSnapshot.data());
+      });
+    }
+
+
 }
 
 

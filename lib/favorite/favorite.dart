@@ -6,7 +6,7 @@
 import 'package:tv/manger/user-type.dart';
 
 import '../main.dart';
-import 'notification.dart';
+import '../page/notification.dart';
 
 
 
