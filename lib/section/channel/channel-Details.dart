@@ -98,7 +98,7 @@ class channelDetailsState extends State<channelDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
 
-                        Text(widget.section.title,
+                        Text(widget.section.titleEN,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 22,

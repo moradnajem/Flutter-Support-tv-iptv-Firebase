@@ -100,7 +100,7 @@ class sectionDetailsstreamState extends State<sectionDetailsstream> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(widget.cameraStream.title ?? '',
+                        Text(widget.cameraStream.titleEN ?? '',
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 22,

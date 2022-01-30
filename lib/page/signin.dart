@@ -105,7 +105,7 @@ class _SignInState extends State<SignIn> {
                             TextFormField(
                               onSaved: (value) => password = value!.trim(),
                               keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.done,
+                              textInputAction: TextInputAction.next,
                               obscureText: !isShowPassword,
                               style: TextStyle(
                                 fontSize: 18,

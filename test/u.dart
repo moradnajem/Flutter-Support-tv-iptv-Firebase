@@ -37,7 +37,7 @@ class ModifyCameraState extends State<ModifyCameraStream> {
           child: Column(
             children: <Widget>[
               TextFormField(
-                  initialValue: widget.cameraStream.title,
+                  initialValue: widget.cameraStream.titleEN,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Product Title',

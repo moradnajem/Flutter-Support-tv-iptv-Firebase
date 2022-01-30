@@ -16,20 +16,23 @@ class ChannelModel {
     required this.sectionuid,
     required this.section,
     required this.streamURL,
-    required this.title,
+    required this.titleEN,
+    required this.titleAR,
     required this.uid,
   });
 
   String streamURL;
   String sectionuid;
-  String title;
+  String titleEN;
+  String titleAR;
   Section section;
   String uid;
 
   factory ChannelModel.fromJson(Map<String, dynamic>? json) => ChannelModel(
     streamURL: json!["streamURL"],
     sectionuid: json["section-uid"],
-    title: json["title"],
+    titleEN: json["title-en"],
+    titleAR: json["title-ar"],
     section: Section.values[json["section"]],
     uid: json["uid"],
   );
@@ -37,7 +40,8 @@ class ChannelModel {
   Map<String, dynamic> toJson() => {
     "section-uid": sectionuid,
     "url-image": streamURL,
-    "title": title,
+    "title-en": titleEN,
+    "title-ar": titleAR,
     "section": section.index,
     "uid": uid,
   };

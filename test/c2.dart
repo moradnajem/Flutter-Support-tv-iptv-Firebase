@@ -1,20 +1,23 @@
 import 'package:chewie/chewie.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tv/models/channelModel.dart';
 import 'package:video_player/video_player.dart';
 
+import '../lib/section/channel/channel-Details.dart';
 
-class sectionDetails extends StatefulWidget {
+
+class channelDetailsweb extends StatefulWidget {
 
   final ChannelModel section;
 
-   sectionDetails({required this.section });
+  channelDetailsweb({required this.section});
 
   @override
-  sectionDetailsState createState() => sectionDetailsState();
+  channelDetailswebState createState() => channelDetailswebState();
 }
 
-class sectionDetailsState extends State<sectionDetails> {
+class channelDetailswebState extends State<channelDetailsweb> {
   late VideoPlayerController _controller;
 
   late ChewieController _chewieController;
@@ -47,7 +50,12 @@ class sectionDetailsState extends State<sectionDetails> {
       // ),
       // autoInitialize: true,
     );
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: kIsWeb? channelDetailsweb(section: widget.section,) :  channelDetails(section: widget.section,),
+    ));
   }
+
   @override
   void dispose() {
     _chewieController.dispose();
@@ -97,6 +105,7 @@ class sectionDetailsState extends State<sectionDetails> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
+
                         Text(widget.section.titleEN,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,

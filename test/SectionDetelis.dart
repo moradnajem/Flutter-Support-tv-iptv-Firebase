@@ -40,7 +40,7 @@ class CameraStreamDetails extends StatelessWidget {
             height: 20,
           ),
           Text(
-            section.title,
+            section.titleEN,
             style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 22,

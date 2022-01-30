@@ -503,7 +503,8 @@ class FirebaseManager {
         String uid = "",
         required String sectionuid,
         required String streamURL,
-        required String title,
+        required String titleEN,
+        required String titleAR,
         required Section section,
       }) async {
     showLoaderDialog(context);
@@ -512,7 +513,8 @@ class FirebaseManager {
 
     channelRef.doc(tempUid).set({
       "section-uid": sectionuid,
-      "title": title,
+      "title-en": titleEN,
+      "title-ar": titleAR,
       "streamURL": streamURL,
       "section": section.index,
       "uid": tempUid,
@@ -586,6 +588,7 @@ class FirebaseManager {
     SubscriptionRef.doc(tempUid).set({
       "Subscription-en": SubscriptionEN,
       "Subscription-ar": SubscriptionAR,
+      "uid-owner": auth.currentUser!.uid,
       "uid": tempUid,
     })
         .then((value) {
@@ -654,10 +657,10 @@ class FirebaseManager {
 
       addNotifications(
           uidUser: ownerId,
-          titleEN: "Service Request",
-          titleAR: "طلب خدمة",
-          detailsEN: "A new service has been requested",
-          detailsAR: "تم طلب خدمة جديدة");
+          titleEN: "Subscriptio Request",
+          titleAR: "طلب اشتراك",
+          detailsEN: "A new Subscriptio has been requested",
+          detailsAR: "تم طلب اشتراك جديد");
 
       SubscriptionOrderRef.doc(tempUid).set({
         "user-id": auth.currentUser!.uid,

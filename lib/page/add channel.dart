@@ -26,7 +26,8 @@ class _addchannelState extends State<addchannel> {
   final TextEditingController _userTypeController = TextEditingController();
   late Section section;
 
-   late String title;
+   late String titleEN;
+   late String titleAR;
    String? streamURL;
    String? _activeDropDownItem;
   List<DropdownMenuItem<String>>? _dropdownMenuItem = [];
@@ -36,7 +37,6 @@ class _addchannelState extends State<addchannel> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getServiceData();
     UserProfile.shared.getLanguage().then((value) {
       setState(() {
         lang = value!;
@@ -77,13 +77,16 @@ class _addchannelState extends State<addchannel> {
                             TextFormField(
                               controller: _userTypeController,
                               onTap: () {
-                                alertSheet(context, title: " type", items: ["LIVE", "Movies"], onTap: (value) {
+                                alertSheet(context, title: " type", items: ["LIVE", "Movies" , "Series"], onTap: (value) {
                                   _userTypeController.text = value;
                                   if (value == "LIVE") {
                                     section = Section.LIVE;
-                                  } else {
+                                  } else if (value == "Movies"){
                                     section = Section.Movies;
+                                  }else{
+                                    section = Section.Series;
                                   }
+                                  _getServiceData(section);
                                   return;
                                 });
                               },
@@ -100,7 +103,7 @@ class _addchannelState extends State<addchannel> {
                             ),
                             const SizedBox(height: 20,),
                             TextFormField(
-                              onChanged: (value) => title = value.trim(),
+                              onChanged: (value) => titleAR = value.trim(),
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               style: TextStyle(
@@ -111,7 +114,21 @@ class _addchannelState extends State<addchannel> {
                                 Icons.person_outline,
                                 color: Theme.of(context).primaryColor,
                               ),
-                              ).copyWith(hintText: "title"),
+                              ).copyWith(hintText: "titleAR"),
+                            ),
+                            TextFormField(
+                              onChanged: (value) => titleEN = value.trim(),
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              decoration: customInputForm.copyWith(prefixIcon: Icon(
+                                Icons.person_outline,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              ).copyWith(hintText: "titleEN"),
                             ),
                             const SizedBox(height: 20,),
                             TextFormField(
@@ -165,9 +182,9 @@ class _addchannelState extends State<addchannel> {
     );
   }
 
-  _getServiceData() async {
+  _getServiceData(section) async {
 
-    List<SectionModel> services = await FirebaseManager.shared.getSection(section: Section.LIVE).first;
+    List<SectionModel> services = await FirebaseManager.shared.getSection(section: section).first;
 
     setState(() {
       _dropdownMenuItem = services.map((item) => DropdownMenuItem(child: Text( lang == Language.ARABIC ? item.titleAR : item.titleEN ), value: item.uid.toString())).toList();
@@ -181,7 +198,7 @@ class _addchannelState extends State<addchannel> {
   }
 
   bool _validation() {
-    return !(_activeDropDownItem == null || title == "" || section == null  );
+    return !(_activeDropDownItem == null || titleAR == ""|| titleEN == "" || section == null  );
   }
 
   _submitData() async {
@@ -193,7 +210,7 @@ class _addchannelState extends State<addchannel> {
 
     await FirebaseManager.shared.getSectionById(id: _activeDropDownItem!).first;
 
-    FirebaseManager.shared.addOrEditChanne(context,  sectionuid: _activeDropDownItem!,section: section, title: title, streamURL: streamURL!);
+    FirebaseManager.shared.addOrEditChanne(context,  sectionuid: _activeDropDownItem!,section: section, titleAR: titleAR, titleEN: titleEN, streamURL: streamURL!);
 
   }
 
