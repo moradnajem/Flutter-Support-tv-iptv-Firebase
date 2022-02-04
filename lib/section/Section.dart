@@ -8,11 +8,10 @@ import 'package:tv/models/SectionModel.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
-import 'package:tv/page/add-section.dart';
+import 'package:tv/page/add%20section.dart';
 import 'package:tv/page/notification.dart';
 
 import '../main.dart';
-import 'channel/channel.dart';
 import 'channel/channel.dart';
 
 class SectionScreen extends StatefulWidget {
@@ -137,7 +136,7 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => chanelsection(section[index].uid , widget.screenTitle)));
+                          builder: (_) => channel(section[index].uid , widget.screenTitle)));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
@@ -200,7 +199,7 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => chanelsection(section[index].uid, widget.screenTitle)));
+                          builder: (_) => channel(section[index].uid , widget.screenTitle)));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
