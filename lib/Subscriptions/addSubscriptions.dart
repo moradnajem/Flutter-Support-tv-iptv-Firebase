@@ -8,26 +8,6 @@ import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/models/loader.dart';
-//SubscriptionEN
-//SubscriptionAR
-//  bool validation() {
-//     return !(SubscriptionEN == "" || SubscriptionAR == "");
-//   }
-//
-//   _section({String uid = ""}) {
-//     _formKey.currentState!.save();
-//
-//     if (!validation()) {
-//       _scaffoldKey.showTosta(message: AppLocalization.of(context)!.trans(
-//           "Please fill in all fields"), isError: true);
-//       return;
-//     }
-//
-//     FirebaseManager.shared.Subscription(context, uid: uid,
-//       scaffoldKey: _scaffoldKey,
-//       titleEN: SubscriptionEN,
-//       titleAR: SubscriptionAR,);
-//   }
 
 import '../main.dart';
 import 'SubscriptionsModel.dart';

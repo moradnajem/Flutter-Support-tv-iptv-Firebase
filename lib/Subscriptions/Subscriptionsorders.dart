@@ -7,9 +7,14 @@ import 'package:tv/models/extensions.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
+import 'package:tv/page/chat.dart';
 import 'package:tv/page/notification.dart';
 
-
+//paid
+//Unpaid
+//canceled
+//rejected
+//process
 
 import '../main.dart';
 import 'SubscriptionOrdermodel.dart';
@@ -247,7 +252,7 @@ class _OrdersState extends State<Orders> {
           InkWell(
               onTap: () =>
                   Navigator.of(context)
-                      .pushNamed("/OrderDetails", arguments: order),
+                      .pushNamed("/", arguments: order),
               child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -298,7 +303,6 @@ class _OrdersState extends State<Orders> {
                                   children: [
                                     IconButton(
                                       onPressed: () {
-                                        /*
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (context) =>
@@ -307,7 +311,6 @@ class _OrdersState extends State<Orders> {
                                                 ),
                                           ),
                                         );
-                                     */
                                       },
                                       icon: Icon(
                                         Icons.chat,

@@ -13,7 +13,7 @@ import 'package:tv/models/SectionModel.dart';
 
 
 class addchannel extends StatefulWidget {
-    String? uidActiveService;
+  String? uidActiveService;
 
   @override
   _addchannelState createState() => _addchannelState();
@@ -26,10 +26,10 @@ class _addchannelState extends State<addchannel> {
   final TextEditingController _userTypeController = TextEditingController();
   late Section section;
 
-   late String titleEN;
-   late String titleAR;
-   String? streamURL;
-   String? _activeDropDownItem;
+  late String titleEN;
+  late String titleAR;
+  String? streamURL;
+  String? _activeDropDownItem;
   List<DropdownMenuItem<String>>? _dropdownMenuItem = [];
   Language lang = Language.ENGLISH;
 
@@ -159,7 +159,7 @@ class _addchannelState extends State<addchannel> {
                               ),
                               ).copyWith(hintText: " list "),
 
-                              ),
+                            ),
                             const SizedBox(height: 20),
                             RaisedButton(
                                 color: Theme.of(context).primaryColor,

@@ -35,12 +35,25 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons:
-  video_player_web_hls:
-  chewie:
-  cloud_firestore:
+
+
+
+  # twitter_login: ^4.0.1
+
+  google_sign_in: ^5.2.1
+  sign_in_with_apple: ^3.3.0
+  crypto: ^3.0.1
   firebase_auth:
-  firebase_auth_desktop:
+  cloud_firestore:
+  firebase_storage:
+  uuid:
+  timeago: ^3.1.0
+  cupertino_icons:
+
+  flutter_vlc_player:
+  video_player_web_hls:
+  flick_video_player:
+
   flutter_svg:
   shared_preferences:
   image_picker:

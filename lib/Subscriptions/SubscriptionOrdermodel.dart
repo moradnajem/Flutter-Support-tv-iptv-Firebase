@@ -15,6 +15,7 @@ String subscriptionSubscriptionOrderModelToJson(SubscriptionOrderModel data) => 
 class SubscriptionOrderModel {
   SubscriptionOrderModel({
     required this.userId,
+    required this.SubscriptionId,
     required this.ownerId,
     required this.createdDate,
     required this.status,
@@ -24,6 +25,7 @@ class SubscriptionOrderModel {
   });
 
   String userId;
+  String SubscriptionId;
   String ownerId;
   String createdDate;
   Status status;
@@ -34,6 +36,7 @@ class SubscriptionOrderModel {
   factory SubscriptionOrderModel.fromJson(Map<String, dynamic>? json) => SubscriptionOrderModel(
     userId: json!["user-id"],
     ownerId: json["Subscription-id"],
+    SubscriptionId: json["Subscription-id"],
     createdDate: json["createdDate"],
     status: Status.values[json["status"]],
     messageEN: json["message-en"],
@@ -44,6 +47,7 @@ class SubscriptionOrderModel {
   Map<String, dynamic> toJson() => {
     "user-id": userId,
     "Subscription-id": ownerId,
+    "Subscription-id": SubscriptionId,
     "createdDate": createdDate,
     "status": status.index,
     "message-en": messageEN,

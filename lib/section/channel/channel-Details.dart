@@ -1,122 +1,125 @@
-import 'package:chewie/chewie.dart';
+
+import 'package:flick_video_player/flick_video_player.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+
+import 'package:tv/manger/language.dart';
 import 'package:tv/models/channelModel.dart';
+import 'package:tv/models/user_profile.dart';
 import 'package:video_player/video_player.dart';
 
 
-class channelDetails extends StatefulWidget {
 
-  final ChannelModel section;
+class cchannelDetails extends StatefulWidget {
 
-  channelDetails({required this.section});
+  final ChannelModel Channel;
+
+  cchannelDetails({required this.Channel,});
 
   @override
-  channelDetailsState createState() => channelDetailsState();
+  cchannelDetailsState createState() => cchannelDetailsState();
 }
 
-class channelDetailsState extends State<channelDetails> {
-  late VideoPlayerController _controller;
+class cchannelDetailsState extends State<cchannelDetails> {
 
-  late ChewieController _chewieController;
-
+  late FlickManager flickManager;
+  Language lang = Language.ENGLISH;
+  late VlcPlayerController controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-      widget.section.streamURL,)
-      ..initialize().then((_) {
-        setState(() {});
-      });
-    _chewieController = ChewieController(
-      videoPlayerController: _controller,
-      aspectRatio: 3 / 2,
-      autoPlay: false,
-      looping: true,
-      // Try playing around with some of these other options:
-
-      // showControls: false,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
+    controller = VlcPlayerController.network(
+      widget.Channel.streamURL,
+      autoPlay: true,
     );
+    flickManager = FlickManager(
+      videoPlayerController:
+      VideoPlayerController.network(
+        widget.Channel.streamURL,),
+    );
+    UserProfile.shared.getLanguage().then((value) {
+      setState(() {
+        lang = value!;
+      });
+    });
   }
-  @override
-  void dispose() {
-    _chewieController.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    var _height = MediaQuery
-        .of(context)
-        .size
-        .height * 0.33;
-    var _width = MediaQuery
-        .of(context)
-        .size
-        .width * 0.9;
-
-    return
-      GestureDetector(
-        onTap: () {/*
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => CameraStreamDetails(
-                    section: widget.section,
-                  )));*/
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Card(
-            elevation: 5,
-            child: SizedBox(
-              height: _height,
-              width: _width,
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Center(
-                      child: Chewie(
-                        controller: _chewieController,
-                      ),
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-
-                        Text(widget.section.titleEN,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 22,
-                              fontStyle: FontStyle.italic,
-                            )),
-                      ],
-                    ),
-                  )
-                  )],
-              ),
-            ),
-          ),
-        ),
-      );
+    return kIsWeb ? _buildWebView() : _buildView();
   }
 
-  Widget buildIndicator() => VideoProgressIndicator(
-    _controller,
-    allowScrubbing: true,
-  );
+  Widget _buildWebView() {
+    return Scaffold(
+        appBar: AppBar(
+            backgroundColor: Theme
+                .of(context)
+                .canvasColor,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+            ),
+            centerTitle: true,
+            title: Text(
+                lang == Language.ENGLISH
+                    ? widget.Channel.titleEN
+                    : widget.Channel.titleAR,
+                style: TextStyle(color: Theme
+                    .of(context)
+                    .primaryColor, fontSize: 18, fontWeight: FontWeight
+                    .w500)
+            )
+
+        ),
+        body:
+        FlickVideoPlayer(flickManager: flickManager,),
+
+    );
+
+  }
+
+
+
+  @override
+  void dispose() {
+    flickManager.dispose();
+    super.dispose();
+  }
+
+
+  Widget _buildView() {
+    return Scaffold(
+        appBar: AppBar(
+            backgroundColor: Theme
+                .of(context)
+                .canvasColor,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+            ),
+            centerTitle: true,
+            title: Text(
+                lang == Language.ENGLISH
+                    ? widget.Channel.titleEN
+                    : widget.Channel.titleAR,
+                style: TextStyle(color: Theme
+                    .of(context)
+                    .primaryColor, fontSize: 18, fontWeight: FontWeight
+                    .w500)
+            )
+
+        ),
+        body:VlcPlayer(
+        aspectRatio: 16 / 9,
+        controller: controller,
+         placeholder: const Center(child: CircularProgressIndicator()),
+    ),);
+  }
 }

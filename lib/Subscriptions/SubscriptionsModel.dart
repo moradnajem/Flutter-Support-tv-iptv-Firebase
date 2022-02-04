@@ -1,7 +1,6 @@
 
 import 'dart:convert';
 
-import 'package:tv/manger/status.dart';
 
 
 SubscriptionsModel subscriptionsModelFromJson(String str) => SubscriptionsModel.fromJson(json.decode(str));

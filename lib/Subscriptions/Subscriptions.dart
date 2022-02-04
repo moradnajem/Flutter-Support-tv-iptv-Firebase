@@ -1,19 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:tv/manger/M.S.dart';
-import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/language.dart';
 import 'package:tv/manger/status.dart';
 import 'package:tv/manger/user-type.dart';
-import 'package:tv/models/SectionModel.dart';
-import 'package:tv/models/assets.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
-import 'package:tv/page/notification.dart';
+import 'package:tv/page/chat.dart';
 
 import '../main.dart';
 import 'SubscriptionOrdermodel.dart';
@@ -168,7 +164,7 @@ class _SubscriptionsState extends State<Subscriptions> {
 
     SubscriptionsModel item = await  FirebaseManager.shared.getSubscriptionById(id: _activeDropDownItem!).first;
 
-    FirebaseManager.shared.SubscriptionOrder(context,  ownerId: item.uid );
+    FirebaseManager.shared.SubscriptionOrder(context,  ownerId: item.uidOwner ,SubscriptionId: _activeDropDownItem!);
 
   }
 
@@ -374,15 +370,15 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
                               child: Column(
                                   children: [
                                     IconButton(
-                                      onPressed: () {/*
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Chat(
-                              order: order,
-                            ),
-                          ),
-                        );
-                      */},
+                                      onPressed: () {
+                                       Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => Chat(
+                                          order: order,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
                                       icon: Icon(
                                         Icons.chat,
                                         color: Theme.of(context).primaryColor,

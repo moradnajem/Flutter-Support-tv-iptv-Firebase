@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tv/manger/user-type.dart';
 import 'package:tv/page/User.dart';
-import 'package:tv/page/add%20channel.dart';
-import 'package:tv/page/add section.dart';
+import 'package:tv/page/add-channel.dart';
+import 'package:tv/page/add-section.dart';
 import 'package:tv/page/edit-password.dart';
 import 'package:tv/page/edit-profile.dart';
 import 'package:tv/page/forgot_password.dart';
@@ -15,7 +17,6 @@ import 'package:tv/page/signin.dart';
 import 'package:tv/page/signup.dart';
 import 'package:tv/page/splash.dart';
 import 'package:tv/page/tabbar.dart';
-
 import 'Subscriptions/Subscriptions.dart';
 import 'Subscriptions/addSubscriptions.dart';
 import 'Subscriptions/Subscriptionsorders.dart';
@@ -24,12 +25,12 @@ if (dart.library.html) 'manger/web_init.dart'
 if (dart.library.io) 'manger/io_init.dart';
 
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
   runApp(const MyApp());
 }
+
 
 
 class AppLocalization {
@@ -116,7 +117,6 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
         debugShowCheckedModeBanner: false,
       locale:_locale,
-
       supportedLocales: const [
         Locale('ar', 'SA'),
         Locale('en', 'US')
@@ -151,9 +151,9 @@ class _MyAppState extends State<MyApp> {
             case '/Splash':
             return MaterialPageRoute(builder: (_) =>   Splash());
             case '/SignIn':
-            return MaterialPageRoute(builder: (_) =>  SignIn(message: arguments,));
+            return MaterialPageRoute(builder: (_) =>  SignIn(message: arguments, userType: UserType.USER,));
             case '/SignUp':
-            return MaterialPageRoute(builder: (_) =>  Signup());
+            return MaterialPageRoute(builder: (_) =>  const Signup( userType: UserType.USER,));
             case '/ForgotPassword':
             return MaterialPageRoute(builder: (_) => ForgotPassword());
             case '/TabBarPage':

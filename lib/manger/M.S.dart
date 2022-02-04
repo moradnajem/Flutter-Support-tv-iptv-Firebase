@@ -1,9 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:tv/Subscriptions/SubscriptionOrdermodel.dart';
 import 'package:tv/Subscriptions/SubscriptionsModel.dart';
+import 'package:tv/models/chat-model.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/status.dart';
@@ -12,6 +19,7 @@ import 'package:tv/manger/user-type.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/models/channelModel.dart';
 import 'package:tv/models/SectionModel.dart';
+import 'package:uuid/uuid.dart';
 import '../main.dart';
 import '../models/loader.dart';
 import '../models/notification-model.dart';
@@ -28,7 +36,8 @@ class FirebaseManager {
   final SubscriptionRef = FirebaseFirestore.instance.collection('Subscription');
   final SubscriptionOrderRef = FirebaseFirestore.instance.collection('SubscriptionOrder');
   final notificationRef = FirebaseFirestore.instance.collection('Notification');
-
+  final chatRef = FirebaseFirestore.instance.collection('Chat');
+  final storageRef = FirebaseStorage.instance.ref();
 
   // TODO:- Start User
 
@@ -40,24 +49,12 @@ class FirebaseManager {
     });
   }
 
-  Stream<List<UserModel>> getAllUser({required Status accountStatus}) {
-    return userRef
-        .where("status-account", isEqualTo: accountStatus.index)
-        .snapshots()
-        .map((QueryDocumentSnapshot) {
-      return QueryDocumentSnapshot.docs.map((doc) {
-        return UserModel.fromJson(doc.data());
-      }).toList();
-    });
-  }
-
-  Future<UserModel> getUserByUid({ required String uid }) async {
+  Future<UserModel> getUserByUid({required String uid}) async {
     UserModel userTemp;
-    var user = await userRef
-        .doc(uid)
-        .snapshots()
-        .first;
-    userTemp = UserModel.fromJson(user.data()!);
+
+    var user = await userRef.doc(uid).snapshots().first;
+    userTemp = UserModel.fromJson(user.data());
+
     return userTemp;
   }
 
@@ -65,6 +62,65 @@ class FirebaseManager {
     return getUserByUid(uid: auth.currentUser!.uid);
   }
 
+  createAccountAUTH (
+      {
+        required GlobalKey<ScaffoldState> scaffoldKey,
+        required UserType userType,
+        required UserCredential user,
+      }) async {
+
+    showLoaderDialog(scaffoldKey.currentContext);
+
+    var userId = user.user!.uid;
+
+    if (userId != null) {
+      userRef.doc(userId).set({
+        "id": "${Random().nextInt(99999)}",
+        "image": user.user!.photoURL == null ? "" : user.user!.photoURL,
+        "name": user.user!.displayName == null ? "" : user.user!.displayName,
+        "phone": user.user!.phoneNumber == null ? "" : user.user!.phoneNumber,
+        "city": "",
+        "createdDate": DateTime.now().toString(),
+        "email": user.user!.email,
+        "status-account": 1,
+        "type-user": 1,
+        "uid": userId,
+      })
+          .then((value) async {
+        showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+        addNotifications(uidUser: userId,
+            titleEN: "Welcome",
+            titleAR: "مرحبا بك",
+            detailsEN: "Welcome to our app\nWe wish you a happy experience",
+            detailsAR: "مرحبا بك في تطبيقنا\nنتمنى لك تجربة رائعة");
+
+        await getAllUsers().first.then((users) {
+          for (var user in users) {
+            if (user.userType == UserType.ADMIN) {
+              addNotifications(uidUser: user.uid!,
+                  titleEN: "New User",
+                  titleAR: "مستخدم جديد",
+                  detailsEN: " new created a new account",
+                  detailsAR: " أنشأ حساب جديد "
+              );
+            }
+          }
+        });
+
+        Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil(
+            "/SignIn", (route) => false,
+            arguments: "Account created successfully, Your account in now under review");
+      })
+          .catchError((err) {
+        showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
+                "Something went wrong"), isError: true);
+      });
+    } else {
+      showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+    }
+  }
 
   createAccountUser({
     required GlobalKey<ScaffoldState> scaffoldKey,
@@ -96,9 +152,9 @@ class FirebaseManager {
         "phone": phone,
         "email": email,
         "city": city,
-        "balance": 0,
+        "createdDate": DateTime.now().toString(),
         "status-account": 1,
-        "type-user": userType.index,
+        "type-user": 1,
         "uid": userId,
       })
           .then((value) async {
@@ -174,7 +230,7 @@ class FirebaseManager {
       if (image.isURL()) {
         imageURL = image;
       } else {
-        //     imageURL = await _uploadImage(folderName: "user", imagePath: image);
+             imageURL = await _uploadImage(folderName: "user", imagePath: image);
       }
     }
 
@@ -220,6 +276,311 @@ class FirebaseManager {
     });
   }
 
+  // TODO:- End User
+  // TODO:- Start Auth
+
+  signInWithGoogle({ required GlobalKey<ScaffoldState> scaffoldKey, required UserType userType }) async {
+
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    DocumentSnapshot doc = await userRef.doc(userCredential.user!.uid).get();
+
+    if (!doc.exists) {
+
+      if (userType != UserType.USER) {
+        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("This feature is allowed for admin only"), isError: true);
+        return;
+      } else {
+        createAccountAUTH(scaffoldKey: scaffoldKey, userType: userType, user: userCredential);
+      }
+
+    } else {
+      await getUserByUid(uid: userCredential.user!.uid).then((UserModel user) {
+
+        if (user.userType != userType) {
+          scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("User not found"), isError: true);
+          auth.signOut();
+          return;
+        }
+
+        switch (user.accountStatus) {
+          case Status.ACTIVE:
+            UserProfile.shared.setUser(user: user);
+            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil('/TabBarPage', (Route<dynamic> route) => false, arguments: user.userType);
+            break;
+          case Status.PENDING:
+            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Account under review"), isError: true);
+            auth.signOut();
+            break;
+          case Status.Rejected:
+            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been denied"), isError: true);
+            auth.signOut();
+            break;
+          case Status.Deleted:
+            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been deleted"), isError: true);
+            auth.signOut();
+            break;
+        }
+
+      });
+    }
+  }
+
+ /*  signInWithTwitter({ required GlobalKey<ScaffoldState> scaffoldKey, required UserType userType }) async {
+     final TwitterLogin twitterLogin = TwitterLogin(
+       consumerKey: 'yxIMMy6eUgPF7B4oLxhyU9zBF',
+       consumerSecret:'Ec2HGWOTpjJTX9wx8QYx8XefPCNSFLcCRD4oep0c19eTOZTqOe',
+       redirectURI: '',
+     );
+
+     final TwitterLoginResult loginResult = await twitterLogin.authorize();
+
+     final TwitterSession twitterSession = loginResult.session;
+
+     final twitterAuthCredential = TwitterAuthProvider.credential(
+       accessToken: twitterSession.token,
+       secret: twitterSession.secret,
+     );
+
+     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
+
+     DocumentSnapshot doc = await userRef.doc(userCredential.user!.uid).get();
+
+     if (!doc.exists) {
+
+       if (userType == UserType.ADMIN) {
+         scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("This feature is allowed for admin only"), isError: true);
+         return;
+       } else {
+         createAccountAUTH(scaffoldKey: scaffoldKey, userType: userType, user: userCredential);
+       }
+
+     } else {
+       await getUserByUid(uid: userCredential.user!.uid).then((UserModel user) {
+
+         if (user.userType != userType) {
+           scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("User not found"), isError: true);
+           auth.signOut();
+           return;
+         }
+
+         switch (user.accountStatus) {
+           case Status.ACTIVE:
+             UserProfile.shared.setUser(user: user);
+             Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil('/Tabbar', (Route<dynamic> route) => false, arguments: user.userType);
+             break;
+           case Status.PENDING:
+             scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Account under review"), isError: true);
+             auth.signOut();
+             break;
+           case Status.Rejected:
+             scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been denied"), isError: true);
+             auth.signOut();
+             break;
+           case Status.Deleted:
+             scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been deleted"), isError: true);
+             auth.signOut();
+             break;
+         }
+
+       });
+     }
+//   final twitterLogin = TwitterLogin(
+//       /// Consumer API keys
+//       apiKey: API_KEY,
+//
+//       /// Consumer API Secret keys
+//       apiSecretKey: API_SECRET_KEY,
+//
+//       /// Registered Callback URLs in TwitterApp
+//       /// Android is a deeplink
+//       /// iOS is a URLScheme
+//       redirectURI: 'example://',
+//     );
+//
+//     /// Forces the user to enter their credentials
+//     /// to ensure the correct users account is authorized.
+//     /// If you want to implement Twitter account switching, set [force_login] to true
+//     /// login(forceLogin: true);
+//     final authResult = await twitterLogin.login();
+//     switch (authResult.status) {
+//       case TwitterLoginStatus.loggedIn:
+//         // success
+//         print('====== Login success ======');
+//         break;
+//       case TwitterLoginStatus.cancelledByUser:
+//         // cancel
+//         print('====== Login cancel ======');
+//         break;
+//       case TwitterLoginStatus.error:
+//       case null:
+//         // error
+//         print('====== Login error ======');
+//         break;
+   }*/
+
+  signInWithApple({ required GlobalKey<ScaffoldState> scaffoldKey, required UserType userType }) async {
+
+    String generateNonce([int length = 32]) {
+      const charset =
+          '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+      final random = Random.secure();
+      return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+          .join();
+    }
+
+    String sha256ofString(String input) {
+      final bytes = utf8.encode(input);
+      final digest = sha256.convert(bytes);
+      return digest.toString();
+    }
+
+    final rawNonce = generateNonce();
+    final nonce = sha256ofString(rawNonce);
+
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      nonce: nonce,
+    );
+
+    // Create an `OAuthCredential` from the credential returned by Apple.
+    final oauthCredential = OAuthProvider("apple.com").credential(
+      idToken: appleCredential.identityToken,
+      rawNonce: rawNonce,
+    );
+
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+
+    DocumentSnapshot doc = await userRef.doc(userCredential.user!.uid).get();
+
+    if (!doc.exists) {
+
+      if (userType == UserType.USER) {
+        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("This feature is allowed for admin only"), isError: true);
+        return;
+      } else {
+        createAccountAUTH(scaffoldKey: scaffoldKey, userType: userType, user: userCredential);
+      }
+
+    } else {
+      await getUserByUid(uid: userCredential.user!.uid).then((UserModel user) {
+
+        if (user.userType == userType) {
+          scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("User not found"), isError: true);
+          auth.signOut();
+          return;
+        }
+
+        switch (user.accountStatus) {
+          case Status.ACTIVE:
+            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil('/TabBarPage', (Route<dynamic> route) => false, arguments: user.userType);
+            break;
+          case Status.PENDING:
+            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Account under review"), isError: true);
+            auth.signOut();
+            break;
+          case Status.Rejected:
+            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been denied"), isError: true);
+            auth.signOut();
+            break;
+          case Status.Deleted:
+            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been deleted"), isError: true);
+            auth.signOut();
+            break;
+        }
+
+      });
+    }
+  }
+
+  login(
+      {required GlobalKey<ScaffoldState> scaffoldKey,
+        required String email,
+        required String password}) async {
+    showLoaderDialog(scaffoldKey.currentContext);
+
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      await getUserByUid(uid: auth.currentUser!.uid).then((UserModel user) {
+        switch (user.accountStatus) {
+          case Status.ACTIVE:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            UserProfile.shared.setUser(user: user);
+            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil(
+                '/TabBarPage', (Route<dynamic> route) => false,
+                arguments: user.userType);
+            break;
+          case Status.PENDING:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Account under review"),
+                isError: true);
+            auth.signOut();
+            break;
+          case Status.Rejected:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Your account has been denied"),
+                isError: true);
+            auth.signOut();
+            break;
+          case Status.Deleted:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Your account has been deleted"),
+                isError: true);
+            auth.signOut();
+            break;
+          case Status.Disable:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Your account has been disabled"),
+                isError: true);
+            auth.signOut();
+        }
+      });
+
+      return;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!
+                .trans("user not found"),
+            isError: true);
+      } else if (e.code == 'wrong-password') {
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!
+                .trans("wrong password"),
+            isError: true);
+      } else if (e.code == 'too-many-requests') {
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!
+                .trans("The account is temporarily locked"),
+            isError: true);
+      }
+    }
+
+    showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+    return;
+  }
+
   Future<String?> _createAccountInFirebase(
       {required GlobalKey<ScaffoldState> scaffoldKey,
         required String email,
@@ -247,82 +608,6 @@ class FirebaseManager {
       print(e);
       return null;
     }
-  }
-
-  // TODO:- End User
-  login({ required GlobalKey<
-      ScaffoldState> scaffoldKey, required String email, required String password }) async {
-    try {
-      try {
-        //      await FirebaseFirestore.instance.terminate();
-        await FirebaseFirestore.instance.clearPersistence();
-      } catch (e) {}
-      showLoaderDialog(scaffoldKey.currentContext);
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-
-      await getUserByUid(uid: auth.currentUser!.uid).then((UserModel user) {
-        switch (user.accountStatus) {
-          case Status.ACTIVE:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            UserProfile.shared.setUser(user: user);
-            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil(
-                '/TabBarPage', (Route<dynamic> route) => false,
-                arguments: user.userType);
-            break;
-          case Status.PENDING:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(
-                message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                    "Account under review"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Rejected:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(
-                message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                    "Your account has been denied"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Deleted:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(
-                message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                    "Your account has been deleted"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Disable:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(
-                message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                    "Your account has been disabled"), isError: true);
-            auth.signOut();
-        }
-      });
-      return;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        scaffoldKey.showTosta(
-            message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                "user not found"), isError: true);
-      } else if (e.code == 'wrong-password') {
-        scaffoldKey.showTosta(
-            message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                "wrong password"), isError: true);
-      } else if (e.code == 'too-many-requests') {
-        scaffoldKey.showTosta(
-            message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                "The account is temporarily locked"), isError: true);
-      } else {
-        scaffoldKey.showTosta(
-            message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                "Something went wrong"), isError: true);
-      }
-    }
-    showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-    return;
   }
 
 
@@ -525,10 +810,16 @@ class FirebaseManager {
       showLoaderDialog(context, isShowLoader: false);
     });
   }
+  deletechannel(context, {required String uidchannel}) async {
+    showLoaderDialog(context);
 
-  Stream<List<ChannelModel>> getchannelByStatus({required String section}) {
+    await channelRef.doc(uidchannel).delete().then((_) => {}).catchError((e) {});
+
+    showLoaderDialog(context, isShowLoader: false);
+  }
+  Stream<List<ChannelModel>> getchannelByStatus({required String channel}) {
     return channelRef
-        .where("section-uid", isEqualTo: section)
+        .where("section-uid", isEqualTo: channel)
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
@@ -649,6 +940,7 @@ class FirebaseManager {
         context, {
           String uid = "",
           required String ownerId,
+          required String SubscriptionId,
         }) async {
       showLoaderDialog(context);
 
@@ -665,6 +957,7 @@ class FirebaseManager {
       SubscriptionOrderRef.doc(tempUid).set({
         "user-id": auth.currentUser!.uid,
         "Subscription-id": ownerId,
+        "Subscription-id": SubscriptionId,
         "createdDate": DateTime.now().toString(),
         "status": Status.PENDING.index,
         "message-en": "",
@@ -748,6 +1041,82 @@ class FirebaseManager {
     }
 
 
+  // TODO:- Start Chat
+
+  sendMessage(
+      context, {
+        required String uidOrder,
+        required String uidService,
+        required String uidReceiver,
+        required String uidUser,
+        String message = "",
+        String image = "",
+      }) async {
+    String uid = chatRef.doc().id;
+    String imageUrl = "";
+
+    if (image != "") {
+      showLoaderDialog(context);
+      imageUrl = await _uploadImage(folderName: "chat", imagePath: image);
+      showLoaderDialog(context, isShowLoader: false);
+    }
+
+    chatRef.doc(uid).set({
+      "uid-order": uidOrder,
+      "uid-user": uidUser,
+      "uid-sender": auth.currentUser!.uid,
+      "uid-receiver": uidReceiver,
+      "uid-service": uidService,
+      "message": message,
+      "image": imageUrl,
+      "createdDate": DateTime.now().toString(),
+      "uid": uid,
+    }).catchError((_) {});
+  }
+
+  Stream<List<ChatModel>> getChatByUidOrder({required String uidOrder}) {
+    return chatRef
+        .where("uid-order", isEqualTo: uidOrder)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return ChatModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
+  // TODO:- End Chat
+
+  Future<String> _uploadImage(
+      {required String folderName, required String imagePath}) async {
+    UploadTask uploadTask =
+    storageRef.child('$folderName/${ const Uuid().v4()}').putFile(File(imagePath));
+    String url = await (await uploadTask).ref.getDownloadURL();
+    return url;
+  }
+  // payment
+
+// _payment() async {
+//   var request = BraintreeDropInRequest(
+//     tokenizationKey: "",
+//     collectDeviceData: true,
+//     paypalRequest: BraintreePayPalRequest(
+//       amount: "10.00",
+//       displayName: "name",
+//     ),
+//     cardEnabled: true,
+//   );
+//
+//   BraintreeDropInResult result = await BraintreeDropIn.start(request);
+//
+//   if (result != null) {
+//     print("===================");
+//     print(result.paymentMethodNonce.description);
+//     print(result.paymentMethodNonce.nonce);
+//     print("===================");
+//   }
+//
+// }
 }
 
 

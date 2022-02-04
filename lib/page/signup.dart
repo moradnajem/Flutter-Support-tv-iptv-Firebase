@@ -10,26 +10,29 @@ import '../main.dart';
 
 class Signup extends StatefulWidget {
   @override
+  final UserType userType;
+
+  const Signup({Key? key, required this.userType}) : super(key: key);
   _SignupState createState() => _SignupState();
 }
 
 class _SignupState extends State<Signup> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   GlobalKey<FormState> _formKey = GlobalKey();
-  TextEditingController _userTypeController = TextEditingController();
+ // TextEditingController _userTypeController = TextEditingController();
 
   late String username;
   late String email;
   late String password;
   late String city;
   late String phoneNumber;
-  late UserType userType;
+ // late UserType userType;
   bool agreeToPrivacy = false;
 
   @override
   void dispose() {
     // TODO: implement dispose
-    _userTypeController.dispose();
+  //  _userTypeController.dispose();
     super.dispose();
   }
 
@@ -137,7 +140,7 @@ class _SignupState extends State<Signup> {
                               ).copyWith(hintText: AppLocalization.of(context)!.trans("Phone Number")),
                             ),
                             const SizedBox(height: 20,),
-                            TextFormField(
+ /*                           TextFormField(
                               controller: _userTypeController,
                               onTap: () {
                                 alertSheet(context, title: "User type", items: ["ADMIN", "USER"], onTap: (value) {
@@ -161,7 +164,7 @@ class _SignupState extends State<Signup> {
                               ),
                               ).copyWith(hintText: "User type"),
                             ),
-                            SizedBox(height: 20,),
+                            SizedBox(height: 20,), */
                             Row(
                               children: [
                                 Checkbox(value: agreeToPrivacy, activeColor: Theme.of(context).primaryColor, onChanged: (value) => {
@@ -198,7 +201,7 @@ class _SignupState extends State<Signup> {
   }
 
   bool validation() {
-    return !(username.isEmpty || email.isEmpty || password.isEmpty || city.isEmpty || phoneNumber.isEmpty || userType == null);
+    return !(username.isEmpty || email.isEmpty || password.isEmpty || city.isEmpty || phoneNumber.isEmpty );
   }
   _btnSignup() {
 
@@ -211,6 +214,6 @@ class _SignupState extends State<Signup> {
       _scaffoldKey.showTosta(message: AppLocalization.of(context)!.trans("Please agree to the privacy terms"), isError: true);
       return;
     }
-    FirebaseManager.shared.createAccountUser(scaffoldKey: _scaffoldKey, name: username, phone: phoneNumber, email: email, city: city, password: password, imagePath: '', userType: userType);
+    FirebaseManager.shared.createAccountUser(scaffoldKey: _scaffoldKey, name: username, phone: phoneNumber, email: email, city: city, password: password, imagePath: '',  userType: widget.userType);
   }
 }
