@@ -72,6 +72,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalization> {
     AppLocalization localizations = AppLocalization(locale);
     await localizations.load();
 
+    if (kDebugMode) {
+      print("Load ${locale.languageCode}");
+    }
 
     return localizations;
   }
@@ -88,9 +91,6 @@ class MyApp extends StatefulWidget {
   static void setLocale(BuildContext context, Locale locale) {
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
     state!.setLocale(locale);
-    if (kDebugMode) {
-      print("Load ${locale.languageCode}");
-    }
   }
 
   @override
