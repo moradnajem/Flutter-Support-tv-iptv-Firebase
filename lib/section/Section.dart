@@ -136,7 +136,7 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => channel(section[index].uid)));
+                          builder: (_) => channel(section[index].uid , widget.screenTitle)));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
@@ -199,7 +199,7 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => channel(section[index].uid)));
+                          builder: (_) => channel(section[index].uid , widget.screenTitle)));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),

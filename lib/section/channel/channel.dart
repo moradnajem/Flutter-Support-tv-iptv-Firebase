@@ -9,35 +9,31 @@ import 'package:tv/page/notification.dart';
 import '../../main.dart';
 import 'channel-Details.dart';
 
-
-
 class channel extends StatefulWidget {
   final String section;
-
+  final String screenTitle;
   @override
   channelState createState() => channelState();
-  channel(this.section);
+  channel(this.section, this.screenTitle);
 }
 
 class channelState extends State<channel> {
-
-
   Language lang = Language.ENGLISH;
-
+  Widget? appBarTitle;
   void initState() {
     // TODO: implement initState
     super.initState();
     UserProfile.shared.getLanguage().then((value) {
       setState(() {
+        appBarTitle = Text(
+          AppLocalization.of(context)!.trans(widget.screenTitle),
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        );
         lang = value!;
       });
     });
   }
 
-  Widget appBarTitle = const Text(
-    "Live",
-    style: TextStyle(color: Colors.black),
-  );
   Icon actionIcon = const Icon(Icons.search);
   @override
   Widget build(BuildContext context) {
@@ -48,45 +44,50 @@ class channelState extends State<channel> {
             iconTheme: IconThemeData(
               color: Theme.of(context).primaryColor,
             ),
-
             title: appBarTitle,
             centerTitle: true,
             actions: <Widget>[
-              IconButton(icon: actionIcon,onPressed:(){
-                setState(() {
-                  if ( actionIcon.icon == Icons.search){
-                    actionIcon = const Icon(Icons.close);
-                    appBarTitle = const TextField(
-                      style: TextStyle(
-                        color: Colors.blue,
-
-                      ),
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search,color: Colors.blue),
-                          hintText: "Search...",
-                          hintStyle: TextStyle(color: Colors.blue)
-                      ),
-                    );}
-                  else {
-                    actionIcon = const Icon(Icons.search);
-                    appBarTitle =  Text(AppLocalization.of(context)!.trans('Live'), style: TextStyle(color: Theme.of(context).primaryColor),);
-                  }
-                });
-              } ,),
+              IconButton(
+                icon: actionIcon,
+                onPressed: () {
+                  setState(() {
+                    if (actionIcon.icon == Icons.search) {
+                      actionIcon = const Icon(Icons.close);
+                      appBarTitle = const TextField(
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search, color: Colors.blue),
+                            hintText: "Search...",
+                            hintStyle: TextStyle(color: Colors.blue)),
+                      );
+                    } else {
+                      actionIcon = const Icon(Icons.search);
+                      appBarTitle = Text(
+                        AppLocalization.of(context)!.trans('Live'),
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      );
+                    }
+                  });
+                },
+              ),
               NotificationsWidget(),
-            ]
-        ),
+            ]),
         body: StreamBuilder<List<ChannelModel>>(
-        stream: FirebaseManager.shared.getchannelByStatus(section: widget.section),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List? section = snapshot.data;
-            if (section!.isEmpty) {
-              return Center(child: Text(
-                "No  added", style: TextStyle(color: Theme
-                  .of(context)
-                  .primaryColor, fontSize: 18),));
-            }
+            stream: FirebaseManager.shared
+                .getchannelByStatus(section: widget.section),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List? section = snapshot.data;
+                if (section!.isEmpty) {
+                  return Center(
+                      child: Text(
+                    "No  added",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 18),
+                  ));
+                }
                 return ListView.builder(
                   itemCount: section.length,
                   itemBuilder: (buildContext, index) => GestureDetector(
@@ -94,45 +95,46 @@ class channelState extends State<channel> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => channelDetails(section: section[index],)));
-                    },                child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Card(
-                      elevation: 5,
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        width: MediaQuery.of(context).size.height * 0.1,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text (
-                                      lang == Language.ENGLISH
-                                      ? section[index].titleEN
-                                      : section[index].titleAR,
-                                      style: TextStyle(color: Theme
-                                          .of(context)
-                                          .primaryColor, fontSize: 18, fontWeight: FontWeight
-                                          .w500)
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
+                              builder: (_) => channelDetails(
+                                    section: section[index],
+                                  )));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Card(
+                        elevation: 5,
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          width: MediaQuery.of(context).size.height * 0.1,
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                        lang == Language.ENGLISH
+                                            ? section[index].titleEN
+                                            : section[index].titleAR,
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500))
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  ),
                 );
-          } else {
-            return Center(child: loader(context));
-          }
-        }
-    ));
+              } else {
+                return Center(child: loader(context));
+              }
+            }));
   }
 }
-
