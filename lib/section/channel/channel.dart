@@ -7,6 +7,7 @@ import 'package:tv/models/channelModel.dart';
 import 'package:tv/models/loader.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
+import 'package:tv/page/add-channel.dart';
 
 import 'package:tv/page/notification.dart';
 
@@ -32,7 +33,7 @@ class _chanelsectionState extends State<chanelsection> {
     UserProfile.shared.getLanguage().then((value) {
       setState(() {
         appBarTitle = Text(
-          AppLocalization.of(context)!.trans(widget.screenTitle),
+          widget.screenTitle,
           style: TextStyle(color: Theme.of(context).primaryColor),
         );
         lang = value!;
@@ -80,7 +81,7 @@ class _chanelsectionState extends State<chanelsection> {
                           } else {
                             actionIcon = const Icon(Icons.search);
                             appBarTitle = Text(
-                              AppLocalization.of(context)!.trans('Live'),
+                              widget.screenTitle,
                               style: TextStyle(color: Theme.of(context).primaryColor),
                             );
                           }
@@ -238,7 +239,7 @@ class _chanelsectionState extends State<chanelsection> {
                                                 .primaryColor,
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500)),
-                                   /* IconButton(
+                                    IconButton(
                                       iconSize: 35,
                                       icon: const Icon(Icons.edit),
                                       onPressed: () =>
@@ -247,8 +248,8 @@ class _chanelsectionState extends State<chanelsection> {
                                               MaterialPageRoute(
                                                   builder: (_) =>
                                                      addchannel(
-                                                         updatechannel: Channel[index]))),
-                                    ),*/
+                                                        channelSelected: Channel[index]))),
+                                    ),
                                     IconButton(
                                       iconSize: 35,
                                       icon: const Icon(Icons.delete_forever),

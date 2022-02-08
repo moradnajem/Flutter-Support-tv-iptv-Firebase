@@ -200,7 +200,10 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => chanelsection(section[index].uid, widget.screenTitle)));
+                          builder: (_) => chanelsection(section[index].uid, 
+                          lang == Language.ENGLISH ?  section[index].titleEN
+                                        : section[index].titleAR,
+                          )));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),

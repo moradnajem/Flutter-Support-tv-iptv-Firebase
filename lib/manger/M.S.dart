@@ -786,6 +786,7 @@ class FirebaseManager {
   addOrEditChanne(
       context, {
         String uid = "",
+        required GlobalKey<ScaffoldState> scaffoldKey,
         required String sectionuid,
         required String streamURL,
         required String titleEN,
