@@ -19,6 +19,7 @@ class chanelsection extends StatefulWidget {
   _chanelsectionState createState() => _chanelsectionState();
   final String Channel;
   final String screenTitle;
+  bool searchMode = false;
   chanelsection(this.Channel, this.screenTitle,);
 }
 
@@ -26,6 +27,7 @@ class _chanelsectionState extends State<chanelsection> {
 
   Language lang = Language.ENGLISH;
   Widget? appBarTitle;
+  final TextEditingController? searchTextField = TextEditingController();
 
   void initState() {
     // TODO: implement initState
@@ -69,11 +71,22 @@ class _chanelsectionState extends State<chanelsection> {
                         setState(() {
                           if (actionIcon.icon == Icons.search) {
                             actionIcon = const Icon(Icons.close);
-                            appBarTitle = const TextField(
-                              style: TextStyle(
+                            appBarTitle =  TextField(
+                                controller: searchTextField,
+                            onChanged: (value) {
+                              searchTextField!.text = value;
+                              searchTextField!.text.isEmpty
+                                  ? widget.searchMode = false
+                                  : widget.searchMode = true;
+                              searchTextField!.selection =
+                                  TextSelection.fromPosition(TextPosition(
+                                      offset: searchTextField!.text.length));
+                              setState(() {});
+                            },
+                              style: const TextStyle(
                                 color: Colors.blue,
                               ),
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   prefixIcon: Icon(Icons.search, color: Colors.blue),
                                   hintText: "Search...",
                                   hintStyle: TextStyle(color: Colors.blue)),
@@ -96,22 +109,35 @@ class _chanelsectionState extends State<chanelsection> {
                     ),                  ]
               ),
               body: user?.userType == UserType.ADMIN
-                  ? _widgetTech(context)
-                  : _widgetUser(context),
+                  ? _widgetTech(context, searchTextField)
+                  : _widgetUser(context , searchTextField),
             );
           }
 
-          return SizedBox();
+          return const SizedBox();
         });
   }
 
-  Widget _widgetUser(context) {
+  Widget _widgetUser(context, searchController) {
     return StreamBuilder<List<ChannelModel>>(
-        stream: FirebaseManager.shared.getchannelByStatus(
-            channel: widget.Channel),
+        
+          stream: widget.searchMode
+            ? FirebaseManager.shared.getchannelByName(
+                channelName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+            : FirebaseManager.shared.getchannelByStatus(channel: widget.Channel),
+       
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List? Channel = snapshot.data;
+            List<ChannelModel>? Channel = snapshot.data;
+              if (widget.searchMode) {
+              for (int i = 0; i < Channel!.length; i++) {
+                // ignore: unrelated_type_equality_checks
+                if (Channel[i].sectionuid != widget.Channel) {
+                  Channel.removeAt(i);
+                }
+              }
+            }
             if (Channel!.isEmpty) {
               return Center(child: Text(
                 "No  added", style: TextStyle(color: Theme
@@ -180,13 +206,24 @@ class _chanelsectionState extends State<chanelsection> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  Widget _widgetTech(context) {
+  Widget _widgetTech(context, searchController) {
     return StreamBuilder<List<ChannelModel>>(
-        stream: FirebaseManager.shared.getchannelByStatus(
-            channel: widget.Channel),
+         stream: widget.searchMode
+            ? FirebaseManager.shared.getchannelByName(
+                channelName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+            : FirebaseManager.shared.getchannelByStatus(channel: widget.Channel),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List? Channel = snapshot.data;
+               if (widget.searchMode) {
+              for (int i = 0; i < Channel!.length; i++) {
+                // ignore: unrelated_type_equality_checks
+                if (Channel[i].sectionuid != widget.Channel) {
+                  Channel.removeAt(i);
+                }
+              }
+            }
             if (Channel!.isEmpty) {
               return Center(
                   child: Text(

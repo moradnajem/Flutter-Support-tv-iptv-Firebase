@@ -19,12 +19,13 @@ class SectionScreen extends StatefulWidget {
   _SectionScreenState createState() => _SectionScreenState();
   final Section section;
   final String screenTitle;
+  bool searchMode = false;
   SectionScreen(this.section, this.screenTitle);
 }
 
 class _SectionScreenState extends State<SectionScreen> {
   Language lang = Language.ENGLISH;
-
+  final TextEditingController? searchTextField = TextEditingController();
   Widget? appBarTitle;
   void initState() {
     // TODO: implement initState
@@ -72,13 +73,24 @@ class _SectionScreenState extends State<SectionScreen> {
                       setState(() {
                         if (actionIcon.icon == Icons.search) {
                           actionIcon = const Icon(Icons.close);
-                          appBarTitle = const TextField(
-                            style: TextStyle(
+                          appBarTitle = TextField(
+                            controller: searchTextField,
+                            onChanged: (value) {
+                              searchTextField!.text = value;
+                              searchTextField!.text.isEmpty
+                                  ? widget.searchMode = false
+                                  : widget.searchMode = true;
+                              searchTextField!.selection =
+                                  TextSelection.fromPosition(TextPosition(
+                                      offset: searchTextField!.text.length));
+                              setState(() {});
+                            },
+                            style: const TextStyle(
                               color: Colors.blue,
                             ),
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                                 prefixIcon:
-                                Icon(Icons.search, color: Colors.blue),
+                                    Icon(Icons.search, color: Colors.blue),
                                 hintText: "Search...",
                                 hintStyle: TextStyle(color: Colors.blue)),
                           );
@@ -107,28 +119,40 @@ class _SectionScreenState extends State<SectionScreen> {
                 ],
               ),
               body: user.userType == UserType.ADMIN
-                  ? _widgetTech(context)
-                  : _widgetUser(context),
+                  ? _widgetTech(context, searchTextField)
+                  : _widgetUser(context, searchTextField),
             );
           }
 
-          return SizedBox();
+          return const SizedBox();
         });
   }
 
-  Widget _widgetUser(context) {
+  Widget _widgetUser(context , searchController) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: widget.section),
+         stream: widget.searchMode
+            ? FirebaseManager.shared.getSectionsByName(
+                sectionName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+            : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List? section = snapshot.data;
+            List<SectionModel>? section = snapshot.data;
+            if (widget.searchMode) {
+              for (int i = 0; i < section!.length; i++) {
+                // ignore: unrelated_type_equality_checks
+                if (section[i].section.index != widget.section.index) {
+                  section.removeAt(i);
+                }
+              }
+            }
             if (section!.isEmpty) {
               return Center(
                   child: Text(
-                    "No  added",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 18),
-                  ));
+                "No  added",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18),
+              ));
             }
             return ListView.builder(
               itemCount: section.length,
@@ -137,7 +161,8 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => chanelsection(section[index].uid , widget.screenTitle)));
+                          builder: (_) => chanelsection(
+                              section[index].uid, widget.screenTitle)));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
@@ -179,19 +204,31 @@ class _SectionScreenState extends State<SectionScreen> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  Widget _widgetTech(context) {
+  Widget _widgetTech(context, searchController) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: widget.section),
+        stream: widget.searchMode
+            ? FirebaseManager.shared.getSectionsByName(
+                sectionName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+            : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List? section = snapshot.data;
+            List<SectionModel>? section = snapshot.data;
+            if (widget.searchMode) {
+              for (int i = 0; i < section!.length; i++) {
+                // ignore: unrelated_type_equality_checks
+                if (section[i].section.index != widget.section.index) {
+                  section.removeAt(i);
+                }
+              }
+            }
             if (section!.isEmpty) {
               return Center(
                   child: Text(
-                    "No  added",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 18),
-                  ));
+                "No  added",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18),
+              ));
             }
             return ListView.builder(
               itemCount: section.length,
@@ -200,10 +237,12 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => chanelsection(section[index].uid, 
-                          lang == Language.ENGLISH ?  section[index].titleEN
-                                        : section[index].titleAR,
-                          )));
+                          builder: (_) => chanelsection(
+                                section[index].uid,
+                                lang == Language.ENGLISH
+                                    ? section[index].titleEN
+                                    : section[index].titleAR,
+                              )));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
@@ -272,7 +311,7 @@ class _SectionScreenState extends State<SectionScreen> {
       showCupertinoModalPopup(
         context: context,
         builder: (BuildContext context) => CupertinoActionSheet(
-            title: Text('Choose An Option'),
+            title: const Text('Choose An Option'),
             actions: <Widget>[
               CupertinoActionSheetAction(
                 child: const Text('addsection'),
