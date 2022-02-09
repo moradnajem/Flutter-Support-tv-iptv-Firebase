@@ -13,18 +13,18 @@ import 'package:tv/page/notification.dart';
 
 import '../main.dart';
 import 'channel/channel.dart';
-import 'channel/channel.dart';
 
 class SectionScreen extends StatefulWidget {
   _SectionScreenState createState() => _SectionScreenState();
   final Section section;
   final String screenTitle;
+  bool searchMode = false;
   SectionScreen(this.section, this.screenTitle);
 }
 
 class _SectionScreenState extends State<SectionScreen> {
   Language lang = Language.ENGLISH;
-
+  final TextEditingController? searchTextField = TextEditingController();
   Widget? appBarTitle;
   void initState() {
     // TODO: implement initState
@@ -72,11 +72,22 @@ class _SectionScreenState extends State<SectionScreen> {
                       setState(() {
                         if (actionIcon.icon == Icons.search) {
                           actionIcon = const Icon(Icons.close);
-                          appBarTitle = const TextField(
-                            style: TextStyle(
+                          appBarTitle = TextField(
+                            controller: searchTextField,
+                            onChanged: (value) {
+                              searchTextField!.text = value;
+                              searchTextField!.text.isEmpty
+                                  ? widget.searchMode = false
+                                  : widget.searchMode = true;
+                              searchTextField!.selection =
+                                  TextSelection.fromPosition(TextPosition(
+                                      offset: searchTextField!.text.length));
+                              setState(() {});
+                            },
+                            style: const TextStyle(
                               color: Colors.blue,
                             ),
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                                 prefixIcon:
                                 Icon(Icons.search, color: Colors.blue),
                                 hintText: "Search...",
@@ -107,8 +118,8 @@ class _SectionScreenState extends State<SectionScreen> {
                 ],
               ),
               body: user.userType == UserType.ADMIN
-                  ? _widgetTech(context)
-                  : _widgetUser(context),
+                  ? _widgetTech(context, searchTextField)
+                  : _widgetUser(context, searchTextField),
             );
           }
 
@@ -116,12 +127,24 @@ class _SectionScreenState extends State<SectionScreen> {
         });
   }
 
-  Widget _widgetUser(context) {
+  Widget _widgetUser(context , searchController) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: widget.section),
+        stream: widget.searchMode
+            ? FirebaseManager.shared.getSectionsByName(
+            sectionName: searchController.text,
+            fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+            : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List? section = snapshot.data;
+            List<SectionModel>? section = snapshot.data;
+            if (widget.searchMode) {
+              for (int i = 0; i < section!.length; i++) {
+                // ignore: unrelated_type_equality_checks
+                if (section[i].section.index != widget.section.index) {
+                  section.removeAt(i);
+                }
+              }
+            }
             if (section!.isEmpty) {
               return Center(
                   child: Text(
@@ -137,20 +160,26 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => chanelsection(section[index].uid , widget.screenTitle)));
+                          builder: (_) => chanelsection(
+                              section[index].uid, widget.screenTitle)));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(
-                    elevation: 5,
+                    elevation: 1,
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      width: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.15,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.1,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
+                      Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
@@ -163,7 +192,7 @@ class _SectionScreenState extends State<SectionScreen> {
                                         fontWeight: FontWeight.w500))
                               ],
                             ),
-                          )
+
                         ],
                       ),
                     ),
@@ -179,12 +208,24 @@ class _SectionScreenState extends State<SectionScreen> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  Widget _widgetTech(context) {
+  Widget _widgetTech(context, searchController) {
     return StreamBuilder<List<SectionModel>>(
-        stream: FirebaseManager.shared.getSection(section: widget.section),
+        stream: widget.searchMode
+            ? FirebaseManager.shared.getSectionsByName(
+            sectionName: searchController.text,
+            fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+            : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List? section = snapshot.data;
+            List<SectionModel>? section = snapshot.data;
+            if (widget.searchMode) {
+              for (int i = 0; i < section!.length; i++) {
+                // ignore: unrelated_type_equality_checks
+                if (section[i].section.index != widget.section.index) {
+                  section.removeAt(i);
+                }
+              }
+            }
             if (section!.isEmpty) {
               return Center(
                   child: Text(
@@ -200,21 +241,30 @@ class _SectionScreenState extends State<SectionScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => chanelsection(section[index].uid, widget.screenTitle)));
+                          builder: (_) => chanelsection(
+                            section[index].uid,
+                            lang == Language.ENGLISH
+                                ? section[index].titleEN
+                                : section[index].titleAR,
+                          )));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(
-                    elevation: 5,
+                    elevation: 1,
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.14,
-                      width: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.15,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
+                      Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
@@ -244,7 +294,7 @@ class _SectionScreenState extends State<SectionScreen> {
                                 ),
                               ],
                             ),
-                          )
+
                         ],
                       ),
                     ),

@@ -743,6 +743,18 @@ class FirebaseManager {
 
     showLoaderDialog(context, isShowLoader: false);
   }
+  Stream<List<SectionModel>> getSectionsByName(
+      {required String sectionName, required String fieldType}) {
+    return sectionRef
+        .where(fieldType,
+        isGreaterThanOrEqualTo: sectionName, isLessThan: sectionName + 'z')
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return SectionModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
 
   Stream<List<SectionModel>> getSection({required Section section}) {
     return sectionRef
@@ -786,6 +798,7 @@ class FirebaseManager {
   addOrEditChanne(
       context, {
         String uid = "",
+        required GlobalKey<ScaffoldState> scaffoldKey,
         required String sectionuid,
         required String streamURL,
         required String titleEN,
@@ -820,6 +833,18 @@ class FirebaseManager {
   Stream<List<ChannelModel>> getchannelByStatus({required String channel}) {
     return channelRef
         .where("section-uid", isEqualTo: channel)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return ChannelModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+  Stream<List<ChannelModel>> getchannelByName(
+      {required String channelName, required String fieldType}) {
+    return channelRef
+        .where(fieldType,
+        isGreaterThanOrEqualTo: channelName, isLessThan: channelName + 'z')
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
@@ -873,12 +898,14 @@ class FirebaseManager {
         required GlobalKey<ScaffoldState> scaffoldKey,
         required String SubscriptionEN,
         required String SubscriptionAR,
+        required String details,
       }) async {
     showLoaderDialog(context);
     String tempUid = (uid == null || uid == "") ? SubscriptionRef.doc().id : uid;
     SubscriptionRef.doc(tempUid).set({
       "Subscription-en": SubscriptionEN,
       "Subscription-ar": SubscriptionAR,
+      "details": details,
       "uid-owner": auth.currentUser!.uid,
       "uid": tempUid,
     })
@@ -960,12 +987,13 @@ class FirebaseManager {
         "Subscription-id": SubscriptionId,
         "createdDate": DateTime.now().toString(),
         "status": Status.PENDING.index,
+        "details": "",
         "message-en": "",
         "message-ar": "",
         "uid": tempUid,
       }).then((value) {
         showLoaderDialog(context, isShowLoader: false);
-        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/orderuser');
       }).catchError((err) {
         showLoaderDialog(context, isShowLoader: false);
       });

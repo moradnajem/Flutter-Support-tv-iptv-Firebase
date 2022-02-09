@@ -10,6 +10,7 @@ class SubscriptionsModel {
     required this.SubscriptionEN,
     required this.SubscriptionAR,
     required this.uid,
+    required this.details,
     required this.uidOwner,
 
 
@@ -17,6 +18,7 @@ class SubscriptionsModel {
 
   String SubscriptionEN;
   String SubscriptionAR;
+  String details;
   String uidOwner;
   String uid;
 
@@ -24,6 +26,7 @@ class SubscriptionsModel {
   factory SubscriptionsModel.fromJson(Map<String, dynamic>? json) => SubscriptionsModel(
     SubscriptionEN: json!["Subscription-en"],
     SubscriptionAR: json["Subscription-ar"],
+    details: json["details"],
     uidOwner: json["uid-owner"],
     uid: json["uid"],
 
@@ -31,6 +34,7 @@ class SubscriptionsModel {
   Map<String, dynamic> toJson() => {
     "Subscription-en": SubscriptionEN,
     "Subscription-ar": SubscriptionAR,
+    "details": details,
     "uid-owner": uidOwner,
     "uid": uid,
   };

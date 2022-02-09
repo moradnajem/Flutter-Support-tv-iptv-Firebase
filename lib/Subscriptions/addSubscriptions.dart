@@ -26,6 +26,8 @@ class _addState extends State<add> {
 
   late String SubscriptionEN = "";
   late String SubscriptionAR = "";
+  late String details = "";
+
   String buttonMode = "ADD";
 
 
@@ -36,6 +38,7 @@ class _addState extends State<add> {
     if (widget.updateSubscription != null) {
       SubscriptionEN = widget.updateSubscription!.SubscriptionEN;
       SubscriptionAR = widget.updateSubscription!.SubscriptionAR;
+      details = widget.updateSubscription!.details;
       buttonMode = "UPDATE";
     }
   }
@@ -116,7 +119,24 @@ class _addState extends State<add> {
                                   .copyWith(hintText: "titleAR"),
                             ),
                             SizedBox(height: 10),
-
+                            TextFormField(
+                              initialValue: details,
+                              onSaved: (value) => details = value!.trim(),
+                              keyboardType: TextInputType.name,
+                              textInputAction: TextInputAction.next,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              decoration: customInputForm
+                                  .copyWith(
+                                prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              )
+                                  .copyWith(hintText: "details"),
+                            ),
                             RaisedButton(
                                 color: Theme.of(context).primaryColor,
                                 child: Text(buttonMode,
@@ -160,7 +180,7 @@ class _addState extends State<add> {
 
     FirebaseManager.shared.Subscription(context, uid: uid,scaffoldKey: _scaffoldKey,
       SubscriptionEN: SubscriptionEN,
-      SubscriptionAR: SubscriptionAR,
+      SubscriptionAR: SubscriptionAR, details: details,
     );
   }
 }

@@ -20,14 +20,20 @@ import 'package:tv/page/tabbar.dart';
 import 'Subscriptions/Subscriptions.dart';
 import 'Subscriptions/addSubscriptions.dart';
 import 'Subscriptions/Subscriptionsorders.dart';
+import 'Subscriptions/order-user.dart';
 import 'manger/init.dart'
 if (dart.library.html) 'manger/web_init.dart'
 if (dart.library.io) 'manger/io_init.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
+  await Firebase.initializeApp().then((_) {
+    FirebaseFirestore.instance.settings =
+    const Settings(persistenceEnabled: false);
+  });
   runApp(const MyApp());
 }
 
@@ -135,7 +141,7 @@ class _MyAppState extends State<MyApp> {
 
         return supportedLocales.first;
       },
-      title: 'MS',
+      title: 'OMNI',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         canvasColor: Colors.white,
@@ -170,6 +176,8 @@ class _MyAppState extends State<MyApp> {
             return MaterialPageRoute(builder: (_) =>   Subscriptions());
             case '/Orders':
             return MaterialPageRoute(builder: (_) =>   Orders());
+            case '/orderuser':
+            return MaterialPageRoute(builder: (_) =>   orderuser());
             case '/Users':
             return MaterialPageRoute(builder: (_) =>   const Users());
             case '/EditPassword':

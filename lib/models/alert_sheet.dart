@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 
 
-alertSheet(context, { String title = "", required List<String> items, required onTap(value) }) {
+alertSheet(context, {bool addChannel = false, String title = "", required List<dynamic> items, required onTap(value) }) {
 
   List<Widget> actions = [];
 
   for (var value in items) {
     {
-    actions.add(
-      Align(
-        alignment: Alignment.center,
-        child: FlatButton(
-          child: Text(value,
-            style:
-            TextStyle(color: Theme.of(context).accentColor, fontSize: 18),
+      actions.add(
+        Align(
+          alignment: Alignment.center,
+          child: FlatButton(
+            child: Text(
+              addChannel?
+              value.titleEN :
+              value
+              ,
+              style:
+              TextStyle(color: Theme.of(context).accentColor, fontSize: 18),
+            ),
+            onPressed: () {
+              onTap(value);
+              Navigator.of(context).pop();
+            },
           ),
-          onPressed: () {
-            onTap(value);
-            Navigator.of(context).pop();
-          },
         ),
-      ),
-    );
-  };
+      );
+    };
   }
 
   actions.add(Align(

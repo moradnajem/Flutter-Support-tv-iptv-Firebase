@@ -38,7 +38,7 @@ class _SplashState extends State<Splash> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(bottom: 20),
         child: Text(
-          "Ms",
+          "OMNI",
           textAlign: TextAlign.center,
           style: TextStyle(color: Theme.of(context).accentColor, fontSize: 18),
         ),
@@ -47,9 +47,6 @@ class _SplashState extends State<Splash> {
   }
 
   _wrapper() async {
-    await UserProfile.shared.getLanguage().then((lang) {
-      MyApp.setLocale(context, Locale(lang == Language.ARABIC ? "ar" : "en"));
-    });
     UserModel? user;
     await UserProfile.shared.getUser().then((value) {
       if (value == null) {
