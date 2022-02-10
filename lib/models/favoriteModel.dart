@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:tv/models/channelModel.dart';
+
 
 FavoriteModel favoriteModelFromJson(String str) => FavoriteModel.fromJson(json.decode(str));
 
@@ -16,25 +18,37 @@ class FavoriteModel {
     required this.userId,
     required this.uid,
     required this.section,
+    required this.streamURL,
+    required this.titlear,
+    required this.titleen,
   });
 
   String channelId;
   String userId;
   String uid;
   int section;
+  String streamURL;
+  String titlear;
+  String  titleen;
 
   factory FavoriteModel.fromJson(Map<String, dynamic>? json) => FavoriteModel(
     channelId: json!["channelId"],
-    userId: json["userId"],
-    uid: json["uid"],
     section: json["section"],
+    streamURL: json["streamURL"],
+    titlear: json["titlear"],
+    titleen: json["titleen"],
+    uid: json["uid"],
+    userId: json["userId"],
   );
 
   Map<String, dynamic> toJson() => {
     "channelId": channelId,
-    "userId": userId,
-    "uid": uid,
     "section": section,
+    "streamURL": streamURL,
+    "titlear": titlear,
+    "titleen": titleen,
+    "uid": uid,
+    "userId": userId,
   };
 }
 

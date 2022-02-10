@@ -10,6 +10,7 @@ import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/page/add-section.dart';
 import 'package:tv/page/notification.dart';
+import 'package:tv/section/channel/favorite_channel.dart';
 
 import '../main.dart';
 import 'channel/channel.dart';
@@ -68,7 +69,11 @@ class _SectionScreenState extends State<SectionScreen> {
                   icon: const Icon(
                     Icons.favorite,
                   ),
-                  onPressed: () => Navigator.pushNamed(context, '/Profile'),
+                  onPressed: () =>  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => FavoriteChannel(
+                              widget.section.name, widget.screenTitle,section: widget.section.index,))),
                 ),
                 title: appBarTitle,
                 centerTitle: true,

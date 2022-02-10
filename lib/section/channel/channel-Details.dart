@@ -55,8 +55,9 @@ class cchannelDetailsState extends State<cchannelDetails> {
       appBar: AppBar(
           actions: [
             StreamBuilder<List<FavoriteModel>>(
-              stream: FirebaseManager.shared
-                  .getFavoriteByChannel(channelId: widget.Channel.uid),
+              stream: FirebaseManager.shared.getFavoriteByChannel(
+                channelId: widget.Channel.uid,
+              ),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<FavoriteModel>? section = snapshot.data;
@@ -128,7 +129,7 @@ class cchannelDetailsState extends State<cchannelDetails> {
 
   addFavoriteChannel() {
     FirebaseManager.shared.addToFavorite(context,
-        channelId: widget.Channel.uid, section: widget.Channel.section.index);
+        channelId: widget.Channel.uid, section: widget.Channel.section.index , channel: widget.Channel);
   }
 
   deleteFavoriteChannel(uid) {

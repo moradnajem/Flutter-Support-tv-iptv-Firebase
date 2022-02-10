@@ -802,6 +802,7 @@ class FirebaseManager {
       {
         required String channelId,
         required int section,
+        required ChannelModel channel,
       }) async {
     showLoaderDialog(context);
     String tempUid =  favoriteRef.doc().id;
@@ -810,6 +811,9 @@ class FirebaseManager {
       "userId": auth.currentUser!.uid,
       "channelId": channelId,
       "section": section,
+      "streamURL": channel.streamURL,
+      "titlear": channel.titleAR,
+      "titleen": channel.titleEN,
     })
         .then((value) {
       showLoaderDialog(context, isShowLoader: false);
@@ -827,9 +831,10 @@ class FirebaseManager {
     showLoaderDialog(context, isShowLoader: false);
   }
 
-  Stream<List<FavoriteModel>> getMyFavorites() {
+  Stream<List<FavoriteModel>> getMyFavorites({required int section}) {
     return favoriteRef
-        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .where("userId",isEqualTo: auth.currentUser!.uid)
+        .where("section",isEqualTo: section)
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
