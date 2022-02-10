@@ -40,6 +40,13 @@ class _SectionScreenState extends State<SectionScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    searchTextField!.dispose();
+    super.dispose();
+  }
+
   Icon actionIcon = const Icon(Icons.search);
 
   Widget build(BuildContext context) {
@@ -89,7 +96,7 @@ class _SectionScreenState extends State<SectionScreen> {
                             ),
                             decoration: const InputDecoration(
                                 prefixIcon:
-                                Icon(Icons.search, color: Colors.blue),
+                                    Icon(Icons.search, color: Colors.blue),
                                 hintText: "Search...",
                                 hintStyle: TextStyle(color: Colors.blue)),
                           );
@@ -127,12 +134,12 @@ class _SectionScreenState extends State<SectionScreen> {
         });
   }
 
-  Widget _widgetUser(context , searchController) {
+  Widget _widgetUser(context, searchController) {
     return StreamBuilder<List<SectionModel>>(
         stream: widget.searchMode
             ? FirebaseManager.shared.getSectionsByName(
-            sectionName: searchController.text,
-            fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+                sectionName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
             : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -148,10 +155,10 @@ class _SectionScreenState extends State<SectionScreen> {
             if (section!.isEmpty) {
               return Center(
                   child: Text(
-                    "No  added",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 18),
-                  ));
+                "No  added",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18),
+              ));
             }
             return ListView.builder(
               itemCount: section.length,
@@ -168,31 +175,24 @@ class _SectionScreenState extends State<SectionScreen> {
                   child: Card(
                     elevation: 1,
                     child: SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.15,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.height * 0.1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                      Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                    lang == Language.ENGLISH
-                                        ? section[index].titleEN
-                                        : section[index].titleAR,
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500))
-                              ],
-                            ),
-
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                  lang == Language.ENGLISH
+                                      ? section[index].titleEN
+                                      : section[index].titleAR,
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500))
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -212,8 +212,8 @@ class _SectionScreenState extends State<SectionScreen> {
     return StreamBuilder<List<SectionModel>>(
         stream: widget.searchMode
             ? FirebaseManager.shared.getSectionsByName(
-            sectionName: searchController.text,
-            fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+                sectionName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
             : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -229,10 +229,10 @@ class _SectionScreenState extends State<SectionScreen> {
             if (section!.isEmpty) {
               return Center(
                   child: Text(
-                    "No  added",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 18),
-                  ));
+                "No  added",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18),
+              ));
             }
             return ListView.builder(
               itemCount: section.length,
@@ -242,59 +242,52 @@ class _SectionScreenState extends State<SectionScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => chanelsection(
-                            section[index].uid,
-                            lang == Language.ENGLISH
-                                ? section[index].titleEN
-                                : section[index].titleAR,
-                          )));
+                                section[index].uid,
+                                lang == Language.ENGLISH
+                                    ? section[index].titleEN
+                                    : section[index].titleAR,
+                              )));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Card(
                     elevation: 1,
                     child: SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.15,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.height * 0.1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                      Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                    lang == Language.ENGLISH
-                                        ? section[index].titleEN
-                                        : section[index].titleAR,
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500)),
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => addsection(
-                                              updateSection: section[index]))),
-                                  //  onPressed: ()  { },
-                                ),
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.delete_forever),
-                                  onPressed: () {
-                                    _deleteSection(context, section[index].uid);
-                                  },
-                                ),
-                              ],
-                            ),
-
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                iconSize: 35,
+                                icon: const Icon(Icons.edit),
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => addsection(
+                                            updateSection: section[index]))),
+                                //  onPressed: ()  { },
+                              ),
+                              Text(
+                                  lang == Language.ENGLISH
+                                      ? section[index].titleEN
+                                      : section[index].titleAR,
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500)),
+                              IconButton(
+                                iconSize: 35,
+                                icon: const Icon(Icons.delete_forever),
+                                onPressed: () {
+                                  _deleteSection(context, section[index].uid);
+                                },
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),

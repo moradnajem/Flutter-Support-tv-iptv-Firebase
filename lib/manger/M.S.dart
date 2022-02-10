@@ -14,6 +14,7 @@ import 'package:tv/models/chat-model.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/status.dart';
+import 'package:tv/models/favoriteModel.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/manger/user-type.dart';
 import 'package:tv/models/user_profile.dart';
@@ -37,6 +38,7 @@ class FirebaseManager {
   final SubscriptionOrderRef = FirebaseFirestore.instance.collection('SubscriptionOrder');
   final notificationRef = FirebaseFirestore.instance.collection('Notification');
   final chatRef = FirebaseFirestore.instance.collection('Chat');
+  final favoriteRef = FirebaseFirestore.instance.collection('Favorite');
   final storageRef = FirebaseStorage.instance.ref();
 
   // TODO:- Start User
@@ -792,6 +794,61 @@ class FirebaseManager {
 
 
   //  TODO:- End Section
+
+
+  // TODO:- Start favorite
+
+  addToFavorite(context,
+      {
+        required String channelId,
+        required int section,
+      }) async {
+    showLoaderDialog(context);
+    String tempUid =  favoriteRef.doc().id;
+    favoriteRef.doc(tempUid).set({
+      "uid": tempUid,
+      "userId": auth.currentUser!.uid,
+      "channelId": channelId,
+      "section": section,
+    })
+        .then((value) {
+      showLoaderDialog(context, isShowLoader: false);
+    })
+        .catchError((err) {
+      showLoaderDialog(context, isShowLoader: false);
+    });
+  }
+
+  deleteFavoriteChannel(context, {required String uid}) async {
+    showLoaderDialog(context);
+
+    await favoriteRef.doc(uid).delete().then((_) => {}).catchError((e) {});
+
+    showLoaderDialog(context, isShowLoader: false);
+  }
+
+  Stream<List<FavoriteModel>> getMyFavorites() {
+    return favoriteRef
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return FavoriteModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
+Stream<List<FavoriteModel>> getFavoriteByChannel({required String channelId}) {
+    return favoriteRef
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .where("channelId", isEqualTo: channelId)
+        .snapshots()
+        .map((QueryDocumentSnapshot) {
+      return QueryDocumentSnapshot.docs.map((doc) {
+        return FavoriteModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
 
   // TODO:- Start channel
 

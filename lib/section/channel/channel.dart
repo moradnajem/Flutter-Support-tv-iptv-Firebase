@@ -44,6 +44,12 @@ class _chanelsectionState extends State<chanelsection> {
     });
   }
 
+@override
+  void dispose() {
+    // TODO: implement dispose
+    searchTextField!.dispose();
+    super.dispose();
+  }
 
   Icon actionIcon = const Icon(Icons.search);
   @override
@@ -102,12 +108,13 @@ class _chanelsectionState extends State<chanelsection> {
                         });
                       },
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.favorite,
-                      ),
-                      onPressed: () => Navigator.pushNamed(context, '/Profile'),
-                    ),                  ]
+                    // IconButton(
+                    //   icon: const Icon(
+                    //     Icons.favorite,
+                    //   ),
+                    //   onPressed: () => Navigator.pushNamed(context, '/Profile'),
+                    // ),  
+                                    ]
               ),
               body: user?.userType == UserType.ADMIN
                   ? _widgetTech(context, searchTextField)
@@ -267,17 +274,7 @@ class _chanelsectionState extends State<chanelsection> {
                                Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(
-                                        lang == Language.ENGLISH
-                                            ? Channel[index].titleEN
-                                            : Channel[index].titleAR,
-                                        style: TextStyle(
-                                            color: Theme
-                                                .of(context)
-                                                .primaryColor,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500)),
-                                    IconButton(
+                                     IconButton(
                                       iconSize: 35,
                                       icon: const Icon(Icons.edit),
                                       onPressed: () =>
@@ -288,6 +285,17 @@ class _chanelsectionState extends State<chanelsection> {
                                                       addchannel(
                                                           channelSelected: Channel[index]))),
                                     ),
+                                    Text(
+                                        lang == Language.ENGLISH
+                                            ? Channel[index].titleEN
+                                            : Channel[index].titleAR,
+                                        style: TextStyle(
+                                            color: Theme
+                                                .of(context)
+                                                .primaryColor,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500)),
+                                   
                                     IconButton(
                                       iconSize: 35,
                                       icon: const Icon(Icons.delete_forever),
