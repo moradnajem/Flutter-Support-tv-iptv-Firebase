@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:tv/manger/M.S.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
@@ -9,6 +8,7 @@ import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 
 import '../main.dart';
+import '../models/lang.dart';
 
 
 class EditProfile extends StatefulWidget {
@@ -64,13 +64,7 @@ class _EditProfileState extends State<EditProfile> {
                                       image: FileImage(_imagePerson!),
                                       fit: BoxFit.cover)),
                             )
-                                : user!.image.isURL() ? Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: NetworkImage(user.image),
-                                      fit: BoxFit.cover)),
-                            ) : Icon(
+                                : Icon(
                               Icons.person,
                               size: 52,
                               color: Theme.of(context).accentColor,
@@ -78,21 +72,6 @@ class _EditProfileState extends State<EditProfile> {
                             radius: 50,
                             backgroundColor: Color(0xFFF0F4F8),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 5,
-                            child: GestureDetector(
-                              onTap: () => _selectImgDialog(context),
-                              child: CircleAvatar(
-                                child: Icon(
-                                  Icons.arrow_upward,
-                                  color: Colors.white,
-                                ),
-                                radius: 15,
-                                backgroundColor: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          )
                         ],
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * (100 / 812)),
@@ -148,7 +127,7 @@ class _EditProfileState extends State<EditProfile> {
                           child: Text(AppLocalization.of(context)!.trans("Edit Profile"),
                               style: TextStyle(color:  Theme.of(context).scaffoldBackgroundColor,fontWeight: FontWeight.bold,
                                 fontSize: 20,)),
-                          onPressed: () => _btnEdit(imgURL: user.image)),
+                          onPressed: () => _btnEdit()),
                       SizedBox(height: 20,),
                     ],
                   ),
@@ -164,57 +143,21 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  _selectImgDialog(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc){
-          return Container(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                    leading: Icon(Icons.camera_alt),
-                    title: Text(AppLocalization.of(context)!.trans('Image form camera')),
-                    onTap: () => _selectImage(type: ImageSource.camera)
-                ),
-                ListTile(
-                  leading: Icon(Icons.image),
-                  title: Text(AppLocalization.of(context)!.trans('Image from gallery')),
-                  onTap: () => _selectImage(type: ImageSource.gallery),
-                ),
-              ],
-            ),
-          );
-        }
-    );
-  }
 
-  _selectImage({ required ImageSource type }) async {
-    PickedFile? image = await ImagePicker.platform.pickImage(
-        source: type);
-    setState(() {
-      _imagePerson = File(image!.path);
-    });
 
-    Navigator.of(context).pop();
-  }
+
 
   bool _validation() {
     return !(name == "" || city == "" || phone == "");
   }
 
-  _btnEdit({ required String imgURL }) {
+  _btnEdit() {
     _formKey.currentState!.save();
 
-    String image = "";
 
-    if (_imagePerson != null) {
-      image = _imagePerson!.path;
-    } else {
-      image = imgURL;
-    }
 
     if (_validation()) {
-      FirebaseManager.shared.updateAccount(scaffoldKey: _scaffoldKey, image: image, name: name!, city: city!, phoneNumber: phone!);
+      FirebaseManager.shared.updateAccount(scaffoldKey: _scaffoldKey, name: name!, city: city!, phoneNumber: phone!,);
     } else {
       _scaffoldKey.showTosta(message: AppLocalization.of(context)!.trans("Please fill in all fields"), isError: true);
     }

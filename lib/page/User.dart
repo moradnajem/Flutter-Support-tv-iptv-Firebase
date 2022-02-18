@@ -7,7 +7,7 @@ import 'package:tv/models/loader.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 
-import '../../main.dart';
+import '../models/lang.dart';
 import 'notification.dart';
 
 

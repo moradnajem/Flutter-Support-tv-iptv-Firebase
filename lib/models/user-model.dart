@@ -15,7 +15,6 @@ String userModelToJson(UserModel data) => json.encode(data.toJson());
 class UserModel {
   UserModel({
      this.id,
-     required this.image,
      required this.name,
      this.phone,
      this.email,
@@ -27,7 +26,6 @@ class UserModel {
   });
 
   String? id;
-  String image;
   String name;
   String? phone;
   String? email;
@@ -39,7 +37,6 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic>? json) => UserModel(
     id: json!["id"],
-    image: json["image"],
     name: json["name"],
     phone: json["phone"],
     email: json["email"],
@@ -52,7 +49,6 @@ class UserModel {
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "image": image,
     "name": name,
     "phone": phone,
     "email": email,

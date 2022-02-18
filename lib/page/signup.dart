@@ -1,40 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:tv/manger/M.S.dart';
-import 'package:tv/models/alert_sheet.dart';
 import 'package:tv/models/assets.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
-import 'package:tv/manger/user-type.dart';
-import '../main.dart';
+import '../models/lang.dart';
 
 
 class Signup extends StatefulWidget {
   @override
-  final UserType userType;
 
-  const Signup({Key? key, required this.userType}) : super(key: key);
+  const Signup({Key? key, }) : super(key: key);
   _SignupState createState() => _SignupState();
 }
 
 class _SignupState extends State<Signup> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   GlobalKey<FormState> _formKey = GlobalKey();
- // TextEditingController _userTypeController = TextEditingController();
 
   late String username;
   late String email;
   late String password;
   late String city;
   late String phoneNumber;
- // late UserType userType;
   bool agreeToPrivacy = false;
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-  //  _userTypeController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,31 +128,6 @@ class _SignupState extends State<Signup> {
                               ).copyWith(hintText: AppLocalization.of(context)!.trans("Phone Number")),
                             ),
                             const SizedBox(height: 20,),
- /*                           TextFormField(
-                              controller: _userTypeController,
-                              onTap: () {
-                                alertSheet(context, title: "User type", items: ["ADMIN", "USER"], onTap: (value) {
-                                  _userTypeController.text = value;
-                                  if (value == "ADMIN") {
-                                    userType = UserType.ADMIN;
-                                  } else {
-                                    userType = UserType.USER;
-                                  }
-                                  return;
-                                });
-                              },
-                              readOnly: true,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              decoration: customInputForm.copyWith(prefixIcon: Icon(
-                                Icons.person_outline,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              ).copyWith(hintText: "User type"),
-                            ),
-                            SizedBox(height: 20,), */
                             Row(
                               children: [
                                 Checkbox(value: agreeToPrivacy, activeColor: Theme.of(context).primaryColor, onChanged: (value) => {
@@ -214,6 +177,6 @@ class _SignupState extends State<Signup> {
       _scaffoldKey.showTosta(message: AppLocalization.of(context)!.trans("Please agree to the privacy terms"), isError: true);
       return;
     }
-    FirebaseManager.shared.createAccountUser(scaffoldKey: _scaffoldKey, name: username, phone: phoneNumber, email: email, city: city, password: password, imagePath: '',  userType: widget.userType);
+    FirebaseManager.shared.createAccountUser(scaffoldKey: _scaffoldKey, name: username, phone: phoneNumber, email: email, city: city, password: password,);
   }
 }

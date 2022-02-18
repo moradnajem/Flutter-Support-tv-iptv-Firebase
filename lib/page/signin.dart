@@ -3,12 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tv/manger/M.S.dart';
-import 'package:tv/manger/user-type.dart';
 import 'package:tv/models/assets.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 
-import '../main.dart';
+import '../models/lang.dart';
 
 
 
@@ -16,9 +15,8 @@ import '../main.dart';
 class SignIn extends StatefulWidget {
 
   final Object?  message;
-  final UserType userType;
 
-  const SignIn({Key? key, this.message, required this.userType}) : super(key: key);
+  const SignIn({Key? key, this.message}) : super(key: key);
   @override
   _SignInState createState() => _SignInState();
 }
@@ -31,11 +29,7 @@ class _SignInState extends State<SignIn> {
   bool isShowPassword = false;
   @override
 
-  FocusNode inputNode = FocusNode();
-// to open keyboard call this function;
-  void openKeyboard(){
-    FocusScope.of(context).requestFocus(inputNode);
-  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -99,8 +93,6 @@ class _SignInState extends State<SignIn> {
                           children: [
                             TextFormField(
                               onSaved: (value) => email = value!.trim(),
-                              focusNode: inputNode,
-                              autofocus: false,
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               style: TextStyle(
@@ -158,38 +150,7 @@ class _SignInState extends State<SignIn> {
                                 child: Text(AppLocalization.of(context)!.trans("Sign In"),
                                     style: TextStyle(color: Theme.of(context).canvasColor,)),
                                 onPressed:  _btnSignin),
-                        Visibility(
-                          visible: true,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 20,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor.withOpacity(0.1),
-                                      shape: BoxShape.circle,
-                                    ),
-                                            child: IconButton(icon: SvgPicture.asset(Assets.shared.icGoogle, width: 50, height: 50,), tooltip: AppLocalization.of(context)!.trans("Sign in with Google"), onPressed: _btnSigninWithGoogle),
-                                  ),
-                                  Visibility(
-                                    visible:(kIsWeb || Platform.isMacOS != Platform.isIOS),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                               child: IconButton(icon: SvgPicture.asset(Assets.shared.icApple, width: 50, height: 50,), tooltip: AppLocalization.of(context)!.trans("Sign in with Apple"), onPressed: _btnSigninWithApple)
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+
                         Column(
                           children: [
                             const SizedBox(height: 20),
@@ -237,16 +198,4 @@ class _SignInState extends State<SignIn> {
 
     FirebaseManager.shared.login(scaffoldKey: _scaffoldKey, email: email, password: password);
   }
-
-_btnSigninWithGoogle() {
-   FirebaseManager.shared.signInWithGoogle(scaffoldKey: _scaffoldKey, userType: widget.userType);
-}
-
-_btnSigninWithTwitter() {
-  // FirebaseManager.shared.signInWithTwitter(scaffoldKey: _scaffoldKey, userType: widget.userType);
-}
-
-_btnSigninWithApple() {
-   FirebaseManager.shared.signInWithApple(scaffoldKey: _scaffoldKey, userType: widget.userType);
-}
 }

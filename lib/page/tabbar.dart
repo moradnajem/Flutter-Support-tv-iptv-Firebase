@@ -3,10 +3,8 @@ import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/user-type.dart';
 import 'package:tv/page/profile.dart';
 import 'package:tv/section/Section.dart';
-import '../main.dart';
-import 'User.dart';
+import '../models/lang.dart';
 
-import '../favorite/favorite.dart';
 
 
 class TabBarItem {

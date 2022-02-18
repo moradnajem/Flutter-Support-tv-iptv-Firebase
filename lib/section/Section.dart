@@ -10,8 +10,9 @@ import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/page/add-section.dart';
 import 'package:tv/page/notification.dart';
+import 'package:tv/section/channel/favorite_channel.dart';
 
-import '../main.dart';
+import '../models/lang.dart';
 import 'channel/channel.dart';
 
 class SectionScreen extends StatefulWidget {
@@ -40,6 +41,13 @@ class _SectionScreenState extends State<SectionScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    searchTextField!.dispose();
+    super.dispose();
+  }
+
   Icon actionIcon = const Icon(Icons.search);
 
   Widget build(BuildContext context) {
@@ -61,7 +69,11 @@ class _SectionScreenState extends State<SectionScreen> {
                   icon: const Icon(
                     Icons.favorite,
                   ),
-                  onPressed: () => Navigator.pushNamed(context, '/Profile'),
+                  onPressed: () =>  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => FavoriteChannel(
+                              widget.section.name, widget.screenTitle,section: widget.section.index,))),
                 ),
                 title: appBarTitle,
                 centerTitle: true,
@@ -89,7 +101,7 @@ class _SectionScreenState extends State<SectionScreen> {
                             ),
                             decoration: const InputDecoration(
                                 prefixIcon:
-                                Icon(Icons.search, color: Colors.blue),
+                                    Icon(Icons.search, color: Colors.blue),
                                 hintText: "Search...",
                                 hintStyle: TextStyle(color: Colors.blue)),
                           );
@@ -127,12 +139,12 @@ class _SectionScreenState extends State<SectionScreen> {
         });
   }
 
-  Widget _widgetUser(context , searchController) {
+  Widget _widgetUser(context, searchController) {
     return StreamBuilder<List<SectionModel>>(
         stream: widget.searchMode
             ? FirebaseManager.shared.getSectionsByName(
-            sectionName: searchController.text,
-            fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+                sectionName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
             : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -148,63 +160,61 @@ class _SectionScreenState extends State<SectionScreen> {
             if (section!.isEmpty) {
               return Center(
                   child: Text(
-                    "No  added",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 18),
-                  ));
+                "No  added",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18),
+              ));
             }
             return ListView.builder(
-              itemCount: section.length,
-              itemBuilder: (buildContext, index) => GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => chanelsection(
-                              section[index].uid, widget.screenTitle)));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Card(
-                    elevation: 1,
-                    child: SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.15,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                      Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                    lang == Language.ENGLISH
-                                        ? section[index].titleEN
-                                        : section[index].titleAR,
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500))
-                              ],
-                            ),
+                itemCount: section.length,
+                itemBuilder: (item,index) {
+                  return MaterialButton(onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => chanelsection(
+                              section[index].uid,
+                              lang == Language.ENGLISH
+                                  ? section[index].titleEN
+                                  : section[index].titleAR,
+                            )));
+                  },
+                      child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Card(
 
-                        ],
+                              child: Column(
+                                  children: <Widget>[
+                              Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                              Text(
+                              lang == Language.ENGLISH
+                                  ? section[index].titleEN
+                                  : section[index].titleAR,
+                              style: TextStyle(
+                                  color: Theme
+                                      .of(context)
+                                      .primaryColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500
+                              ))],
+                              ),
+                                ],
+                              ),
+                          ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
-            );
+                  );
+
+                });
           } else {
-            return Center(child: loader(context));
+            return Center(
+              child: loader(context),
+            );
           }
         });
   }
+
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
@@ -212,8 +222,8 @@ class _SectionScreenState extends State<SectionScreen> {
     return StreamBuilder<List<SectionModel>>(
         stream: widget.searchMode
             ? FirebaseManager.shared.getSectionsByName(
-            sectionName: searchController.text,
-            fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
+                sectionName: searchController.text,
+                fieldType: lang == Language.ENGLISH ? "title-en" : "title-ar")
             : FirebaseManager.shared.getSection(section: widget.section),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -229,62 +239,57 @@ class _SectionScreenState extends State<SectionScreen> {
             if (section!.isEmpty) {
               return Center(
                   child: Text(
-                    "No  added",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 18),
-                  ));
+                "No  added",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18),
+              ));
             }
             return ListView.builder(
-              itemCount: section.length,
-              itemBuilder: (buildContext, index) => GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => chanelsection(
-                            section[index].uid,
-                            lang == Language.ENGLISH
-                                ? section[index].titleEN
-                                : section[index].titleAR,
-                          )));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Card(
-                    elevation: 1,
-                    child: SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.15,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                      Row(
+                itemCount: section.length,
+                itemBuilder: (item,index) {
+                  return MaterialButton(onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                chanelsection(
+                                  section[index].uid,
+                                  lang == Language.ENGLISH
+                                      ? section[index].titleEN
+                                      : section[index].titleAR,
+                                )));
+                  },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Card(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
+                                IconButton(
+                                  iconSize: 35,
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () =>
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  addsection(
+                                                      updateSection: section[index]))),
+                                  //  onPressed: ()  { },
+                                ),
                                 Text(
                                     lang == Language.ENGLISH
                                         ? section[index].titleEN
                                         : section[index].titleAR,
                                     style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
+                                        color: Theme
+                                            .of(context)
+                                            .primaryColor,
                                         fontSize: 18,
                                         fontWeight: FontWeight.w500)),
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => addsection(
-                                              updateSection: section[index]))),
-                                  //  onPressed: ()  { },
-                                ),
                                 IconButton(
                                   iconSize: 35,
                                   icon: const Icon(Icons.delete_forever),
@@ -294,14 +299,12 @@ class _SectionScreenState extends State<SectionScreen> {
                                 ),
                               ],
                             ),
-
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-            );
+                  );
+                });
           } else {
             return Center(
               child: loader(context),
@@ -328,7 +331,7 @@ class _SectionScreenState extends State<SectionScreen> {
               CupertinoActionSheetAction(
                 child: const Text('addchannel'),
                 isDestructiveAction: false,
-                onPressed: () => Navigator.pushNamed(context, '/addchannel'),
+                onPressed: () => Navigator.pushNamed(context, '/laddchannel'),
               )
             ],
             cancelButton: CupertinoActionSheetAction(

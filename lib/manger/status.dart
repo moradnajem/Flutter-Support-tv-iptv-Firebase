@@ -3,7 +3,5 @@ enum Status {
   PENDING,
   Rejected,
   Deleted,
-  Finished,
   Disable,
-  canceled,
 }

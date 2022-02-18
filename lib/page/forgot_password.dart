@@ -5,7 +5,7 @@ import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 
 
-import '../main.dart';
+import '../models/lang.dart';
 
 
 class ForgotPassword extends StatelessWidget {

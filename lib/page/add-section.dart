@@ -9,7 +9,7 @@ import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 import 'package:tv/manger/Section.dart';
 
-import '../main.dart';
+import '../models/lang.dart';
 
 class addsection extends StatefulWidget {
   SectionModel? updateSection;

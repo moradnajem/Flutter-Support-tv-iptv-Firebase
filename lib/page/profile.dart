@@ -9,6 +9,7 @@ import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 
 import '../main.dart';
+import '../models/lang.dart';
 import 'notification.dart';
 
 
@@ -21,7 +22,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  List<ProfileList> items = [ ProfileList.CHANGE_LANGUAGE, ProfileList.EDIT_PROFILE, ProfileList.EDIT_PASSWORD, ProfileList.USERS, ProfileList.Subscriptions, ProfileList.Orders, ProfileList.LOGOUT];
+  List<ProfileList> items = [ ProfileList.CHANGE_LANGUAGE, ProfileList.EDIT_PROFILE, ProfileList.EDIT_PASSWORD, ProfileList.USERS, ProfileList.LOGOUT];
 
   Future<UserModel?> user = UserProfile.shared.getUser();
 
@@ -32,9 +33,6 @@ class _ProfileState extends State<Profile> {
     user.then((value) {
       if (value!.userType != UserType.ADMIN) {
         items.remove(ProfileList.USERS);
-      }
-      if (value.userType != UserType.ADMIN) {
-        items.remove(ProfileList.Orders);
       }
     });
   }
@@ -73,15 +71,7 @@ class _ProfileState extends State<Profile> {
                   Row(
                     children: [
                       CircleAvatar(
-                        child: user!.image != ""
-                            ? Container(
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: NetworkImage(user.image),
-                                  fit: BoxFit.cover)),
-                        )
-                            : Icon(
+                     child: Icon(
                           Icons.person,
                           size: 52,
                           color: Theme.of(context).accentColor,
@@ -93,7 +83,7 @@ class _ProfileState extends State<Profile> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(user.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor,),),
+                          Text(user!.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor,),),
                           SizedBox(height: 5),
                           Text( user.userType == UserType.ADMIN ? AppLocalization.of(context)!.trans("admin") : AppLocalization.of(context)!.trans("user"), style: TextStyle(fontSize: 16),),
                         ],
@@ -140,14 +130,6 @@ class _ProfileState extends State<Profile> {
         case ProfileList.USERS:
         title = "Users";
         screen = "/Users";
-        break;
-        case ProfileList.Subscriptions:
-        title = "Subscriptions";
-        screen = "/Subscriptions";
-        break;
-        case ProfileList.Orders:
-        title = "Orders";
-        screen = "/Orders";
         break;
       case ProfileList.LOGOUT:
         title = "Logout";

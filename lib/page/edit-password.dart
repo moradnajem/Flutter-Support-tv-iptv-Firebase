@@ -3,7 +3,7 @@ import 'package:tv/manger/M.S.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/models/input_style.dart';
 
-import '../main.dart';
+import '../models/lang.dart';
 
 
 class EditPassword extends StatelessWidget {
