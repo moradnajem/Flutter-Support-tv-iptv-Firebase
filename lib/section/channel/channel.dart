@@ -8,6 +8,9 @@ import 'package:tv/models/loader.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 
+import 'package:tv/page/notification.dart';
+
+import '../../main.dart';
 import '../../page/add-channel.dart';
 import 'channel-Details.dart';
 
@@ -122,9 +125,10 @@ class _chanelsectionState extends State<chanelsection> {
           return const SizedBox();
         });
   }
- 
+
   Widget _widgetUser(context, searchController) {
     return StreamBuilder<List<ChannelModel>>(
+
         stream: widget.searchMode
             ? FirebaseManager.shared.getchannelByName(
             channelName: searchController.text,
@@ -149,9 +153,10 @@ class _chanelsectionState extends State<chanelsection> {
                   .primaryColor, fontSize: 18),));
             }
             return ListView.builder(
-                itemCount: Channel.length,
-                itemBuilder: (item,index) {
-                  return MaterialButton(onPressed: () {
+              itemCount: Channel.length,
+              itemBuilder: (buildContext, index) =>
+                  GestureDetector(
+                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -161,12 +166,26 @@ class _chanelsectionState extends State<chanelsection> {
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Card(
-
+                        elevation: 1,
+                        child: SizedBox(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.15,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.1,
                           child: Column(
                             children: <Widget>[
                           Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
+                                  IconButton(
+                                    iconSize: 35,
+                                    icon: const Icon(Icons.favorite),
+                                    onPressed: () {},
+                                  ),
                                   Text(
                                       lang == Language.ENGLISH
                                           ? Channel[index].titleEN
@@ -176,24 +195,23 @@ class _chanelsectionState extends State<chanelsection> {
                                           .primaryColor,
                                           fontSize: 18,
                                           fontWeight: FontWeight
-                                              .w500
-                                      ))],
-                          ),
-                            ],
-                          ),
+                                              .w500)
+                                  )
+                                ],
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-
-                });
-          } else {
-            return Center(
-              child: loader(context),
+                  ),
+                  ),
             );
+          } else {
+            return Center(child: loader(context));
           }
-        });
+        }
+    );
   }
-
 
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -227,62 +245,74 @@ class _chanelsectionState extends State<chanelsection> {
                   ));
             }
             return ListView.builder(
-                itemCount: Channel.length,
-                itemBuilder: (item,index) {
-                  return MaterialButton(onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) =>
-                                cchannelDetails(Channel: Channel[index],)));
-                  },
+              itemCount: Channel.length,
+              itemBuilder: (buildContext, index) =>
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  cchannelDetails(Channel: Channel[index],)));
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () =>
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  addchannel(
-                                                      channelSelected: Channel[index]))),
+                        elevation: 1,
+                        child: SizedBox(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.15,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                               Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                     IconButton(
+                                      iconSize: 35,
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () =>
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      addchannel(
+                                                          channelSelected: Channel[index]))),
+                                    ),
+                                    Text(
+                                        lang == Language.ENGLISH
+                                            ? Channel[index].titleEN
+                                            : Channel[index].titleAR,
+                                        style: TextStyle(
+                                            color: Theme
+                                                .of(context)
+                                                .primaryColor,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500)),
+                                   
+                                    IconButton(
+                                      iconSize: 35,
+                                      icon: const Icon(Icons.delete_forever),
+                                      onPressed: () {
+                                        _deleteaddchannel(
+                                            context, Channel[index].uid);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                    lang == Language.ENGLISH
-                                        ? Channel[index].titleEN
-                                        : Channel[index].titleAR,
-                                    style: TextStyle(
-                                        color: Theme
-                                            .of(context)
-                                            .primaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500)),
-
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.delete_forever),
-                                  onPressed: () {
-                                    _deleteaddchannel(
-                                        context, Channel[index].uid);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  );
-                });
+                  ),
+            );
           } else {
             return Center(
               child: loader(context),

@@ -97,65 +97,62 @@ class _FavoriteChannelState extends State<FavoriteChannel> {
               ));
             }
             return ListView.builder(
-                itemCount: Channel.length,
-                itemBuilder: (item,index) {
-                  return MaterialButton(onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) =>
-                                cchannelDetails(
-                                  Channel: ChannelModel(
-                                      section:
-                                      Section.values[Channel[index].section],
-                                      uid: Channel[index].channelId,
-                                      streamURL: Channel[index].streamURL,
-                                      titleAR: Channel[index].titlear,
-                                      titleEN: Channel[index].titleen,
-                                      sectionuid: ""),
-                                )));
-                  },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Card(
-
-                          child: Column(
+              itemCount: Channel.length,
+              itemBuilder: (buildContext, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => cchannelDetails(
+                                Channel: ChannelModel(
+                                    section:
+                                        Section.values[Channel[index].section],
+                                    uid: Channel[index].channelId,
+                                    streamURL: Channel[index].streamURL,
+                                    titleAR: Channel[index].titlear,
+                                    titleEN: Channel[index].titleen,
+                                    sectionuid: ""),
+                              )));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Card(
+                    elevation: 1,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.height * 0.1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-
                             children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  IconButton(
-                                    iconSize: 35,
-                                    icon: const Icon(Icons.favorite),
-                                    onPressed: () {
-                                      FirebaseManager.shared
-                                          .deleteFavoriteChannel(
-                                          context,
-                                          uid: Channel[index].uid);
-                                    },
-                                  ),
-                                  Text(
-                                      lang == Language.ENGLISH
-                                          ? Channel[index].titleen
-                                          : Channel[index].titlear,
-                                      style: TextStyle(
-                                          color: Theme
-                                              .of(context)
-                                              .primaryColor,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500)),
-
-                                ],
+                              Text(
+                                  lang == Language.ENGLISH
+                                      ? Channel[index].titleen
+                                      : Channel[index].titlear,
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500)),
+                              IconButton(
+                                iconSize: 35,
+                                icon: const Icon(Icons.favorite),
+                                onPressed: () {
+                                  FirebaseManager.shared.deleteFavoriteChannel(
+                                      context,
+                                      uid: Channel[index].uid);
+                                },
                               ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
-                    );
-
-                });
+                    ),
+                  ),
+                ),
+              ),
+            );
           } else {
             return Center(
               child: loader(context),
@@ -182,65 +179,62 @@ class _FavoriteChannelState extends State<FavoriteChannel> {
               ));
             }
             return ListView.builder(
-                itemCount: Channel.length,
-                itemBuilder: (item,index) {
-                  return MaterialButton(onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) =>
-                                cchannelDetails(
-                                  Channel: ChannelModel(
-                                      section:
-                                      Section.values[Channel[index].section],
-                                      uid: Channel[index].channelId,
-                                      streamURL: Channel[index].streamURL,
-                                      titleAR: Channel[index].titlear,
-                                      titleEN: Channel[index].titleen,
-                                      sectionuid: ""),
-                                )));
-                  },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Card(
-
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.favorite),
-                                  onPressed: () {
-                                    FirebaseManager.shared
-                                        .deleteFavoriteChannel(
-                                        context,
-                                        uid: Channel[index].uid);
-                                  },
-                                ),
-                                Text(
-                                    lang == Language.ENGLISH
-                                        ? Channel[index].titleen
-                                        : Channel[index].titlear,
-                                    style: TextStyle(
-                                        color: Theme
-                                            .of(context)
-                                            .primaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500)),
-
-                              ],
-                            ),
-                          ],
-                        ),
+              itemCount: Channel.length,
+              itemBuilder: (buildContext, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => cchannelDetails(
+                                Channel: ChannelModel(
+                                    section:
+                                        Section.values[Channel[index].section],
+                                    uid: Channel[index].channelId,
+                                    streamURL: Channel[index].streamURL,
+                                    titleAR: Channel[index].titlear,
+                                    titleEN: Channel[index].titleen,
+                                    sectionuid: ""),
+                              )));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Card(
+                    elevation: 1,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.height * 0.1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                  lang == Language.ENGLISH
+                                      ? Channel[index].titleen
+                                      : Channel[index].titlear,
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500)),
+                              IconButton(
+                                iconSize: 35,
+                                icon: const Icon(Icons.favorite),
+                                onPressed: () {
+                                  FirebaseManager.shared.deleteFavoriteChannel(
+                                      context,
+                                      uid: Channel[index].uid);
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  );
-
-                });
+                  ),
+                ),
+              ),
+            );
           } else {
             return Center(
               child: loader(context),
@@ -249,7 +243,9 @@ class _FavoriteChannelState extends State<FavoriteChannel> {
         });
   }
 
-
+  _deleteaddchannel(context, String uidchannel) {
+    FirebaseManager.shared.deletechannel(context, uidchannel: uidchannel);
+  }
 
   //  Stream<List<ChannelModel>> getMyFavorite(){
 

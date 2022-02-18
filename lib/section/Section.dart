@@ -12,7 +12,7 @@ import 'package:tv/page/add-section.dart';
 import 'package:tv/page/notification.dart';
 import 'package:tv/section/channel/favorite_channel.dart';
 
-import '../models/lang.dart';
+import '../main.dart';
 import 'channel/channel.dart';
 
 class SectionScreen extends StatefulWidget {
@@ -166,55 +166,50 @@ class _SectionScreenState extends State<SectionScreen> {
               ));
             }
             return ListView.builder(
-                itemCount: section.length,
-                itemBuilder: (item,index) {
-                  return MaterialButton(onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => chanelsection(
-                              section[index].uid,
-                              lang == Language.ENGLISH
-                                  ? section[index].titleEN
-                                  : section[index].titleAR,
-                            )));
-                  },
-                      child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Card(
-
-                              child: Column(
-                                  children: <Widget>[
-                              Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
+              itemCount: section.length,
+              itemBuilder: (buildContext, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => chanelsection(
+                              section[index].uid, widget.screenTitle)));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Card(
+                    elevation: 1,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.height * 0.1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
                               Text(
-                              lang == Language.ENGLISH
-                                  ? section[index].titleEN
-                                  : section[index].titleAR,
-                              style: TextStyle(
-                                  color: Theme
-                                      .of(context)
-                                      .primaryColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500
-                              ))],
-                              ),
-                                ],
-                              ),
+                                  lang == Language.ENGLISH
+                                      ? section[index].titleEN
+                                      : section[index].titleAR,
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500))
+                            ],
                           ),
+                        ],
                       ),
-                  );
-
-                });
-          } else {
-            return Center(
-              child: loader(context),
+                    ),
+                  ),
+                ),
+              ),
             );
+          } else {
+            return Center(child: loader(context));
           }
         });
   }
-
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
@@ -245,66 +240,66 @@ class _SectionScreenState extends State<SectionScreen> {
               ));
             }
             return ListView.builder(
-                itemCount: section.length,
-                itemBuilder: (item,index) {
-                  return MaterialButton(onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) =>
-                                chanelsection(
-                                  section[index].uid,
+              itemCount: section.length,
+              itemBuilder: (buildContext, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => chanelsection(
+                                section[index].uid,
+                                lang == Language.ENGLISH
+                                    ? section[index].titleEN
+                                    : section[index].titleAR,
+                              )));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Card(
+                    elevation: 1,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.height * 0.1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                iconSize: 35,
+                                icon: const Icon(Icons.edit),
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => addsection(
+                                            updateSection: section[index]))),
+                                //  onPressed: ()  { },
+                              ),
+                              Text(
                                   lang == Language.ENGLISH
                                       ? section[index].titleEN
                                       : section[index].titleAR,
-                                )));
-                  },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () =>
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  addsection(
-                                                      updateSection: section[index]))),
-                                  //  onPressed: ()  { },
-                                ),
-                                Text(
-                                    lang == Language.ENGLISH
-                                        ? section[index].titleEN
-                                        : section[index].titleAR,
-                                    style: TextStyle(
-                                        color: Theme
-                                            .of(context)
-                                            .primaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500)),
-                                IconButton(
-                                  iconSize: 35,
-                                  icon: const Icon(Icons.delete_forever),
-                                  onPressed: () {
-                                    _deleteSection(context, section[index].uid);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500)),
+                              IconButton(
+                                iconSize: 35,
+                                icon: const Icon(Icons.delete_forever),
+                                onPressed: () {
+                                  _deleteSection(context, section[index].uid);
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                });
+                  ),
+                ),
+              ),
+            );
           } else {
             return Center(
               child: loader(context),
@@ -331,7 +326,7 @@ class _SectionScreenState extends State<SectionScreen> {
               CupertinoActionSheetAction(
                 child: const Text('addchannel'),
                 isDestructiveAction: false,
-                onPressed: () => Navigator.pushNamed(context, '/laddchannel'),
+                onPressed: () => Navigator.pushNamed(context, '/addchannel'),
               )
             ],
             cancelButton: CupertinoActionSheetAction(
