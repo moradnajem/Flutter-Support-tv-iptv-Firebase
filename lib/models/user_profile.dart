@@ -9,9 +9,11 @@ class UserProfile {
   Future<Language?> getLanguage() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? languageIndex = prefs.get('language') as int?;
-      return languageIndex == null ? null : Language.values[languageIndex];
-    } catch(e) {
+      var languageIndex = prefs.get('language');
+      return languageIndex == null
+          ? Language.values[0]
+          : Language.values[int.parse(languageIndex.toString())];
+    } catch (e) {
       return null;
     }
   }
