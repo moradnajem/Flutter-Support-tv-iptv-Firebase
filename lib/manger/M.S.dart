@@ -2,15 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:tv/Subscriptions/SubscriptionOrdermodel.dart';
-import 'package:tv/Subscriptions/SubscriptionsModel.dart';
-import 'package:tv/models/chat-model.dart';
 import 'package:tv/models/extensions.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/status.dart';
@@ -20,8 +13,7 @@ import 'package:tv/manger/user-type.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/models/channelModel.dart';
 import 'package:tv/models/SectionModel.dart';
-import 'package:uuid/uuid.dart';
-import '../main.dart';
+import '../models/lang.dart';
 import '../models/loader.dart';
 import '../models/notification-model.dart';
 
@@ -34,12 +26,8 @@ class FirebaseManager {
   final userRef = FirebaseFirestore.instance.collection('User');
   final sectionRef = FirebaseFirestore.instance.collection('section');
   final channelRef = FirebaseFirestore.instance.collection('channel');
-  final SubscriptionRef = FirebaseFirestore.instance.collection('Subscription');
-  final SubscriptionOrderRef = FirebaseFirestore.instance.collection('SubscriptionOrder');
   final notificationRef = FirebaseFirestore.instance.collection('Notification');
-  final chatRef = FirebaseFirestore.instance.collection('Chat');
   final favoriteRef = FirebaseFirestore.instance.collection('Favorite');
-  final storageRef = FirebaseStorage.instance.ref();
 
   // TODO:- Start User
 
@@ -64,75 +52,13 @@ class FirebaseManager {
     return getUserByUid(uid: auth.currentUser!.uid);
   }
 
-  createAccountAUTH (
-      {
-        required GlobalKey<ScaffoldState> scaffoldKey,
-        required UserType userType,
-        required UserCredential user,
-      }) async {
-
-    showLoaderDialog(scaffoldKey.currentContext);
-
-    var userId = user.user!.uid;
-
-    if (userId != null) {
-      userRef.doc(userId).set({
-        "id": "${Random().nextInt(99999)}",
-        "image": user.user!.photoURL == null ? "" : user.user!.photoURL,
-        "name": user.user!.displayName == null ? "" : user.user!.displayName,
-        "phone": user.user!.phoneNumber == null ? "" : user.user!.phoneNumber,
-        "city": "",
-        "createdDate": DateTime.now().toString(),
-        "email": user.user!.email,
-        "status-account": 1,
-        "type-user": 1,
-        "uid": userId,
-      })
-          .then((value) async {
-        showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-        addNotifications(uidUser: userId,
-            titleEN: "Welcome",
-            titleAR: "مرحبا بك",
-            detailsEN: "Welcome to our app\nWe wish you a happy experience",
-            detailsAR: "مرحبا بك في تطبيقنا\nنتمنى لك تجربة رائعة");
-
-        await getAllUsers().first.then((users) {
-          for (var user in users) {
-            if (user.userType == UserType.ADMIN) {
-              addNotifications(uidUser: user.uid!,
-                  titleEN: "New User",
-                  titleAR: "مستخدم جديد",
-                  detailsEN: " new created a new account",
-                  detailsAR: " أنشأ حساب جديد "
-              );
-            }
-          }
-        });
-
-        Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil(
-            "/SignIn", (route) => false,
-            arguments: "Account created successfully, Your account in now under review");
-      })
-          .catchError((err) {
-        showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-        scaffoldKey.showTosta(
-            message: AppLocalization.of(scaffoldKey.currentContext!)!.trans(
-                "Something went wrong"), isError: true);
-      });
-    } else {
-      showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-    }
-  }
-
   createAccountUser({
     required GlobalKey<ScaffoldState> scaffoldKey,
-    required String imagePath,
     required String name,
     required String phone,
     required String email,
     required String city,
     required String password,
-    required UserType userType,
   }) async {
     showLoaderDialog(scaffoldKey.currentContext);
     if (!email.isValidEmail()) {
@@ -145,11 +71,9 @@ class FirebaseManager {
 
     var userId = await _createAccountInFirebase(
         scaffoldKey: scaffoldKey, email: email, password: password);
-    String imgUrl = "";
     if (userId != null) {
       userRef.doc(userId).set({
         "id": "${Random().nextInt(99999)}",
-        "image": imgUrl,
         "name": name,
         "phone": phone,
         "email": email,
@@ -219,26 +143,16 @@ class FirebaseManager {
 
   updateAccount({
     required GlobalKey<ScaffoldState> scaffoldKey,
-    required String image,
     required String name,
     required String city,
     required String phoneNumber,
   }) async {
     showLoaderDialog(scaffoldKey.currentContext);
 
-    String imageURL = "";
 
-    if (image != "") {
-      if (image.isURL()) {
-        imageURL = image;
-      } else {
-             imageURL = await _uploadImage(folderName: "user", imagePath: image);
-      }
-    }
 
 
     userRef.doc(auth.currentUser!.uid).update({
-      "image": imageURL,
       "name": name,
       "phone": phoneNumber,
       "city": city,
@@ -246,8 +160,7 @@ class FirebaseManager {
         .then((value) async {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
       UserModel? user = (await UserProfile.shared.getUser());
-      user!.image = imageURL;
-      user.name = name;
+      user!.name = name;
       user.city = city;
       user.phone = phoneNumber;
       UserProfile.shared.setUser(user: user);
@@ -279,232 +192,6 @@ class FirebaseManager {
   }
 
   // TODO:- End User
-  // TODO:- Start Auth
-
-  signInWithGoogle({ required GlobalKey<ScaffoldState> scaffoldKey, required UserType userType }) async {
-
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-    DocumentSnapshot doc = await userRef.doc(userCredential.user!.uid).get();
-
-    if (!doc.exists) {
-
-      if (userType != UserType.USER) {
-        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("This feature is allowed for admin only"), isError: true);
-        return;
-      } else {
-        createAccountAUTH(scaffoldKey: scaffoldKey, userType: userType, user: userCredential);
-      }
-
-    } else {
-      await getUserByUid(uid: userCredential.user!.uid).then((UserModel user) {
-
-        if (user.userType != userType) {
-          scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("User not found"), isError: true);
-          auth.signOut();
-          return;
-        }
-
-        switch (user.accountStatus) {
-          case Status.ACTIVE:
-            UserProfile.shared.setUser(user: user);
-            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil('/TabBarPage', (Route<dynamic> route) => false, arguments: user.userType);
-            break;
-          case Status.PENDING:
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Account under review"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Rejected:
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been denied"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Deleted:
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been deleted"), isError: true);
-            auth.signOut();
-            break;
-        }
-
-      });
-    }
-  }
-
- /*  signInWithTwitter({ required GlobalKey<ScaffoldState> scaffoldKey, required UserType userType }) async {
-     final TwitterLogin twitterLogin = TwitterLogin(
-       consumerKey: 'yxIMMy6eUgPF7B4oLxhyU9zBF',
-       consumerSecret:'Ec2HGWOTpjJTX9wx8QYx8XefPCNSFLcCRD4oep0c19eTOZTqOe',
-       redirectURI: '',
-     );
-
-     final TwitterLoginResult loginResult = await twitterLogin.authorize();
-
-     final TwitterSession twitterSession = loginResult.session;
-
-     final twitterAuthCredential = TwitterAuthProvider.credential(
-       accessToken: twitterSession.token,
-       secret: twitterSession.secret,
-     );
-
-     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
-
-     DocumentSnapshot doc = await userRef.doc(userCredential.user!.uid).get();
-
-     if (!doc.exists) {
-
-       if (userType == UserType.ADMIN) {
-         scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("This feature is allowed for admin only"), isError: true);
-         return;
-       } else {
-         createAccountAUTH(scaffoldKey: scaffoldKey, userType: userType, user: userCredential);
-       }
-
-     } else {
-       await getUserByUid(uid: userCredential.user!.uid).then((UserModel user) {
-
-         if (user.userType != userType) {
-           scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("User not found"), isError: true);
-           auth.signOut();
-           return;
-         }
-
-         switch (user.accountStatus) {
-           case Status.ACTIVE:
-             UserProfile.shared.setUser(user: user);
-             Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil('/Tabbar', (Route<dynamic> route) => false, arguments: user.userType);
-             break;
-           case Status.PENDING:
-             scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Account under review"), isError: true);
-             auth.signOut();
-             break;
-           case Status.Rejected:
-             scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been denied"), isError: true);
-             auth.signOut();
-             break;
-           case Status.Deleted:
-             scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been deleted"), isError: true);
-             auth.signOut();
-             break;
-         }
-
-       });
-     }
-//   final twitterLogin = TwitterLogin(
-//       /// Consumer API keys
-//       apiKey: API_KEY,
-//
-//       /// Consumer API Secret keys
-//       apiSecretKey: API_SECRET_KEY,
-//
-//       /// Registered Callback URLs in TwitterApp
-//       /// Android is a deeplink
-//       /// iOS is a URLScheme
-//       redirectURI: 'example://',
-//     );
-//
-//     /// Forces the user to enter their credentials
-//     /// to ensure the correct users account is authorized.
-//     /// If you want to implement Twitter account switching, set [force_login] to true
-//     /// login(forceLogin: true);
-//     final authResult = await twitterLogin.login();
-//     switch (authResult.status) {
-//       case TwitterLoginStatus.loggedIn:
-//         // success
-//         print('====== Login success ======');
-//         break;
-//       case TwitterLoginStatus.cancelledByUser:
-//         // cancel
-//         print('====== Login cancel ======');
-//         break;
-//       case TwitterLoginStatus.error:
-//       case null:
-//         // error
-//         print('====== Login error ======');
-//         break;
-   }*/
-
-  signInWithApple({ required GlobalKey<ScaffoldState> scaffoldKey, required UserType userType }) async {
-
-    String generateNonce([int length = 32]) {
-      const charset =
-          '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-      final random = Random.secure();
-      return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-          .join();
-    }
-
-    String sha256ofString(String input) {
-      final bytes = utf8.encode(input);
-      final digest = sha256.convert(bytes);
-      return digest.toString();
-    }
-
-    final rawNonce = generateNonce();
-    final nonce = sha256ofString(rawNonce);
-
-    final appleCredential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
-      ],
-      nonce: nonce,
-    );
-
-    // Create an `OAuthCredential` from the credential returned by Apple.
-    final oauthCredential = OAuthProvider("apple.com").credential(
-      idToken: appleCredential.identityToken,
-      rawNonce: rawNonce,
-    );
-
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCredential);
-
-    DocumentSnapshot doc = await userRef.doc(userCredential.user!.uid).get();
-
-    if (!doc.exists) {
-
-      if (userType == UserType.USER) {
-        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("This feature is allowed for admin only"), isError: true);
-        return;
-      } else {
-        createAccountAUTH(scaffoldKey: scaffoldKey, userType: userType, user: userCredential);
-      }
-
-    } else {
-      await getUserByUid(uid: userCredential.user!.uid).then((UserModel user) {
-
-        if (user.userType == userType) {
-          scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("User not found"), isError: true);
-          auth.signOut();
-          return;
-        }
-
-        switch (user.accountStatus) {
-          case Status.ACTIVE:
-            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil('/TabBarPage', (Route<dynamic> route) => false, arguments: user.userType);
-            break;
-          case Status.PENDING:
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Account under review"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Rejected:
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been denied"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Deleted:
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been deleted"), isError: true);
-            auth.signOut();
-            break;
-        }
-
-      });
-    }
-  }
 
   login(
       {required GlobalKey<ScaffoldState> scaffoldKey,
@@ -952,261 +639,7 @@ Stream<List<FavoriteModel>> getFavoriteByChannel({required String channelId}) {
   }
 
   // TODO:- ENd channel
-  // TODO:- Start Subscription/
 
-  Subscription(context,
-      {
-        String uid = "",
-        required GlobalKey<ScaffoldState> scaffoldKey,
-        required String SubscriptionEN,
-        required String SubscriptionAR,
-        required String details,
-      }) async {
-    showLoaderDialog(context);
-    String tempUid = (uid == null || uid == "") ? SubscriptionRef.doc().id : uid;
-    SubscriptionRef.doc(tempUid).set({
-      "Subscription-en": SubscriptionEN,
-      "Subscription-ar": SubscriptionAR,
-      "details": details,
-      "uid-owner": auth.currentUser!.uid,
-      "uid": tempUid,
-    })
-        .then((value) {
-      showLoaderDialog(context, isShowLoader: false);
-      Navigator.of(context).pop();
-    })
-        .catchError((err) {
-      showLoaderDialog(context, isShowLoader: false);
-    });
-  }
-
-  deleteSubscription(context, {required String uidSubscription}) async {
-    showLoaderDialog(context);
-
-    await SubscriptionRef.doc(uidSubscription).delete().then((_) => {}).catchError((e) {});
-
-    showLoaderDialog(context, isShowLoader: false);
-  }
-
-  Stream<List<SubscriptionsModel>> getSubscription({required Section section}) {
-    return SubscriptionRef
-        .where("Subscription", isEqualTo: section.index)
-        .snapshots()
-        .map((QueryDocumentSnapshot) {
-      return QueryDocumentSnapshot.docs.map((doc) {
-        return SubscriptionsModel.fromJson(doc.data());
-      }).toList();
-    });
-  }
-
-  Stream<List<SubscriptionsModel>> getMySubscription() {
-    return SubscriptionRef
-        .where("uid-owner", isEqualTo: auth.currentUser!.uid)
-        .snapshots()
-        .map((QueryDocumentSnapshot) {
-      return QueryDocumentSnapshot.docs.map((doc) {
-        return SubscriptionsModel.fromJson(doc.data());
-      }).toList();
-    });
-  }
-  Stream<List<SubscriptionsModel>> getAllSubscription() {
-    return SubscriptionRef.snapshots().map((QueryDocumentSnapshot) {
-      return QueryDocumentSnapshot.docs.map((doc) {
-        return SubscriptionsModel.fromJson(doc.data());
-      }).toList();
-    });
-  }
-  Stream<SubscriptionsModel> getSubscriptionById({required String id}) {
-    return SubscriptionRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
-      return SubscriptionsModel.fromJson(QueryDocumentSnapshot.data());
-    });
-  }
-
-  // TODO:- ENd Subscription
-
-  // TODO:- Start SubscriptionOrder
-    SubscriptionOrder(
-        context, {
-          String uid = "",
-          required String ownerId,
-          required String SubscriptionId,
-        }) async {
-      showLoaderDialog(context);
-
-
-      String tempUid = (uid == null || uid == "") ? SubscriptionOrderRef.doc().id : uid;
-
-      addNotifications(
-          uidUser: ownerId,
-          titleEN: "Subscriptio Request",
-          titleAR: "طلب اشتراك",
-          detailsEN: "A new Subscriptio has been requested",
-          detailsAR: "تم طلب اشتراك جديد");
-
-      SubscriptionOrderRef.doc(tempUid).set({
-        "user-id": auth.currentUser!.uid,
-        "Subscription-id": ownerId,
-        "Subscription-id": SubscriptionId,
-        "createdDate": DateTime.now().toString(),
-        "status": Status.PENDING.index,
-        "details": "",
-        "message-en": "",
-        "message-ar": "",
-        "uid": tempUid,
-      }).then((value) {
-        showLoaderDialog(context, isShowLoader: false);
-        Navigator.pushNamed(context, '/orderuser');
-      }).catchError((err) {
-        showLoaderDialog(context, isShowLoader: false);
-      });
-    }
-
-  changeOrderStatus(
-      context, {
-        required String uid,
-        required Status status,
-        String messageEN = "",
-        String messageAR = "",
-      }) async {
-    showLoaderDialog(context);
-
-    SubscriptionOrderRef.doc(uid).update({
-      "status": status.index,
-      "message-en": messageEN,
-      "message-ar": messageAR,
-    }).then((value) {
-      showLoaderDialog(context, isShowLoader: false);
-    }).catchError((err) {
-      showLoaderDialog(context, isShowLoader: false);
-    });
-  }
-
-
-
-  Stream<List<SubscriptionOrderModel>> getOrdersByStatus({required Status status}) {
-      return SubscriptionOrderRef
-          .where("status", isEqualTo: status.index)
-          .snapshots()
-          .map((QueryDocumentSnapshot) {
-        return QueryDocumentSnapshot.docs.map((doc) {
-          return SubscriptionOrderModel.fromJson(doc.data());
-        }).toList();
-      });
-    }
-
-    Stream<List<SubscriptionOrderModel>> getAllSubscriptionOrder() {
-      return SubscriptionOrderRef.snapshots().map((QueryDocumentSnapshot) {
-        return QueryDocumentSnapshot.docs.map((doc) {
-          return SubscriptionOrderModel.fromJson(doc.data());
-        }).toList();
-      });
-    }
-
-    Stream<List<SubscriptionOrderModel>> getMySubscriptionOrderTech() {
-      return SubscriptionOrderRef
-          .where("owner-id", isEqualTo: auth.currentUser!.uid)
-          .snapshots()
-          .map((QueryDocumentSnapshot) {
-        return QueryDocumentSnapshot.docs.map((doc) {
-          return SubscriptionOrderModel.fromJson(doc.data());
-        }).toList();
-      });
-    }
-
-    Stream<List<SubscriptionOrderModel>> getMySubscriptionOrder() {
-      return SubscriptionOrderRef
-          .where("user-id", isEqualTo: auth.currentUser!.uid)
-          .snapshots()
-          .map((QueryDocumentSnapshot) {
-        return QueryDocumentSnapshot.docs.map((doc) {
-          return SubscriptionOrderModel.fromJson(doc.data());
-        }).toList();
-      });
-    }
-
-    Stream<SubscriptionOrderModel> getOrderById({required String id}) {
-      return SubscriptionOrderRef.doc(id).snapshots().map((QueryDocumentSnapshot) {
-        return SubscriptionOrderModel.fromJson(QueryDocumentSnapshot.data());
-      });
-    }
-
-
-  // TODO:- Start Chat
-
-  sendMessage(
-      context, {
-        required String uidOrder,
-        required String uidService,
-        required String uidReceiver,
-        required String uidUser,
-        String message = "",
-        String image = "",
-      }) async {
-    String uid = chatRef.doc().id;
-    String imageUrl = "";
-
-    if (image != "") {
-      showLoaderDialog(context);
-      imageUrl = await _uploadImage(folderName: "chat", imagePath: image);
-      showLoaderDialog(context, isShowLoader: false);
-    }
-
-    chatRef.doc(uid).set({
-      "uid-order": uidOrder,
-      "uid-user": uidUser,
-      "uid-sender": auth.currentUser!.uid,
-      "uid-receiver": uidReceiver,
-      "uid-service": uidService,
-      "message": message,
-      "image": imageUrl,
-      "createdDate": DateTime.now().toString(),
-      "uid": uid,
-    }).catchError((_) {});
-  }
-
-  Stream<List<ChatModel>> getChatByUidOrder({required String uidOrder}) {
-    return chatRef
-        .where("uid-order", isEqualTo: uidOrder)
-        .snapshots()
-        .map((QueryDocumentSnapshot) {
-      return QueryDocumentSnapshot.docs.map((doc) {
-        return ChatModel.fromJson(doc.data());
-      }).toList();
-    });
-  }
-
-  // TODO:- End Chat
-
-  Future<String> _uploadImage(
-      {required String folderName, required String imagePath}) async {
-    UploadTask uploadTask =
-    storageRef.child('$folderName/${ const Uuid().v4()}').putFile(File(imagePath));
-    String url = await (await uploadTask).ref.getDownloadURL();
-    return url;
-  }
-  // payment
-
-// _payment() async {
-//   var request = BraintreeDropInRequest(
-//     tokenizationKey: "",
-//     collectDeviceData: true,
-//     paypalRequest: BraintreePayPalRequest(
-//       amount: "10.00",
-//       displayName: "name",
-//     ),
-//     cardEnabled: true,
-//   );
-//
-//   BraintreeDropInResult result = await BraintreeDropIn.start(request);
-//
-//   if (result != null) {
-//     print("===================");
-//     print(result.paymentMethodNonce.description);
-//     print(result.paymentMethodNonce.nonce);
-//     print("===================");
-//   }
-//
-// }
 }
 
 
