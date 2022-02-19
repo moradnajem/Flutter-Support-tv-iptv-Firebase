@@ -42,11 +42,7 @@ class ForgotPassword extends StatelessWidget {
             children: [
                   SizedBox(height: MediaQuery.of(context).size.height * (40 / 812)),
                   Image.asset(Assets.shared.icLogo, fit: BoxFit.cover, height: MediaQuery.of(context).size.height * (250 / 812),),
-                  const SizedBox(height: 20),
-                  Text(AppLocalization.of(context)!.trans("Forgot Password"), style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 26,
-                  ),),
+
                   const SizedBox(height: 50,),
                   Form(
                     key: _formKey,
@@ -68,6 +64,13 @@ class ForgotPassword extends StatelessWidget {
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height * (120 / 812)),
                       RaisedButton(
+                          shape: StadiumBorder(),
+
+                          elevation: 20,
+                          focusElevation: 20,
+                          hoverElevation: 20,
+                          highlightElevation: 20,
+                          disabledElevation: 0,
                           color: Theme.of(context).primaryColor,
                           child: Text(AppLocalization.of(context)!.trans("Reset password"),
                               style: TextStyle(color: Theme.of(context).canvasColor,)),

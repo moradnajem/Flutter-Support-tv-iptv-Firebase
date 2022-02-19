@@ -10,10 +10,6 @@ import 'package:tv/models/loader.dart';
 import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 
-import 'package:tv/page/notification.dart';
-
-import '../../main.dart';
-import '../../page/add-channel.dart';
 import 'channel-Details.dart';
 
 class FavoriteChannel extends StatefulWidget {

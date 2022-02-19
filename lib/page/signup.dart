@@ -143,6 +143,13 @@ class _SignupState extends State<Signup> {
                             ),
                             SizedBox(height: 20,),
                             RaisedButton(
+                                elevation: 20,
+                                focusElevation: 20,
+                                hoverElevation: 20,
+                                highlightElevation: 20,
+                                disabledElevation: 0,
+                                shape: StadiumBorder(),
+
                                 color: Theme.of(context).primaryColor,
                                 child: Text(AppLocalization.of(context)!.trans("Sign Up"),
                                     style: TextStyle(color: Theme.of(context).canvasColor,)),

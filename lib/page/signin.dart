@@ -127,33 +127,40 @@ class _SignInState extends State<SignIn> {
                                 child: Container(padding: const EdgeInsets.all(10), child: SvgPicture.asset(isShowPassword ? Assets.shared.icInvisible : Assets.shared.icVisibility, color: Theme.of(context).primaryColor, height: 5, width: 5,)),
                               )),
                             ),
-                            const SizedBox(height: 5,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                            const SizedBox(height: 40,),
+                            RaisedButton(
+                                elevation: 20,
+                                focusElevation: 20,
+                                hoverElevation: 20,
+                                highlightElevation: 20,
+                                disabledElevation: 0,
+                                shape: StadiumBorder(),
+
+                                color: Theme.of(context).primaryColor,
+                                child: Text(AppLocalization.of(context)!.trans("Sign In"),
+
+                                    style: TextStyle(color: Theme.of(context).canvasColor,
+                                    )),
+                                onPressed:  _btnSignin),
+                            Column(
                               children: [
+                                const SizedBox(height: 20),
                                 FlatButton(
-                                  child: Text(
-                                    AppLocalization.of(context)!.trans("Forgot Password?"),
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  onPressed: () => Navigator.pushNamed(context, '/ForgotPassword'),
+                                    onPressed: () => Navigator.pushNamed(context, '/ForgotPassword'),
+                                    child: Text(
+                                      AppLocalization.of(context)!.trans("Forgot Password?"),
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.secondary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 20,),
-                            RaisedButton(
-                                color: Theme.of(context).primaryColor,
-                                child: Text(AppLocalization.of(context)!.trans("Sign In"),
-                                    style: TextStyle(color: Theme.of(context).canvasColor,)),
-                                onPressed:  _btnSignin),
-
                         Column(
                           children: [
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 0),
                             FlatButton(
                                 onPressed: () => Navigator.pushNamed(context, '/SignUp'),
                                 child: Text(

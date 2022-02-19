@@ -10,10 +10,10 @@ import 'package:tv/models/user-model.dart';
 import 'package:tv/models/user_profile.dart';
 import 'package:tv/page/add-section.dart';
 import 'package:tv/page/notification.dart';
-import 'package:tv/section/channel/favorite_channel.dart';
+import 'package:tv/page/favorite_channel.dart';
 
 import '../models/lang.dart';
-import 'channel/channel.dart';
+import 'channel.dart';
 
 class SectionScreen extends StatefulWidget {
   _SectionScreenState createState() => _SectionScreenState();

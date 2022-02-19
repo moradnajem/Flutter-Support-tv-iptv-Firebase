@@ -35,7 +35,14 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(AppLocalization.of(context)!.trans("Edit Profile")),
+        backgroundColor: Theme.of(context).canvasColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
+        ),
+        title: Text(AppLocalization.of(context)!.trans("Edit Profile"),style: TextStyle(color: Theme
+            .of(context)
+            .primaryColor),),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -123,6 +130,13 @@ class _EditProfileState extends State<EditProfile> {
 
                       SizedBox(height: MediaQuery.of(context).size.height * (100 / 812)),
                       RaisedButton(
+                          shape: StadiumBorder(),
+
+                          elevation: 20,
+                          focusElevation: 20,
+                          hoverElevation: 20,
+                          highlightElevation: 20,
+                          disabledElevation: 0,
                           color: Theme.of(context).accentColor,
                           child: Text(AppLocalization.of(context)!.trans("Edit Profile"),
                               style: TextStyle(color:  Theme.of(context).scaffoldBackgroundColor,fontWeight: FontWeight.bold,

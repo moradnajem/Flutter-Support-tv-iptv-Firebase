@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tv/manger/Section.dart';
 import 'package:tv/manger/user-type.dart';
 import 'package:tv/page/profile.dart';
-import 'package:tv/section/Section.dart';
+import 'package:tv/page/Section.dart';
 import '../models/lang.dart';
 
 
