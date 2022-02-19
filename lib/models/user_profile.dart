@@ -9,21 +9,20 @@ class UserProfile {
   Future<Language?> getLanguage() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      var languageIndex = prefs.get('language');
-      return languageIndex == null
-          ? Language.values[0]
-          : Language.values[int.parse(languageIndex.toString())];
-    } catch (e) {
+      int? languageIndex = prefs.get('language') as int?;
+      return languageIndex == null ? null : Language.values[languageIndex];
+    } catch(e) {
       return null;
     }
   }
 
-  setLanguage({Language? language}) async {
+  setLanguage({ required Language language }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('language', language == null ? 0 : language.index);
-    } catch (e) {
+      await prefs.setInt('language', language.index);
+    } catch(e) {
       return null;
+
     }
   }
 

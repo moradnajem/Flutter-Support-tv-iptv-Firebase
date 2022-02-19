@@ -36,7 +36,7 @@ dependencies:
   cloud_firestore:
 
   video_player_web_hls:
-  video_player:
+  flick_video_player:
 
   shared_preferences:
   flutter_svg:
